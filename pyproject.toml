@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "soccersim"
+version = "0.1.0"
+description = "Soccer play-selection simulation: space/geometry and feasibility foundation"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26,<3",
+    # scipy is not imported by the M0 foundation layer; it lands with the
+    # Hungarian assignment solve in M1 (see docs/STATUS.md).
+    "scipy>=1.11,<2",
+    "matplotlib>=3.8,<4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+include = ["soccersim*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
