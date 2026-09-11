@@ -217,6 +217,67 @@ def draw_cover_shadows(
         patch.set_clip_path(clip)
 
 
+PLAY_COLOUR = "#8250df"
+BALL_TARGET_COLOUR = "#bc4c00"
+
+
+def draw_play(ax, instantiated) -> None:
+    """Overlay an instantiated play: player runs and ball deliveries.
+
+    Two visually distinct things, because they mean different things (see
+    ``ActionSpec.releases_ball``): a **solid** arrow is a player moving to a waypoint,
+    a **dashed** arrow is the ball being delivered somewhere. Drawing them the same way
+    is what hid the bug where a crosser was required to run to the near post.
+    """
+    for step in instantiated.steps:
+        if step.target is None:
+            continue
+        spec = step.step.action_spec
+        if spec.releases_ball:
+            origin = np.asarray(instantiated.context.state.ball.position, dtype=float)
+            try:
+                origin = np.asarray(
+                    instantiated.context.state.player(step.player_id).position, dtype=float
+                )
+            except KeyError:
+                pass
+            colour, style, width = BALL_TARGET_COLOUR, (0, (5, 3)), 1.8
+            ax.scatter(
+                [step.target[0]], [step.target[1]], marker="*", s=110,
+                color=BALL_TARGET_COLOUR, zorder=9,
+            )
+        else:
+            try:
+                origin = np.asarray(
+                    instantiated.context.state.player(step.player_id).position, dtype=float
+                )
+            except KeyError:
+                continue
+            colour, style, width = PLAY_COLOUR, "-", 2.0
+            ax.scatter(
+                [step.target[0]], [step.target[1]], marker="o", s=45,
+                facecolor="none", edgecolor=PLAY_COLOUR, linewidth=1.6, zorder=9,
+            )
+
+        ax.annotate(
+            "",
+            xy=(step.target[0], step.target[1]),
+            xytext=(origin[0], origin[1]),
+            arrowprops=dict(
+                arrowstyle="-|>", color=colour, linestyle=style, linewidth=width,
+                shrinkA=9, shrinkB=6, alpha=0.9,
+            ),
+            zorder=8,
+        )
+        midpoint = (origin + step.target) / 2.0
+        ax.annotate(
+            step.step.key,
+            (midpoint[0], midpoint[1]),
+            color=colour, fontsize=6.5, ha="center", va="center", zorder=10,
+            bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.75),
+        )
+
+
 def draw_state(
     state: GameState,
     control: ControlField | None = None,
@@ -224,6 +285,7 @@ def draw_state(
     threat_grid: PitchGrid | None = None,
     lanes: list[LaneAssessment] | None = None,
     shadows_for: Team | None = None,
+    play=None,
     title: str | None = None,
     ax=None,
 ):
@@ -268,6 +330,8 @@ def draw_state(
         draw_cover_shadows(ax, state, shadows_for)
     if lanes:
         draw_lanes(ax, lanes)
+    if play is not None:
+        draw_play(ax, play)
 
     draw_players(ax, state)
 

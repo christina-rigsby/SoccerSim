@@ -110,17 +110,23 @@ above all **opponent attribute inference** — the one that unblocks opponent ro
 
 ## Play representation (design doc §3)
 
-### Q-009 · What is the event-trigger language? · `open`
+### Q-009 · What is the event-trigger language? · `closed` → D-029
 §3 specifies waypoints "timed/triggered relative to events (ball reaches point X, defender
-crosses threshold Y) rather than fixed clock time" — but no concrete representation.
+crosses threshold Y) rather than fixed clock time".
 
-*Why it matters:* this is the core play data structure. `Waypoint` currently carries an
-absolute `deadline` in seconds (D-014), which is a deliberate simplification that must be
-replaced, not extended.
-*Options sketched:* a small predicate DSL over game state; a dependency graph of
-`(precondition, action)` nodes; hybrid with deadlines as fallbacks when a trigger never fires.
-*Blocks:* M1 hand-authored plays beyond trivial ones; `chain_depth_penalty` (§5), which is
-computed from the play's internal action-dependency graph.
+*Resolution:* a named registry of parameterised predicates over live state
+(`soccersim/plays/triggers.py`), mirroring the anchor registry, so a play stays data all
+the way down. 14 trigger kinds including the two §3 names — `ball_within` is "ball reaches
+point X", `opponent_within`/`role_beyond` are "defender crosses threshold Y" — plus
+combinators. The same vocabulary serves activation, completion and **abort**, which is what
+makes D-002's "willing to abort mid-play" a mechanism rather than an aspiration.
+
+`elapsed` survives as a deliberate fallback: some steps are genuinely timed, and every step
+needs a timeout or a play whose trigger never fires hangs (D-031).
+
+*Knock-on effects:* `Waypoint.deadline` is no longer hand-authored but **derived** from the
+step graph (D-029), closing D-014's placeholder. And offside moved to the moment of the pass
+(D-033), closing the approximation M0's `check_offside` flagged as pending this question.
 
 ### Q-010 · Are set pieces a branch of the same graph, or a separate taxonomy? · `open`
 "Convert set piece" and "Defend set piece" appear as objectives (§3), and
@@ -137,6 +143,57 @@ controlled area is preserved. `time_to_point` has its own mirror test.
 *Caveat:* this closes the question for **geometry**, not for plays — there are no plays yet.
 Re-open as a checklist item when M1 lands hand-authored plays, since a play could still hard-
 code a sign somewhere the geometry does not.
+
+---
+
+## Play building (added M1a)
+
+### Q-030 · Plays are flank-specific, and the library only has right-sided variants · `open`
+`overlap_right`, `underlap_right` and `trap_press` all hardcode `flank: "right"`. The same
+play on the left needs a second file, and the library currently lacks one — so
+`trap_press` correctly refused to fit a fixture where the ball was left of centre, for the
+wrong reason: there simply is no left-sided trap.
+
+*Why it matters:* it doubles the library for no tactical content, and a ranking layer
+choosing between `overlap_right` and `overlap_left` is choosing between two spellings of
+one play rather than two ideas.
+*The fix, and it is a design change:* give `Play` **parameters** and let a step's anchors
+reference them (`flank: "$side"`), so one play file covers both sides and the ranking layer
+picks the side as part of selection. The anchors already take flank as a parameter; it is
+the play file that hardcodes it.
+*Cheaper interim:* generate mirrored variants at load time.
+
+### Q-031 · Are the step timeouts right? · `provisional` → D-029
+Every step carries a timeout, and they were authored by judgement. Several plays are
+infeasible against the fixtures purely because a run needs 5.7 s and the step allows 5.0 s.
+
+*Why it matters:* timeouts do double duty — they bound the step *and* they set the waypoint
+deadline the kinematic check uses, so a tight timeout reads as physical infeasibility. Too
+generous and a stalled play lingers instead of reselecting; too tight and good plays are
+never selected.
+*What would settle it:* derive the deadline from the anchor distance and the assigned
+player's capability rather than authoring it, keeping the timeout for the *abort* horizon
+only. That separates two things currently conflated in one number.
+
+### Q-032 · The assignment cost needs a positional term, not just capability · `open` (hand-off)
+Running the pipeline with the greedy stand-in (D-030) surfaced this: it assigned a
+full-back 30 m from the play's first waypoint, and a left winger to a right-flank play,
+because §4's capability-match edge describes *capability* and says nothing about **where
+the player currently is**.
+
+*For whoever builds the assignment solve:* the cost matrix wants a reachability term
+alongside capability fit. The ingredients exist — `kinematics.time_to_point` already gives
+arrival time, and `Play.time_budget(step)` gives the deadline, so the slack for a
+candidate's first waypoint is computable today. Whether that belongs as a second edge
+weight, a hard pre-filter, or a Pareto dimension (Q-004) is a weight-algebra question.
+
+### Q-033 · Should sustained actions have a duration distinct from their timeout? · `open`
+A sustained action (`mark_man`, `cover_shadow`, `hold_position`) completes once held for
+its `timeout`, because there is no arrival moment. That overloads one field: "hold this for
+3 s" and "give up after 3 s" are different statements that currently cannot differ.
+
+*Practical consequence:* a press whose cover-shadow should be held for the whole play has
+to declare a long timeout, which also makes it slow to abort.
 
 ---
 
@@ -320,6 +377,24 @@ losing late)?
 §6 notes diffusion handles multimodality well — there are usually several plausible good
 plays, not one deterministic answer — and matches recent multi-agent sports-trajectory work.
 *Deferred:* blocked behind M0/M1 validation per D-008, so no need to answer soon.
+
+### Q-019b · What is SoccerNet actually good for, for plays? · `open` (deferred by choice)
+Considered when play building started, and deliberately deferred.
+
+*Recommendation on record:* the highest-value use is **calibrating anchor parameters**, not
+mining play templates. How far behind the line runners actually go, typical CB–fullback gap
+widths, realistic cross origins and delivery depths — every free number in
+`soccersim/plays/anchors.py` is a distribution that could be fitted. That needs only the
+ball and the defensive line, which broadcast tracking captures best.
+
+*Why not mine whole plays:* the off-ball structure that *defines* a play is exactly what
+broadcast video loses (D-007's known limitation — off-screen players). The overlap runner in
+a wing overload is often not in frame. Mining would likely yield on-ball fragments rather
+than plays.
+
+*Middle option:* use Action Spotting to segment possessions and measure how often real
+sequences match a hand-authored template — a reality check on the library, though match
+rates are confounded by the same missing players.
 
 ### Q-019 · How reliable is heuristic objective/strategy labelling? · `open`
 §6 step 2 proposes rule-based labelling of SoccerNet segments ("ended in a shot from a cross

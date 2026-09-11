@@ -1,0 +1,86 @@
+{
+  "_comment": "Design doc \u00a73, under High press: 'initiated on backpass or sideways pass near opponent box'. M2's pressing model infers which pass types actually provoke this opponent.",
+  "key": "trigger_press",
+  "label": "Trigger press",
+  "description": "Collapse on the receiver of a backpass in the opponent's build-up area, cutting the return route behind the presser.",
+  "objective": "regain_possession",
+  "strategy": "high_press",
+  "requires_possession": false,
+  "source": "design doc \u00a73",
+  "steps": [
+    {
+      "key": "close_carrier",
+      "role": "first_presser",
+      "action": "press",
+      "anchor": {
+        "kind": "opponent",
+        "which": "carrier"
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 2.5,
+      "note": "Anchored on whoever actually has it, so the play needs no rewrite when a different opponent receives."
+    },
+    {
+      "key": "shadow_return",
+      "role": "ball_winner",
+      "action": "cover_shadow",
+      "anchor": {
+        "kind": "opponent",
+        "which": "carrier"
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 3.0,
+      "note": "Sustained: body position blocking the return pass while the press arrives."
+    },
+    {
+      "key": "cut_outlet",
+      "role": "deep_lying_passer",
+      "action": "intercept_lane",
+      "anchor": {
+        "kind": "opponent",
+        "which": "nearest_to_role",
+        "role": "deep_lying_passer"
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 3.0
+    },
+    {
+      "key": "step_line",
+      "role": "ball_playing_defender",
+      "action": "step_up",
+      "depends_on": [
+        "close_carrier"
+      ],
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 2.0,
+      "note": "Compress from behind once the press is on, so the trap has no space behind."
+    },
+    {
+      "key": "win",
+      "role": "ball_winner",
+      "action": "tackle",
+      "anchor": {
+        "kind": "opponent",
+        "which": "carrier"
+      },
+      "depends_on": [
+        "close_carrier",
+        "shadow_return"
+      ],
+      "timeout": 1.5,
+      "trigger": {
+        "kind": "opponent_within",
+        "role": "ball_winner",
+        "metres": 3.0
+      }
+    }
+  ]
+}

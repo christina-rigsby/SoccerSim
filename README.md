@@ -17,8 +17,12 @@ Full design in [`docs/soccer_simulation_design.md`](docs/soccer_simulation_desig
 
 ## Where the project is
 
-**M0 (space and feasibility foundation), M0.5 (player roles and matching), and most of
-M2 (the information dashboard) are built.** The ranking graph — module 2 — is not.
+**Built:** M0 (space and feasibility foundation), M0.5 (player roles and matching),
+most of M2 (the information dashboard), and M1a (play building).
+
+**Not built:** the ranking graph and weight algebra (M1b) — the scoring half of module 2,
+blocked on Q-001 and being built separately. Nothing in this repo computes a weight, a
+cost or a play score.
 
 That order is deliberate: the ranking system's constraint checks, the generator's
 candidate ranking, and even a naive rule-based fallback all depend on having a
@@ -39,6 +43,9 @@ that exists means writing them against geometry that does not.
 | Marking-scheme and pressing inference, with confidence | `soccersim/dashboard/{marking,pressing,estimate}.py` |
 | Our own play-usage and success-rate book | `soccersim/dashboard/book.py` |
 | Scripted scenarios with planted ground truth | `soccersim/scenarios.py` |
+| Spatial anchors, event triggers, the play DAG | `soccersim/plays/{anchors,triggers,play}.py` |
+| Play library, instantiation, trigger-driven executor | `soccersim/plays/{library,execution}.py` |
+| Seven plays from §3, as data | `data/plays/` |
 
 ## Three documents worth reading before writing code
 
@@ -67,10 +74,11 @@ pip install -e ".[dev]"
 ## Running
 
 ```bash
-pytest                              # 403 tests
+pytest                              # 529 tests
 python scripts/demo_snapshot.py     # writes out/{kickoff,wing_overload,counter_attack}.png
 python scripts/validate_roster.py   # validates the squad, prints role coverage
 python scripts/dashboard_report.py  # scores the opponent model against known ground truth
+python scripts/validate_plays.py    # validates plays, instantiates and rehearses them
 ```
 
 Then **look at the PNGs**. The space layer's characteristic failure is subtly wrong
@@ -151,6 +159,51 @@ choosing (D-023).
 Evidence is decayed rather than counted, so a stale estimate stops being mature. That is
 intended: a team that pressed in the first half and sat deep in the second should not be
 described by the average.
+
+## Plays are programs over the geometry, not coordinates
+
+A play never says "player A goes to (x1, y1)". It says *where* in terms the pitch decides
+live, and *when* in terms of events:
+
+```json
+{ "key": "overlap", "role": "overlap_runner", "action": "overlap_run",
+  "anchor": { "kind": "offset", "base": { "kind": "player", "role": "wide_creator" },
+              "forward": 10.0, "lateral": 7.0 } },
+{ "key": "release", "role": "wide_creator", "action": "pass",
+  "anchor": { "kind": "player", "role": "overlap_runner" },
+  "depends_on": ["carry", "overlap"],
+  "trigger": { "kind": "all_of", "of": [
+      { "kind": "role_beyond", "role": "overlap_runner",
+        "anchor": { "kind": "player", "role": "wide_creator" }, "margin": 1.0 },
+      { "kind": "lane_open", "origin": { "kind": "player", "role": "wide_creator" },
+        "target": { "kind": "player", "role": "overlap_runner" } } ] } }
+```
+
+The pass waits until the runner is *actually* past the winger and the lane is *actually*
+open — not until 2.4 seconds have elapsed. All four spatial references §3 names are
+implemented on the M0 space layer: maximum pitch-control gain along a flank, the midpoint
+of a measured line gap, N metres behind the last-defender line in a channel, the edge of a
+cover shadow. Geometry is recomputed every epoch, so one play works against any opponent
+shape.
+
+Roles are **play roles** (`overlap_runner`), filled by capability, not shirt numbers.
+
+### The dependency graph is load-bearing
+
+Steps form a DAG because §5 defines `chain_depth_penalty` as computed "directly from the
+play's internal action-dependency graph". The longest path *is* the chain depth, and it
+tracks football intuition on the shipped library:
+
+| Play | Chain depth | Reading |
+|---|---|---|
+| `trigger_press`, `trap_press` | 2 | Parallel pressure — little to break |
+| `direct_vertical` | 3 | Win, launch, finish |
+| `overlap_right`, `underlap_right`, `switch_and_cross` | 4 | |
+| `three_pass_counter` | 5 | Four handoffs, four chances to disrupt |
+
+The same graph gives §5's `single_ball` free: two ball-touching steps conflict exactly
+when neither is an ancestor of the other. That check caught a real error in the
+hand-authored three-pass counter.
 
 ## The one function to understand first
 

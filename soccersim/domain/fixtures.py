@@ -232,6 +232,63 @@ def counter_attack_snapshot() -> GameState:
     )
 
 
+def opponent_buildup_snapshot() -> GameState:
+    """Away plays out from the back; home presses high. The only out-of-possession fixture.
+
+    Added because the press plays could not be instantiated at all against the other
+    three: ``opponent(which="carrier")`` correctly refuses to resolve while our own team
+    has the ball, so a library with out-of-possession plays needs a fixture where the
+    opponent has it.
+
+    Set up as the moment §3's trigger press keys on — the ball has gone back to a
+    centre-back in the build-up area, with home's front line close enough to engage.
+    """
+    home = _home_team(
+        [
+            (1, (-30.0, 0.0), (0.0, 0.0), 1.0),
+            (2, (0.0, -22.0), (1.0, 0.0), 0.86),
+            (3, (-4.0, -8.0), (1.0, 0.0), 0.90),
+            (4, (-4.0, 8.0), (1.0, 0.0), 0.89),
+            (5, (0.0, 22.0), (1.0, 0.0), 0.85),
+            (6, (12.0, 0.0), (2.0, 0.0), 0.88),
+            (7, (18.0, -10.0), (3.0, -1.0), 0.84),
+            (8, (18.0, 10.0), (3.0, 1.0), 0.85),
+            (9, (30.0, -16.0), (4.0, -1.0), 0.87),
+            (10, (34.0, -2.0), (5.0, -1.0), 0.88),  # closing the carrier
+            (11, (30.0, 16.0), (4.0, 1.0), 0.86),
+        ]
+    )
+    away = _away_team(
+        [
+            (21, "GK", (49.0, 0.0), (0.0, 0.0), 1.0),
+            (22, "RB", (36.0, -20.0), (0.0, 0.0), 0.88),
+            (23, "RCB", (40.0, -7.0), (-1.0, 0.0), 0.90),  # on the ball
+            (24, "LCB", (40.0, 7.0), (0.0, 0.0), 0.90),
+            (25, "LB", (36.0, 20.0), (0.0, 0.0), 0.87),
+            (26, "RM", (22.0, -22.0), (0.0, -1.0), 0.85),
+            (27, "RCM", (26.0, -6.0), (-1.0, 0.0), 0.86),
+            (28, "LCM", (26.0, 6.0), (-1.0, 0.0), 0.86),
+            (29, "LM", (22.0, 22.0), (0.0, 1.0), 0.85),
+            (30, "ST", (8.0, -6.0), (0.0, 0.0), 0.88),
+            (31, "ST", (8.0, 6.0), (0.0, 0.0), 0.88),
+        ]
+    )
+    return GameState(
+        pitch=Pitch(),
+        home=home,
+        away=away,
+        ball=BallState(
+            position=vec(40.0, -7.0),
+            carrier_id=23,
+            phase=BallPhase.ON_GROUND,
+        ),
+        score=(1, 0),
+        clock_seconds=35.0 * 60.0,
+        phase=GamePhase.OPEN_PLAY,
+        possession=Team.AWAY,
+    )
+
+
 def mirrored(state: GameState) -> GameState:
     """The same situation with both teams' attacking directions flipped in ``x``.
 
@@ -276,4 +333,5 @@ ALL_FIXTURES = {
     "kickoff": kickoff_433_vs_442,
     "wing_overload": wing_overload_snapshot,
     "counter_attack": counter_attack_snapshot,
+    "opponent_buildup": opponent_buildup_snapshot,
 }

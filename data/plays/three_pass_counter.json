@@ -1,0 +1,180 @@
+{
+  "_comment": "Design doc \u00a73: 'win ball -> outlet pass to midfielder -> forward pass to winger in space -> cross/shot'.",
+  "key": "three_pass_counter",
+  "label": "Three-pass counter",
+  "description": "A controlled counter through midfield: outlet, forward pass into space, delivery. Longer chain than the direct ball, and correspondingly more places to break.",
+  "objective": "score",
+  "strategy": "counter_attack",
+  "source": "design doc \u00a73",
+  "steps": [
+    {
+      "key": "secure",
+      "role": "ball_winner",
+      "action": "first_touch",
+      "anchor": {
+        "kind": "offset",
+        "base": {
+          "kind": "ball"
+        },
+        "forward": 2.0,
+        "lateral": 0.0
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 1.5
+    },
+    {
+      "key": "outlet_move",
+      "role": "deep_lying_passer",
+      "action": "move_to",
+      "anchor": {
+        "kind": "max_control",
+        "third": "middle",
+        "flank": "centre"
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 3.0
+    },
+    {
+      "key": "outlet_pass",
+      "role": "ball_winner",
+      "action": "pass",
+      "anchor": {
+        "kind": "player",
+        "role": "deep_lying_passer"
+      },
+      "depends_on": [
+        "secure",
+        "outlet_move"
+      ],
+      "timeout": 1.5,
+      "trigger": {
+        "kind": "lane_open",
+        "origin": {
+          "kind": "ball"
+        },
+        "target": {
+          "kind": "player",
+          "role": "deep_lying_passer"
+        }
+      }
+    },
+    {
+      "key": "break_wide",
+      "role": "wide_creator",
+      "action": "move_to",
+      "anchor": {
+        "kind": "max_control",
+        "third": "final",
+        "flank": "right"
+      },
+      "depends_on": [
+        "secure"
+      ],
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 4.0
+    },
+    {
+      "key": "forward_pass",
+      "role": "deep_lying_passer",
+      "action": "pass",
+      "anchor": {
+        "kind": "player",
+        "role": "wide_creator"
+      },
+      "depends_on": [
+        "outlet_pass",
+        "break_wide"
+      ],
+      "timeout": 2.0,
+      "note": "Chained behind outlet_pass, not parallel to it - two players cannot touch the ball at once, which the single_ball check enforces structurally.",
+      "trigger": {
+        "kind": "all_of",
+        "of": [
+          {
+            "kind": "ball_within",
+            "anchor": {
+              "kind": "player",
+              "role": "deep_lying_passer"
+            },
+            "metres": 3.0
+          },
+          {
+            "kind": "lane_open",
+            "origin": {
+              "kind": "player",
+              "role": "deep_lying_passer"
+            },
+            "target": {
+              "kind": "player",
+              "role": "wide_creator"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "arrive_box",
+      "role": "box_target",
+      "action": "move_to",
+      "anchor": {
+        "kind": "box_target",
+        "spot": "spot"
+      },
+      "depends_on": [
+        "outlet_pass"
+      ],
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 4.0
+    },
+    {
+      "key": "cross",
+      "role": "wide_creator",
+      "action": "cross",
+      "anchor": {
+        "kind": "box_target",
+        "spot": "spot"
+      },
+      "depends_on": [
+        "forward_pass"
+      ],
+      "timeout": 2.0,
+      "trigger": {
+        "kind": "ball_within",
+        "anchor": {
+          "kind": "player",
+          "role": "wide_creator"
+        },
+        "metres": 3.0
+      }
+    },
+    {
+      "key": "finish",
+      "role": "box_target",
+      "action": "shoot",
+      "anchor": {
+        "kind": "goal"
+      },
+      "depends_on": [
+        "cross",
+        "arrive_box"
+      ],
+      "timeout": 1.5,
+      "trigger": {
+        "kind": "ball_within",
+        "anchor": {
+          "kind": "box_target",
+          "spot": "spot"
+        },
+        "metres": 5.0
+      }
+    }
+  ]
+}

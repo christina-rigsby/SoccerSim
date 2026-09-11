@@ -6,13 +6,14 @@ Milestones deliberately follow the design doc's build order (§6): the space lay
 "is this good for us right now" scoring function come before the ranking graph, and both come
 before the generative model. See D-008.
 
-**Last updated:** 2026-09-11 (M2)
+**Last updated:** 2026-09-11 (M1a — play building)
 
 | Milestone | State | Summary |
 |---|---|---|
 | **M0** — Space & feasibility foundation | `done` | Domain model, pitch-control / lane / xT layer, kinematic feasibility, debug renderer |
 | **M0.5** — Player roles & matching | `done` | Attributes, positional slots vs. play roles, roster loading, the two role hard-checks |
-| **M1** — Play ranking system (module 2) | `not started` | Weighted graph, hard-constraint pre-filter, assignment solve, hand-authored plays |
+| **M1a** — Play building (module 2, part 1) | `done` | Anchors, triggers, the play DAG, 7 authored plays, instantiation, executor |
+| **M1b** — Ranking graph & weight algebra | `not started` | **Being built elsewhere.** Graph schema, edge weights, assignment solve, scoring |
 | **M2** — Dashboard & opponent model (module 1) | partial | Spine, measurements, marking + pressing inference, our own book. Opponent *attributes* still uninferred |
 | **M3** — AI/ML play generator (module 3) | `blocked` | Blocked on M0+M1 validation with hand-authored plays, per D-008 |
 | **X** — Cross-cutting | partial | Sim loop, tuning harness, test infrastructure |
@@ -83,23 +84,22 @@ stops short of the cost matrix: coverage is answerable now, ranking is not (D-02
 
 ---
 
-## M1 — Play ranking system (module 2) `not started`
+## M1b — Ranking graph & weight algebra `not started`
+
+**Being built elsewhere.** Listed so the interfaces are clear and nothing here duplicates
+it.
 
 | Task | Status | Blocked by | Notes |
 |---|---|---|---|
-| **Pick the weight algebra** | `not started` | **Q-001** | Gates everything else in M1. Do this first |
-| Graph schema (Objective / Strategy / Play / RoleRequirement / Constraint / Player nodes) | `not started` | Q-001 | Schema in §4 |
-| `Play` type with an action-dependency graph | `not started` | Q-009 | Needed for `chain_depth_penalty` |
-| Event-trigger representation for waypoints | `not started` | Q-009 | Replaces `Waypoint.deadline` |
-| Objective / Strategy / Play taxonomy from §3 | `not started` | — | 7 objectives, strategies, plays as listed |
-| Action vocabulary (on-ball, off-ball, defensive) | `not started` | — | §3; ~25 actions |
-| Edge-weight functions (recomputed per epoch, not constants) | `not started` | Q-001 | §4 "weights are functions, not constants" |
-| Convert `role_fit` scores into capability-match edge weights | `not started` | **Q-001** | The deliberate M0.5 cut line (D-022) — one conversion at the boundary, not a rewrite |
-| Hard-constraint pre-filter over candidate plays | `not started` | — | Reuses M0 checks plus M0.5's `check_role_requirements`; D-005 |
-| Soft constraints as named `(state, play, assignment)` functions | `not started` | Q-001 | §5; 13 named constraints |
-| Hungarian assignment solve | `not started` | — | `scipy.optimize.linear_sum_assignment`; trivial at ~11 roles. Candidates now come from `role_coverage` |
-| `total_play_score` combining path weight + assignment cost | `not started` | Q-002 | |
-| Hand-author 3 plays (Overlap, Switch-and-cross, Direct vertical counter) | `not started` | Q-009 | §3 |
+| **Pick the weight algebra** | `not started` | **Q-001** | Gates everything else here |
+| Graph schema (Objective / Strategy / Play / RoleRequirement / Constraint / Player) | `not started` | Q-001 | §4 |
+| Edge-weight functions, recomputed per epoch | `not started` | Q-001 | §4 "weights are functions, not constants" |
+| Convert `role_fit` scores into capability-match edge weights | `not started` | Q-001 | D-022's cut line |
+| **Add a positional term to the assignment cost** | `not started` | Q-032 | Found by running M1a's pipeline: capability fit alone assigns unreachable players. Ingredients exist — `time_to_point` and `Play.time_budget` |
+| Hungarian assignment solve | `not started` | Q-001 | Replaces M1a's greedy stand-in (D-030) |
+| Soft constraints as named `(state, play, assignment)` functions | `not started` | Q-001 | §5; 13 constraints. `chain_depth`, `single_ball` and the dashboard's inputs are all computable now |
+| `total_play_score` combining path weight and assignment cost | `not started` | Q-002 | |
+| Hard-constraint pre-filter over candidate plays | `not started` | — | M1a's `InstantiatedPlay.violations()` already does this per play; the pre-filter orders it |
 | End-to-end selection on a fixture snapshot | `not started` | — | The M1 exit criterion |
 | Coefficient tuning harness | `blocked` | Q-006, Q-014 | Do **not** tune against the placeholder xT surface |
 
@@ -166,9 +166,9 @@ Blocked on M0+M1 validation with hand-authored plays (D-008). Listed for complet
 
 | Task | Status | Blocked by | Notes |
 |---|---|---|---|
-| pytest suite + analytic test cases | `done` | — | 403 tests; run with `-W error::RuntimeWarning` to keep NaN/overflow surprises out |
+| pytest suite + analytic test cases | `done` | — | 529 tests; run with `-W error::RuntimeWarning` to keep NaN/overflow surprises out |
 | Static snapshot renderer | `done` | — | D-011 |
-| Tick-based sim loop | `not started` | Q-012 | Needed once M1 selection runs, to see abort-and-reselect (D-002). `scenarios.py`'s stepper is test scaffolding, **not** this |
+| Tick-based sim loop | `not started` | Q-012 | Needed once M1b selection runs, to see abort-and-reselect across plays. `scenarios.py`'s stepper and `plays/rehearsal.py` are test scaffolding, **not** this |
 | Animation / match replay output | `not started` | — | After the sim loop |
 | Per-epoch performance measurement | `not started` | Q-012 | Decides D-009's backtrack trigger |
 | CI (run pytest on push) | `not started` | — | |

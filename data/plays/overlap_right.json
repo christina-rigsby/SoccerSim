@@ -1,0 +1,168 @@
+{
+  "_comment": "Design doc \u00a73, under Wing overload: 'fullback overlaps winger, winger cuts inside, cross from overlap runner'.",
+  "key": "overlap_right",
+  "label": "Overlap (right)",
+  "description": "The full-back runs outside the winger, who carries inside to drag the marker with him; the overlap runner crosses from the byline.",
+  "objective": "score",
+  "strategy": "wing_overload",
+  "source": "design doc \u00a73",
+  "steps": [
+    {
+      "key": "carry",
+      "role": "wide_creator",
+      "action": "dribble",
+      "anchor": {
+        "kind": "max_control",
+        "third": "final",
+        "flank": "right_half"
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 3.0,
+      "note": "Cutting inside is what creates the space the overlap runs into.",
+      "abort_if": {
+        "kind": "pressure_above",
+        "role": "wide_creator",
+        "intensity": 2.5
+      }
+    },
+    {
+      "key": "overlap",
+      "role": "overlap_runner",
+      "action": "overlap_run",
+      "anchor": {
+        "kind": "offset",
+        "base": {
+          "kind": "player",
+          "role": "wide_creator"
+        },
+        "forward": 10.0,
+        "lateral": 7.0
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 4.0
+    },
+    {
+      "key": "release",
+      "role": "wide_creator",
+      "action": "pass",
+      "anchor": {
+        "kind": "player",
+        "role": "overlap_runner"
+      },
+      "depends_on": [
+        "carry",
+        "overlap"
+      ],
+      "timeout": 2.0,
+      "note": "Held until the runner is actually past him - that is the trigger, not a clock.",
+      "trigger": {
+        "kind": "all_of",
+        "of": [
+          {
+            "kind": "role_beyond",
+            "role": "overlap_runner",
+            "anchor": {
+              "kind": "player",
+              "role": "wide_creator"
+            },
+            "margin": 1.0
+          },
+          {
+            "kind": "lane_open",
+            "origin": {
+              "kind": "player",
+              "role": "wide_creator"
+            },
+            "target": {
+              "kind": "player",
+              "role": "overlap_runner"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "attack_near",
+      "role": "box_target",
+      "action": "move_to",
+      "anchor": {
+        "kind": "box_target",
+        "spot": "near"
+      },
+      "depends_on": [
+        "overlap"
+      ],
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 4.0
+    },
+    {
+      "key": "attack_far",
+      "role": "runner_in_behind",
+      "action": "move_to",
+      "anchor": {
+        "kind": "box_target",
+        "spot": "far"
+      },
+      "depends_on": [
+        "overlap"
+      ],
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 4.0
+    },
+    {
+      "key": "cross",
+      "role": "overlap_runner",
+      "action": "cross",
+      "anchor": {
+        "kind": "box_target",
+        "spot": "near"
+      },
+      "depends_on": [
+        "release"
+      ],
+      "timeout": 2.5,
+      "trigger": {
+        "kind": "ball_within",
+        "anchor": {
+          "kind": "player",
+          "role": "overlap_runner"
+        },
+        "metres": 2.5
+      },
+      "abort_if": {
+        "kind": "pressure_above",
+        "role": "overlap_runner",
+        "intensity": 2.0
+      }
+    },
+    {
+      "key": "finish",
+      "role": "box_target",
+      "action": "header",
+      "anchor": {
+        "kind": "goal"
+      },
+      "depends_on": [
+        "cross",
+        "attack_near"
+      ],
+      "timeout": 1.5,
+      "trigger": {
+        "kind": "ball_within",
+        "anchor": {
+          "kind": "box_target",
+          "spot": "near"
+        },
+        "metres": 4.0
+      }
+    }
+  ]
+}

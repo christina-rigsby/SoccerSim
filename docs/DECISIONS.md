@@ -170,6 +170,159 @@ Then it keeps its own running summary rather than the buffer growing.
 
 ---
 
+## D-033 · Offside is judged at the moment of the pass, not at play selection
+**Date:** 2026-09-11 · **Status:** `active`
+
+`InstantiatedPlay.violations()` does **not** check offside. The executor checks it when a
+ball-releasing step actually fires, against that step's receivers.
+
+**Rationale:** §5 says "any `run_behind`/receiving waypoint beyond the second-last
+defender **at the moment of the pass** is invalid". A run beyond the line is perfectly
+legal to *make* — you are only offside if the ball is played to you while you are there.
+Checking at selection time rejected every counter-attack involving a run in behind, which
+is most of them.
+
+M0's `check_offside` docstring flagged this as a snapshot approximation "pending Q-009".
+Resolving Q-009 is what made the correct timing expressible, so this closes that caveat.
+
+**Alternatives considered viable:**
+- *Check at instantiation* (what M0 did). Cheap, and wrong in the direction that
+  discards good plays.
+- *Check both, as a warning at selection and a violation at the pass.* More information,
+  but a warning nothing consumes is noise.
+
+**Backtrack trigger:** none expected. Note the related fix in D-032: a delivery target
+that ignores the offside line makes every cross illegal, which is an anchor problem
+rather than a checking problem.
+
+---
+
+## D-032 · Delivery anchors are line-aware; a releasing action's anchor is a ball target
+**Date:** 2026-09-11 · **Status:** `active`
+
+Two related corrections, both about what an anchor *means*.
+
+`ActionSpec.releases_ball` now settles whether a step's anchor is where the **ball** goes
+or where the **player** goes. `instantiate` only builds a `Waypoint` for player
+destinations. Previously every anchored step produced a waypoint, so a crosser was
+required to *run to* the near post — and collided with the player attacking it.
+
+`BoxTarget` pulls its depth back to stay level with or behind the second-last defender.
+A striker attacking a cross is onside by definition, so a fixed six-yard-box target is
+offside against any deep block. Combined with D-033, every cross in the library aborted
+until this anchor became line-aware.
+
+**Rationale:** both are the D-003 principle applied more thoroughly. A delivery target is
+a *relationship to the defence*, not a fixed spot, and the distinction between "the ball
+goes here" and "the player goes here" is information the action vocabulary already had.
+
+**Alternatives considered viable:**
+- *Separate `ball_anchor` and `player_anchor` fields per step.* Explicit, but every step
+  needs exactly one of them, so the action already determines which.
+- *Leave `BoxTarget` fixed and let plays pick the depth.* Pushes an offside calculation
+  into every hand-authored play file.
+
+**Backtrack trigger:** a set piece, where offside does not apply from the restart — hence
+the explicit `onside=False`.
+
+---
+
+## D-031 · Every step is bounded: timeouts run from eligibility, not activation
+**Date:** 2026-09-11 · **Status:** `active`
+
+A step that is eligible but whose trigger has not fired times out just as one that
+activated and did not complete.
+
+**Rationale:** without it a play whose trigger condition never materialises waits
+forever. D-002's "be willing to abort mid-play and reselect" needs every step to be
+bounded, or a single unmet condition hangs the play and nothing reselects. The failure
+was found by rehearsing `switch_and_cross`, which sat waiting on a blocked switch pass
+until the harness ran out of frames.
+
+The abort reason names the trigger that never fired, which is the diagnostic that makes
+an authored play debuggable.
+
+**Alternatives considered viable:**
+- *A separate, longer eligibility timeout.* More expressive; two numbers per step to
+  tune for no demonstrated benefit.
+- *A play-level deadline only.* Simpler, but loses which step actually stalled.
+
+---
+
+## D-030 · Play roles are filled by a greedy stand-in until the assignment solve lands
+**Date:** 2026-09-11 · **Status:** `provisional` (see Q-032)
+
+`plays/assignment.py` fills roles greedily, scarcest role first, breaking ties on
+practised-role then fit score.
+
+**Rationale:** the real solve is bipartite matching over capability-match edge weights
+(D-004), which belongs with the graph and weight-algebra work. A placeholder lets the
+whole pipeline run end to end now, and running it surfaced something worth handing over:
+**capability fit alone is not enough.** The greedy pass cheerfully assigned a full-back
+30 m from the play's first waypoint, and assigned a left winger to a right-flank play,
+because nothing in §4's capability-match edge accounts for *where the player currently
+is*. The cost matrix needs a positional term — which the kinematic reachability check
+already computes.
+
+**Alternatives considered viable:**
+- *Hand-authored assignments per play per fixture.* No inference to get wrong, but
+  nothing exercises the role layer.
+- *Implement Hungarian now.* Would require inventing the cost semantics Q-001 governs.
+
+**Backtrack trigger:** the real solve arrives. Delete this module; everything downstream
+takes a plain `{role: player_id}` mapping either way.
+
+---
+
+## D-029 · A play is a triggered dependency graph over spatial anchors
+**Date:** 2026-09-11 · **Status:** `active`
+
+A play is data: named play roles (M0.5), actions (§3's vocabulary), **anchors** that
+resolve to points against live state, and **triggers** that fire on events. Steps form a
+DAG. Anchors, triggers and whole plays round-trip through JSON.
+
+**Rationale — anchors.** This is the mechanism behind D-003, and the direct answer to
+"plays must be flexible, not player A from (x1,y1) to (x2,y2)". §3 names four spatial
+references and all four are implemented on M0 machinery: maximum pitch-control gain along
+a flank, the midpoint of a measured line gap, N metres behind the last-defender line in a
+channel, and the edge of a cover shadow. Because geometry is recomputed each epoch, one
+play generalises across opponent shapes instead of needing a variant per formation.
+
+**Rationale — triggers (resolving Q-009).** §3 requires event triggers, not clock times,
+and M0's `Waypoint.deadline` was explicitly a placeholder to replace (D-014). Waypoint
+deadlines are now *derived* from the graph — the sum of timeouts along the longest path to
+a step — so the kinematic check asks the right question: can this player get there before
+the play would give up on them? That also links chain depth to feasibility, which is why
+§5 penalises depth.
+
+**Rationale — the DAG.** §5 defines `chain_depth_penalty` as computed "directly from the
+play's internal action-dependency graph", so the graph has to be the primary structure and
+the longest path *is* the chain depth. A flat step list could not express it. The same
+graph yields `single_ball` for free: two ball-touching steps conflict exactly when neither
+is an ancestor of the other, since then nothing orders them. That check caught a real
+error in the hand-authored three-pass counter, where the passer's and receiver's steps
+were siblings.
+
+Measured on the shipped library, chain depth tracks football intuition: presses are depth
+2 and parallel, the direct counter 3, the three-pass counter 5.
+
+**No weights.** Structural metrics are computed; turning them into penalties waits for
+Q-001 (D-022's cut line applied again).
+
+**Alternatives considered viable:**
+- *Python predicate objects instead of a data registry.* Less machinery, but plays could
+  not then be authored, diffed or generated as data.
+- *Parameterised play templates.* Simplest to author; hides the dependency graph that
+  §5 needs, and a new play shape means new code.
+- *Raw coordinates with per-formation variants.* Trivial to debug, and the thing D-003
+  exists to avoid.
+
+**Backtrack trigger:** the anchor or trigger vocabulary stops being expressive enough and
+plays start needing escape hatches into Python. Adding a kind to the registry is cheap;
+needing arbitrary code is the signal that data-driven was the wrong call.
+
+---
+
 ## D-023 · Every inferred value carries its own maturity
 **Date:** 2026-09-11 · **Status:** `active`
 

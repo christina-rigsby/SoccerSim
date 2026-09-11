@@ -1,0 +1,130 @@
+{
+  "_comment": "Design doc \u00a73, under Wing overload: 'fullback runs inside channel, winger holds width, cutback'.",
+  "key": "underlap_right",
+  "label": "Underlap (right)",
+  "description": "The winger holds the touchline to pin the full-back; the underlapping runner attacks the gap inside him and cuts the ball back.",
+  "objective": "score",
+  "strategy": "wing_overload",
+  "source": "design doc \u00a73",
+  "steps": [
+    {
+      "key": "hold_width",
+      "role": "wide_creator",
+      "action": "create_width",
+      "anchor": {
+        "kind": "channel_depth",
+        "flank": "right",
+        "progress": 0.62
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 3.0,
+      "note": "Holding width is what opens the inside channel; it is a job, not a pause."
+    },
+    {
+      "key": "underlap",
+      "role": "underlap_runner",
+      "action": "underlap_run",
+      "anchor": {
+        "kind": "line_gap",
+        "rank": 0,
+        "metres_beyond": -2.0,
+        "flank": "right"
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 5.0,
+      "note": "Targets the measured widest gap on the right, so it works against any back line."
+    },
+    {
+      "key": "feed",
+      "role": "deep_lying_passer",
+      "action": "pass",
+      "anchor": {
+        "kind": "player",
+        "role": "underlap_runner"
+      },
+      "depends_on": [
+        "hold_width",
+        "underlap"
+      ],
+      "timeout": 2.0,
+      "trigger": {
+        "kind": "lane_open",
+        "origin": {
+          "kind": "player",
+          "role": "deep_lying_passer"
+        },
+        "target": {
+          "kind": "player",
+          "role": "underlap_runner"
+        }
+      },
+      "abort_if": {
+        "kind": "pressure_above",
+        "role": "deep_lying_passer",
+        "intensity": 2.5
+      }
+    },
+    {
+      "key": "arrive",
+      "role": "box_target",
+      "action": "move_to",
+      "anchor": {
+        "kind": "box_target",
+        "spot": "edge"
+      },
+      "depends_on": [
+        "underlap"
+      ],
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 4.0
+    },
+    {
+      "key": "cutback",
+      "role": "underlap_runner",
+      "action": "pass",
+      "anchor": {
+        "kind": "box_target",
+        "spot": "spot"
+      },
+      "depends_on": [
+        "feed"
+      ],
+      "timeout": 2.0,
+      "trigger": {
+        "kind": "ball_within",
+        "anchor": {
+          "kind": "player",
+          "role": "underlap_runner"
+        },
+        "metres": 2.5
+      }
+    },
+    {
+      "key": "finish",
+      "role": "box_target",
+      "action": "shoot",
+      "anchor": {
+        "kind": "goal"
+      },
+      "depends_on": [
+        "cutback",
+        "arrive"
+      ],
+      "timeout": 1.5,
+      "trigger": {
+        "kind": "ball_within",
+        "anchor": {
+          "kind": "box_target",
+          "spot": "spot"
+        },
+        "metres": 5.0
+      }
+    }
+  ]
+}

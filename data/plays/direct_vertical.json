@@ -1,0 +1,117 @@
+{
+  "_comment": "Design doc \u00a73, under Counter-attack: 'win ball -> immediate long pass to advanced forward making a run behind the line'.",
+  "key": "direct_vertical",
+  "label": "Direct vertical counter",
+  "description": "Secure the loose ball and hit it long behind a line that is still high, before the opponent can recover shape.",
+  "objective": "score",
+  "strategy": "counter_attack",
+  "source": "design doc \u00a73",
+  "steps": [
+    {
+      "key": "secure",
+      "role": "ball_winner",
+      "action": "first_touch",
+      "anchor": {
+        "kind": "offset",
+        "base": {
+          "kind": "ball"
+        },
+        "forward": 3.0,
+        "lateral": 0.0
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 1.5,
+      "note": "One touch forward, not a settle - the whole play depends on speed."
+    },
+    {
+      "key": "break_line",
+      "role": "runner_in_behind",
+      "action": "run_behind",
+      "anchor": {
+        "kind": "behind_line",
+        "metres": 7.0,
+        "flank": "centre",
+        "line_count": 2
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 3.5,
+      "note": "line_count=2 approximates the offside line. Offside is judged when the pass is actually played, not now - making the run is legal."
+    },
+    {
+      "key": "launch",
+      "role": "ball_winner",
+      "action": "pass",
+      "anchor": {
+        "kind": "behind_line",
+        "metres": 9.0,
+        "flank": "centre",
+        "line_count": 2
+      },
+      "depends_on": [
+        "secure",
+        "break_line"
+      ],
+      "timeout": 1.5,
+      "trigger": {
+        "kind": "lane_open",
+        "origin": {
+          "kind": "ball"
+        },
+        "target": {
+          "kind": "behind_line",
+          "metres": 7.0,
+          "flank": "centre",
+          "line_count": 2
+        }
+      },
+      "abort_if": {
+        "kind": "pressure_above",
+        "role": "ball_winner",
+        "intensity": 2.5
+      }
+    },
+    {
+      "key": "support",
+      "role": "wide_creator",
+      "action": "move_to",
+      "anchor": {
+        "kind": "channel_depth",
+        "flank": "right",
+        "progress": 0.45
+      },
+      "depends_on": [
+        "secure"
+      ],
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 4.0
+    },
+    {
+      "key": "finish",
+      "role": "runner_in_behind",
+      "action": "shoot",
+      "anchor": {
+        "kind": "goal"
+      },
+      "depends_on": [
+        "launch"
+      ],
+      "timeout": 2.5,
+      "trigger": {
+        "kind": "ball_within",
+        "anchor": {
+          "kind": "behind_line",
+          "metres": 7.0,
+          "flank": "centre",
+          "line_count": 2
+        },
+        "metres": 6.0
+      }
+    }
+  ]
+}

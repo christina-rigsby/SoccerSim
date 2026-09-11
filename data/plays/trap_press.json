@@ -1,0 +1,93 @@
+{
+  "_comment": "Design doc \u00a73, under High press: 'force ball into a pre-identified low-value zone (e.g. touchline) where numbers overload'.",
+  "key": "trap_press",
+  "label": "Trap press (right touchline)",
+  "description": "Show the carrier outside, then overload the touchline zone where his options run out.",
+  "objective": "regain_possession",
+  "strategy": "high_press",
+  "requires_possession": false,
+  "source": "design doc \u00a73",
+  "steps": [
+    {
+      "key": "force_wide",
+      "role": "first_presser",
+      "action": "cover_shadow",
+      "anchor": {
+        "kind": "opponent",
+        "which": "carrier"
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 3.0,
+      "note": "Body position closes the inside, leaving only the touchline open."
+    },
+    {
+      "key": "press_inside",
+      "role": "ball_winner",
+      "action": "press",
+      "anchor": {
+        "kind": "offset",
+        "base": {
+          "kind": "opponent",
+          "which": "carrier"
+        },
+        "forward": 0.0,
+        "lateral": -4.0
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 3.0
+    },
+    {
+      "key": "overload",
+      "role": "overlap_runner",
+      "action": "move_to",
+      "anchor": {
+        "kind": "channel_depth",
+        "flank": "right",
+        "progress": 0.55
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 3.5,
+      "note": "Numbers into the trap zone before the ball arrives."
+    },
+    {
+      "key": "seal_back",
+      "role": "ball_playing_defender",
+      "action": "move_to",
+      "anchor": {
+        "kind": "channel_depth",
+        "flank": "right_half",
+        "progress": 0.3
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 3.5
+    },
+    {
+      "key": "win",
+      "role": "ball_winner",
+      "action": "tackle",
+      "anchor": {
+        "kind": "opponent",
+        "which": "carrier"
+      },
+      "depends_on": [
+        "force_wide",
+        "press_inside",
+        "overload"
+      ],
+      "timeout": 1.5,
+      "trigger": {
+        "kind": "opponent_within",
+        "role": "ball_winner",
+        "metres": 3.0
+      }
+    }
+  ]
+}

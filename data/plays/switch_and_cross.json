@@ -1,0 +1,139 @@
+{
+  "_comment": "Design doc \u00a73: 'quick switch to weak-side wing where opponent is underloaded, first-time cross'.",
+  "key": "switch_and_cross",
+  "label": "Switch and cross",
+  "description": "Switch the ball to the underloaded flank and cross first time, before the opponent's block can shift across.",
+  "objective": "score",
+  "strategy": "wing_overload",
+  "source": "design doc \u00a73",
+  "steps": [
+    {
+      "key": "stretch",
+      "role": "wide_creator",
+      "action": "create_width",
+      "anchor": {
+        "kind": "max_control",
+        "third": "final",
+        "flank": "left"
+      },
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 3.0,
+      "note": "Anchored on maximum control on the weak side - which is where the opponent is underloaded, found by measurement rather than assumption."
+    },
+    {
+      "key": "switch",
+      "role": "deep_lying_passer",
+      "action": "pass",
+      "anchor": {
+        "kind": "player",
+        "role": "wide_creator"
+      },
+      "depends_on": [
+        "stretch"
+      ],
+      "timeout": 2.5,
+      "trigger": {
+        "kind": "all_of",
+        "of": [
+          {
+            "kind": "control_above",
+            "anchor": {
+              "kind": "max_control",
+              "third": "final",
+              "flank": "left"
+            },
+            "threshold": 0.45
+          },
+          {
+            "kind": "lane_open",
+            "origin": {
+              "kind": "player",
+              "role": "deep_lying_passer"
+            },
+            "target": {
+              "kind": "player",
+              "role": "wide_creator"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "attack_near",
+      "role": "target_forward",
+      "action": "move_to",
+      "anchor": {
+        "kind": "box_target",
+        "spot": "near"
+      },
+      "depends_on": [
+        "switch"
+      ],
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 3.0
+    },
+    {
+      "key": "attack_far",
+      "role": "box_target",
+      "action": "move_to",
+      "anchor": {
+        "kind": "box_target",
+        "spot": "far"
+      },
+      "depends_on": [
+        "switch"
+      ],
+      "trigger": {
+        "kind": "immediately"
+      },
+      "timeout": 3.0
+    },
+    {
+      "key": "first_time_cross",
+      "role": "wide_creator",
+      "action": "cross",
+      "anchor": {
+        "kind": "box_target",
+        "spot": "near"
+      },
+      "depends_on": [
+        "switch"
+      ],
+      "timeout": 1.5,
+      "note": "Short timeout is the point: delay lets the block recover and the play dies.",
+      "trigger": {
+        "kind": "ball_within",
+        "anchor": {
+          "kind": "player",
+          "role": "wide_creator"
+        },
+        "metres": 3.0
+      }
+    },
+    {
+      "key": "finish",
+      "role": "target_forward",
+      "action": "header",
+      "anchor": {
+        "kind": "goal"
+      },
+      "depends_on": [
+        "first_time_cross",
+        "attack_near"
+      ],
+      "timeout": 1.5,
+      "trigger": {
+        "kind": "ball_within",
+        "anchor": {
+          "kind": "box_target",
+          "spot": "near"
+        },
+        "metres": 4.0
+      }
+    }
+  ]
+}
