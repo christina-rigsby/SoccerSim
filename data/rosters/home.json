@@ -1,0 +1,144 @@
+{
+  "_README": [
+    "PLACEHOLDER SQUAD — replace these names and ratings with your own.",
+    "Attributes are 0-100 and have no physical meaning; they are only compared",
+    "against each other. Physical values are SI (m/s, m/s^2, s) because the",
+    "kinematics layer does real physics with them, and are optional: omit a",
+    "physical block and the player inherits their positional archetype.",
+    "Any key starting with '_' is a comment and is ignored by the loader.",
+    "Validate edits with: python scripts/validate_roster.py",
+    "player_id must match the ids used by soccersim/domain/fixtures.py (1-11)."
+  ],
+  "team": "home",
+  "name": "Placeholder XI",
+  "players": [
+    {
+      "player_id": 1, "shirt": 1, "name": "Keeper", "positional_role": "GK",
+      "foot": "right",
+      "physical": {"max_speed": 6.8, "max_accel": 5.5, "reaction_time": 0.22},
+      "attributes": {
+        "passing_short": 58, "passing_long": 55, "crossing": 20, "finishing": 15,
+        "dribbling": 30, "first_touch": 52, "heading": 35, "strength": 68,
+        "tackling": 25, "marking": 30, "positioning": 74, "work_rate": 55,
+        "weak_foot": 42
+      },
+      "practised_roles": ["sweeper_keeper"]
+    },
+    {
+      "player_id": 2, "shirt": 3, "name": "Left back", "positional_role": "LB",
+      "foot": "left",
+      "physical": {"max_speed": 8.1, "max_accel": 6.9, "reaction_time": 0.20},
+      "attributes": {
+        "passing_short": 64, "passing_long": 56, "crossing": 68, "finishing": 38,
+        "dribbling": 54, "first_touch": 58, "heading": 48, "strength": 62,
+        "tackling": 62, "marking": 64, "positioning": 63, "work_rate": 71,
+        "weak_foot": 38
+      },
+      "practised_roles": ["overlap_runner", "ball_playing_defender"]
+    },
+    {
+      "player_id": 3, "shirt": 5, "name": "Left CB", "positional_role": "LCB",
+      "foot": "left",
+      "attributes": {
+        "passing_short": 68, "passing_long": 61, "crossing": 30, "finishing": 32,
+        "dribbling": 42, "first_touch": 58, "heading": 72, "strength": 76,
+        "tackling": 72, "marking": 75, "positioning": 74, "work_rate": 62,
+        "weak_foot": 40
+      },
+      "practised_roles": ["ball_playing_defender", "box_target"]
+    },
+    {
+      "player_id": 4, "shirt": 4, "name": "Right CB", "positional_role": "RCB",
+      "foot": "right",
+      "attributes": {
+        "passing_short": 60, "passing_long": 52, "crossing": 26, "finishing": 34,
+        "dribbling": 36, "first_touch": 52, "heading": 76, "strength": 78,
+        "tackling": 75, "marking": 77, "positioning": 71, "work_rate": 64,
+        "weak_foot": 34
+      },
+      "practised_roles": ["ball_playing_defender", "box_target"]
+    },
+    {
+      "player_id": 5, "shirt": 2, "name": "Right back", "positional_role": "RB",
+      "foot": "right",
+      "physical": {"max_speed": 8.7, "max_accel": 7.2, "reaction_time": 0.19},
+      "attributes": {
+        "passing_short": 62, "passing_long": 54, "crossing": 74, "finishing": 40,
+        "dribbling": 58, "first_touch": 60, "heading": 46, "strength": 58,
+        "tackling": 61, "marking": 62, "positioning": 60, "work_rate": 78,
+        "weak_foot": 36
+      },
+      "practised_roles": ["overlap_runner", "underlap_runner", "ball_playing_defender"]
+    },
+    {
+      "player_id": 6, "shirt": 6, "name": "Holding mid", "positional_role": "CDM",
+      "foot": "right",
+      "attributes": {
+        "passing_short": 74, "passing_long": 68, "crossing": 44, "finishing": 38,
+        "dribbling": 54, "first_touch": 70, "heading": 58, "strength": 70,
+        "tackling": 76, "marking": 70, "positioning": 78, "work_rate": 74,
+        "weak_foot": 48
+      },
+      "practised_roles": ["ball_winner", "deep_lying_passer"]
+    },
+    {
+      "player_id": 7, "shirt": 8, "name": "Left centre mid", "positional_role": "LCM",
+      "foot": "left",
+      "attributes": {
+        "passing_short": 76, "passing_long": 58, "crossing": 56, "finishing": 52,
+        "dribbling": 66, "first_touch": 74, "heading": 44, "strength": 56,
+        "tackling": 66, "marking": 58, "positioning": 66, "work_rate": 80,
+        "weak_foot": 52
+      },
+      "practised_roles": ["ball_winner", "underlap_runner"]
+    },
+    {
+      "player_id": 8, "shirt": 10, "name": "Right centre mid", "positional_role": "RCM",
+      "foot": "right",
+      "attributes": {
+        "passing_short": 80, "passing_long": 64, "crossing": 62, "finishing": 58,
+        "dribbling": 72, "first_touch": 78, "heading": 40, "strength": 52,
+        "tackling": 48, "marking": 46, "positioning": 64, "work_rate": 66,
+        "weak_foot": 58
+      },
+      "practised_roles": ["deep_lying_passer", "underlap_runner"]
+    },
+    {
+      "player_id": 9, "shirt": 11, "name": "Left winger", "positional_role": "LW",
+      "foot": "left",
+      "_note": "max_speed 7.9 is deliberately just under runner_in_behind's 8.0 floor, so the roster demonstrates min_role_coverage rejecting a near-miss.",
+      "physical": {"max_speed": 7.9, "max_accel": 7.4, "reaction_time": 0.18},
+      "attributes": {
+        "passing_short": 66, "passing_long": 50, "crossing": 70, "finishing": 64,
+        "dribbling": 74, "first_touch": 70, "heading": 38, "strength": 52,
+        "tackling": 40, "marking": 38, "positioning": 60, "work_rate": 74,
+        "weak_foot": 62
+      },
+      "practised_roles": ["wide_creator", "inverted_winger", "first_presser"]
+    },
+    {
+      "player_id": 10, "shirt": 9, "name": "Striker", "positional_role": "ST",
+      "foot": "right",
+      "physical": {"max_speed": 8.1, "max_accel": 7.0, "reaction_time": 0.18},
+      "attributes": {
+        "passing_short": 60, "passing_long": 44, "crossing": 40, "finishing": 80,
+        "dribbling": 62, "first_touch": 74, "heading": 71, "strength": 74,
+        "tackling": 36, "marking": 34, "positioning": 78, "work_rate": 72,
+        "weak_foot": 54
+      },
+      "practised_roles": ["target_forward", "runner_in_behind", "box_target", "first_presser"]
+    },
+    {
+      "player_id": 11, "shirt": 7, "name": "Right winger", "positional_role": "RW",
+      "foot": "right",
+      "_note": "weak_foot 45 is below inverted_winger's 55 floor, so this right-footed right winger cannot fill that role — only the left-footed #9 can.",
+      "attributes": {
+        "passing_short": 64, "passing_long": 48, "crossing": 72, "finishing": 62,
+        "dribbling": 79, "first_touch": 68, "heading": 42, "strength": 54,
+        "tackling": 38, "marking": 36, "positioning": 58, "work_rate": 66,
+        "weak_foot": 45
+      },
+      "practised_roles": ["wide_creator", "runner_in_behind"]
+    }
+  ]
+}

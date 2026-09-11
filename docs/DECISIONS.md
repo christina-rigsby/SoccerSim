@@ -10,6 +10,147 @@ actually settled — always paired with an `OPEN_QUESTIONS.md` entry).
 
 ---
 
+## D-022 · Role fit is a raw `[0, 1]` quality reading, not a cost or a probability
+**Date:** 2026-09-11 · **Status:** `active`
+
+`role_fit` returns a weighted mean of normalised attributes. It is explicitly **not** a
+cost, a utility, or `P(success)`.
+
+**Rationale:** the weight algebra is unresolved (Q-001). Turning fit into an edge weight
+now would pick a semantics by accident — the exact failure mode these documents exist to
+prevent. A unitless quality reading is the most that can honestly be computed before
+Q-001 closes, and mapping it onto whatever algebra wins is a later, explicit step.
+
+**Alternatives considered viable:**
+- *Emit a cost directly* (`1 - fit`, or `-log(fit)`). Convenient for the Hungarian solve,
+  but each of those IS a choice of algebra.
+- *Emit a calibrated success probability.* The right long-term answer if Q-001 lands on
+  log-probabilities, but it needs outcome data to calibrate against.
+
+**Backtrack trigger:** Q-001 closes. At that point add a conversion at the boundary
+rather than changing what `role_fit` returns, so the fit score stays inspectable.
+
+---
+
+## D-021 · Only our own players have authored attributes
+**Date:** 2026-09-11 · **Status:** `active`
+
+`PlayerState.attributes` is `Attributes | None`. Home players get theirs from a roster
+file; away players carry `None`, and `role_fit` raises an explanatory error rather than
+scoring them. `parse_roster` refuses a roster whose `team` is `away`.
+
+**Rationale:** we know our own squad's ratings because we wrote them down. An opponent's
+have to be *inferred from observed play*, which is Q-008 and M2's job. Letting away
+players default to 50s would make every opponent an identical average team while looking
+like real data — worse than an explicit gap, because it silently succeeds.
+
+**Alternatives considered viable:**
+- *Default opponents to league-average attributes.* Simple, and arguably a reasonable
+  prior. Rejected for now because an uninformative prior that reads as data is how
+  modelling errors get laundered; revisit once M2 can say how confident the inference is.
+- *Require attributes on every player.* Would force fabricating opponent data.
+
+**Backtrack trigger:** M2 produces attribute estimates with usable uncertainty. Then
+away players carry inferred attributes plus a confidence, and the `None` case disappears.
+
+---
+
+## D-020 · `min_role_coverage` gates on per-attribute minimums, not on a fit threshold
+**Date:** 2026-09-11 · **Status:** `active`
+
+Each `PlayRole` carries sparse `minimums` in native units (0–100 for attributes, SI for
+physical). Coverage fails when no available player clears every one.
+
+**Rationale:** a threshold on the fit score would need the score to mean something, which
+drags Q-001 into a hard constraint that does not otherwise depend on it. Per-attribute
+minimums are also far more interpretable — "a target forward needs heading ≥ 58" is a
+statement you can argue with, where "fit ≥ 0.63" is not — and they produce an actionable
+diagnostic: which attribute fell short, and by how much.
+
+Comparison happens on the normalised scale, so attributes where lower is better
+(`reaction_time`) invert automatically and "meets the minimum" always means "is at least
+this good". Minimums are validated against their scale at construction, because a
+physical minimum above the reference ceiling would clip to 1.0 and silently pass everyone.
+
+**Alternatives considered viable:**
+- *Threshold on the fit score.* One number per role instead of several. Rejected per above.
+- *No hard coverage check; let bad fits be expensive.* This is what §5 explicitly rules
+  out: coverage failure is infeasibility "regardless of assignment cost".
+
+**Backtrack trigger:** minimums prove too blunt — e.g. a role genuinely needs "either
+great pace or great positioning", which a conjunction of floors cannot express. Then the
+gate becomes a small predicate rather than a dict.
+
+---
+
+## D-019 · Attributes are 0–100 and lean; physical capability stays SI
+**Date:** 2026-09-11 · **Status:** `active`
+
+Thirteen technical/mental attributes on a 0–100 scale in `domain/attributes.py`. Physical
+capability stays in `CapabilityProfile` in SI units. `PHYSICAL_RANGES` projects the SI
+values onto 0–1 so role matching can read both.
+
+**Rationale:** the kinematics layer does real physics with speed and acceleration, so
+those must stay in metres and seconds — converting a 0–100 "pace" rating into m/s would
+mean inventing a mapping and then computing arrival times from a made-up number. The
+0–100 attributes have no physical meaning and are only ever compared with each other, so
+a conventional game-style scale is fine and is much easier to hand-author.
+
+The set is lean on purpose, and a test enforces that **every attribute is read by at
+least one role in the catalogue**. An attribute with no consumer is a number that invites
+false precision and drifts out of date.
+
+**Alternatives considered viable:**
+- *~30 FM-style attributes.* More expressive; most would have no consumer.
+- *~5 attributes.* Cannot distinguish a target forward from a poacher, which is the whole
+  discrimination role matching exists to make.
+- *One unified 0–100 scale including physical.* Loses real units where they matter.
+
+**Backtrack trigger:** a play needs a distinction the current 13 cannot express. Add the
+attribute *and* the role that reads it in the same change, so the invariant holds.
+
+Also recorded: fatigue degrades **physical** inputs to fit (extending D-006 into role
+matching, so a tired player is genuinely worse at a pace-dependent role) but not technical
+ones. That asymmetry is a simplification, tracked as Q-021.
+
+---
+
+## D-018 · Positional slot and play role are separate concepts
+**Date:** 2026-09-11 · **Status:** `active`
+
+`PositionalRole` (GK, LB, RCM, …) is where a player lines up. `PlayRole`
+("overlap_runner", "target_forward") is a job a play needs someone to do. They are
+different fields with different types, and matching is by capability, not by label.
+
+**Rationale:** this is what makes plays generalise. The Overlap play needs someone who can
+overlap and cross; a right-back, right-midfielder or even a right centre-mid might be the
+best answer on the day. Tying play roles to slots would mean authoring a variant of every
+play per formation — the same trap D-003 avoids for waypoints.
+
+A consequence worth stating plainly, because it looks like a bug and is not: a holding
+midfielder can outscore both centre-backs at `ball_playing_defender`. That is the model
+working.
+
+One **hard** exception: `required_slots` gates a role to particular slots, used only where
+exclusivity is a rule of the game rather than a preference. In practice that is the
+goalkeeper alone. Without it an outfielder with good passing and positioning outranks the
+actual keeper at `sweeper_keeper`, and no attribute minimum can prevent it because the
+shortfall is not in any attribute. `affinities` remains purely advisory.
+
+**Alternatives considered viable:**
+- *One `role` field, as before.* Simplest, and what M0 shipped. Cannot express "who should
+  make this run" at all.
+- *Hand-tag each player with the roles they can fill.* Matches how a coach thinks, but
+  needs a manual pass per new play and cannot rank two eligible players.
+- *Derive fit purely from attributes, no familiarity tracking.* Then §5's
+  `role_familiarity` soft constraint has nothing to read and cannot be implemented; hence
+  the `practised_roles` set alongside derived fit.
+
+**Backtrack trigger:** none expected. If the catalogue grows unmanageable, the fix is
+composing roles from smaller requirement fragments, not recombining the two concepts.
+
+---
+
 ## D-017 · Turn cost in `time_to_point` = perpendicular speed / max_accel
 **Date:** 2026-09-10 · **Status:** `provisional` (see Q-015)
 

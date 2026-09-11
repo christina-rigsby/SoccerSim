@@ -17,7 +17,8 @@ Full design in [`docs/soccer_simulation_design.md`](docs/soccer_simulation_desig
 
 ## Where the project is
 
-**M0 — the space and feasibility foundation — is built.** Nothing above it is.
+**M0 (space and feasibility foundation) and M0.5 (player roles and matching) are
+built.** The ranking graph above them is not.
 
 That order is deliberate: the ranking system's constraint checks, the generator's
 candidate ranking, and even a naive rule-based fallback all depend on having a
@@ -31,6 +32,8 @@ that exists means writing them against geometry that does not.
 | Pitch control, passing lanes, cover shadows, expected threat | `soccersim/space/` |
 | Hard constraints: reachability, bounds, offside, separation | `soccersim/constraints/` |
 | matplotlib debug renderer | `soccersim/viz/` |
+| Attributes, positional slots, play roles, fit scoring | `soccersim/domain/{attributes,roles}.py` |
+| Roster loading; `eligibility` and `min_role_coverage` | `soccersim/domain/roster.py`, `soccersim/constraints/roles.py` |
 
 ## Three documents worth reading before writing code
 
@@ -59,14 +62,50 @@ pip install -e ".[dev]"
 ## Running
 
 ```bash
-pytest                              # 151 tests
+pytest                              # 273 tests
 python scripts/demo_snapshot.py     # writes out/{kickoff,wing_overload,counter_attack}.png
+python scripts/validate_roster.py   # validates the squad, prints role coverage
 ```
 
 Then **look at the PNGs**. The space layer's characteristic failure is subtly wrong
 geometry — a control field that is mirrored, offset, or momentum-blind while still
 producing plausible-looking aggregate numbers. Assertions catch regressions; images
 catch that. What to check is documented in `scripts/demo_snapshot.py`.
+
+## Your squad lives in a data file
+
+`data/rosters/home.json` is **a placeholder meant to be replaced.** Edit it and run
+`python scripts/validate_roster.py`, which validates the file and prints which play
+roles the squad can fill, how deep, and — for anything uncovered — who came closest and
+by how much.
+
+Two things about that file are load-bearing:
+
+- **Attributes are 0–100 with no physical meaning; physical values are SI.** The split is
+  deliberate (D-019): the kinematics layer does real physics with speed and acceleration,
+  so those stay in metres and seconds. Omit a `physical` block and the player inherits
+  their positional archetype.
+- **Only your own players get a roster.** An opponent's attributes have to be *inferred*
+  from observed play (Q-008), so away players carry `attributes=None` and role matching
+  refuses to score them rather than quietly assuming a league-average 50 (D-021).
+
+## Two kinds of role, and why
+
+`PositionalRole` is where a player lines up (RB, LCM). `PlayRole` is a job a play needs
+someone to do (`overlap_runner`, `target_forward`). Matching is by capability, not by
+label, which is what lets one Overlap play work whoever is best placed to make the run
+(D-018).
+
+A consequence that looks like a bug and isn't: a holding midfielder can outscore both
+centre-backs at `ball_playing_defender`. That's the decoupling working. The one hard
+exception is the goalkeeper, gated by `required_slots`, because that exclusivity is a
+rule of the game rather than a tactical preference.
+
+**What this layer deliberately does not do:** build the Hungarian cost matrix. Role fit
+is a raw `[0, 1]` quality reading, explicitly not a cost or a probability (D-022), because
+the weight algebra is still unresolved (Q-001). Coverage — "is this play possible with
+this squad at all" — needs no weight semantics and works today. Ranking candidates
+against each other does, and waits.
 
 ## The one function to understand first
 

@@ -7,57 +7,73 @@ that a human can check a rendered pitch-control field against. Home always attac
 
 from __future__ import annotations
 
+import functools
+
 import numpy as np
 
 from .entities import (
     BallPhase,
     BallState,
-    CapabilityProfile,
     GamePhase,
     PlayerState,
+    PositionalRole,
     Team,
 )
 from .pitch import Pitch, vec
+from .roles import archetype_capability
+from .roster import DEFAULT_ROSTER_PATH, Roster, load_roster
 from .state import GameState, TeamState
 
-# Rough positional archetypes. Wide players are quicker; centre-backs accelerate less.
-QUICK = CapabilityProfile(max_speed=8.6, max_accel=7.0)
-AVERAGE = CapabilityProfile(max_speed=7.8, max_accel=6.5)
-STRONG = CapabilityProfile(max_speed=7.2, max_accel=5.8)
-KEEPER = CapabilityProfile(max_speed=6.8, max_accel=5.5, reaction_time=0.25)
 
-_PROFILES = {
-    "GK": KEEPER,
-    "CB": STRONG,
-    "LCB": STRONG,
-    "RCB": STRONG,
-    "LB": QUICK,
-    "RB": QUICK,
-    "LW": QUICK,
-    "RW": QUICK,
-    "LM": QUICK,
-    "RM": QUICK,
-}
+@functools.lru_cache(maxsize=1)
+def home_roster(path=DEFAULT_ROSTER_PATH) -> Roster:
+    """The home squad, loaded once and reused across fixtures."""
+    return load_roster(path)
 
 
-def _make_team(
-    team: Team,
-    direction: int,
+def _home_team(
+    snapshot: list[tuple[int, tuple[float, float], tuple[float, float], float]],
+) -> TeamState:
+    """Merge the roster's constant identity with this snapshot's positions.
+
+    The roster supplies slot, physical envelope, attributes, foot and practised roles;
+    the snapshot supplies only what changes moment to moment. That split is the whole
+    point of loading a roster rather than hand-authoring players (D-021).
+    """
+    roster = home_roster()
+    players = [
+        roster.entry(player_id).to_player_state(
+            Team.HOME, position=vec(*position), velocity=vec(*velocity), stamina=stamina
+        )
+        for player_id, position, velocity, stamina in snapshot
+    ]
+    return TeamState(team=Team.HOME, players=players, attacking_direction=1)
+
+
+def _away_team(
     entries: list[tuple[int, str, tuple[float, float], tuple[float, float], float]],
 ) -> TeamState:
+    """Build the opposition, deliberately without attributes.
+
+    An opponent's ratings cannot be authored — they have to be inferred from observed
+    play, which is Q-008 and part of M2. Away players therefore carry ``attributes=None``
+    and a positional archetype for their physical envelope. Any attempt to match one to
+    a play role raises with an explanation rather than quietly using made-up numbers
+    (D-021).
+    """
     players = [
         PlayerState(
-            player_id=pid,
-            team=team,
-            position=vec(*pos),
-            velocity=vec(*vel),
-            role=role,
-            capability=_PROFILES.get(role, AVERAGE),
+            player_id=player_id,
+            team=Team.AWAY,
+            position=vec(*position),
+            velocity=vec(*velocity),
+            positional_role=PositionalRole(role),
+            capability=archetype_capability(PositionalRole(role)),
             stamina=stamina,
         )
-        for pid, role, pos, vel, stamina in entries
+        for player_id, role, position, velocity, stamina in entries
     ]
-    return TeamState(team=team, players=players, attacking_direction=direction)
+    return TeamState(team=Team.AWAY, players=players, attacking_direction=-1)
 
 
 def kickoff_433_vs_442() -> GameState:
@@ -66,26 +82,22 @@ def kickoff_433_vs_442() -> GameState:
     The baseline sanity fixture — pitch control should look like two orderly blocks
     meeting near the halfway line.
     """
-    home = _make_team(
-        Team.HOME,
-        1,
+    home = _home_team(
         [
-            (1, "GK", (-50.0, 0.0), (0.0, 0.0), 1.0),
-            (2, "LB", (-35.0, -22.0), (0.0, 0.0), 1.0),
-            (3, "LCB", (-38.0, -8.0), (0.0, 0.0), 1.0),
-            (4, "RCB", (-38.0, 8.0), (0.0, 0.0), 1.0),
-            (5, "RB", (-35.0, 22.0), (0.0, 0.0), 1.0),
-            (6, "CDM", (-22.0, 0.0), (0.0, 0.0), 1.0),
-            (7, "LCM", (-15.0, -12.0), (0.0, 0.0), 1.0),
-            (8, "RCM", (-15.0, 12.0), (0.0, 0.0), 1.0),
-            (9, "LW", (-5.0, -26.0), (0.0, 0.0), 1.0),
-            (10, "ST", (-1.0, 0.0), (0.0, 0.0), 1.0),
-            (11, "RW", (-5.0, 26.0), (0.0, 0.0), 1.0),
+            (1, (-50.0, 0.0), (0.0, 0.0), 1.0),
+            (2, (-35.0, -22.0), (0.0, 0.0), 1.0),
+            (3, (-38.0, -8.0), (0.0, 0.0), 1.0),
+            (4, (-38.0, 8.0), (0.0, 0.0), 1.0),
+            (5, (-35.0, 22.0), (0.0, 0.0), 1.0),
+            (6, (-22.0, 0.0), (0.0, 0.0), 1.0),
+            (7, (-15.0, -12.0), (0.0, 0.0), 1.0),
+            (8, (-15.0, 12.0), (0.0, 0.0), 1.0),
+            (9, (-5.0, -26.0), (0.0, 0.0), 1.0),
+            (10, (-1.0, 0.0), (0.0, 0.0), 1.0),
+            (11, (-5.0, 26.0), (0.0, 0.0), 1.0),
         ],
     )
-    away = _make_team(
-        Team.AWAY,
-        -1,
+    away = _away_team(
         [
             (21, "GK", (50.0, 0.0), (0.0, 0.0), 1.0),
             (22, "RB", (38.0, -20.0), (0.0, 0.0), 1.0),
@@ -119,26 +131,22 @@ def wing_overload_snapshot() -> GameState:
     from design doc §3 exists to punish. The far-post runner is deliberately placed just
     inside the offside line.
     """
-    home = _make_team(
-        Team.HOME,
-        1,
+    home = _home_team(
         [
-            (1, "GK", (-40.0, 0.0), (0.0, 0.0), 1.0),
-            (2, "LB", (-2.0, -20.0), (1.0, 0.0), 0.72),
-            (3, "LCB", (2.0, -6.0), (0.5, 0.0), 0.85),
-            (4, "RCB", (4.0, 6.0), (0.5, 0.0), 0.83),
-            (5, "RB", (18.0, 30.0), (6.0, 1.0), 0.61),  # overlapping
-            (6, "CDM", (14.0, 2.0), (1.0, 0.0), 0.78),
-            (7, "LCM", (20.0, -10.0), (2.0, 0.0), 0.70),
-            (8, "RCM", (22.0, 12.0), (3.0, 1.0), 0.66),
-            (9, "LW", (36.0, -18.0), (4.0, 1.0), 0.74),  # far-post runner
-            (10, "ST", (38.0, 4.0), (2.0, -1.0), 0.69),
-            (11, "RW", (30.0, 26.0), (1.0, 0.0), 0.64),  # on the ball
+            (1, (-40.0, 0.0), (0.0, 0.0), 1.0),
+            (2, (-2.0, -20.0), (1.0, 0.0), 0.72),
+            (3, (2.0, -6.0), (0.5, 0.0), 0.85),
+            (4, (4.0, 6.0), (0.5, 0.0), 0.83),
+            (5, (18.0, 30.0), (6.0, 1.0), 0.61),  # overlapping
+            (6, (14.0, 2.0), (1.0, 0.0), 0.78),
+            (7, (20.0, -10.0), (2.0, 0.0), 0.70),
+            (8, (22.0, 12.0), (3.0, 1.0), 0.66),
+            (9, (36.0, -18.0), (4.0, 1.0), 0.74),  # far-post runner
+            (10, (38.0, 4.0), (2.0, -1.0), 0.69),
+            (11, (30.0, 26.0), (1.0, 0.0), 0.64),  # on the ball
         ],
     )
-    away = _make_team(
-        Team.AWAY,
-        -1,
+    away = _away_team(
         [
             (21, "GK", (50.0, 0.0), (0.0, 0.0), 1.0),
             (22, "RB", (42.0, -16.0), (0.0, 1.0), 0.70),
@@ -177,26 +185,22 @@ def counter_attack_snapshot() -> GameState:
     strung out — the transition disorganisation that design doc §3's counter-attack
     strategies target. Home's striker is running behind the line at speed.
     """
-    home = _make_team(
-        Team.HOME,
-        1,
+    home = _home_team(
         [
-            (1, "GK", (-46.0, 0.0), (0.0, 0.0), 1.0),
-            (2, "LB", (-24.0, -20.0), (2.0, 0.0), 0.80),
-            (3, "LCB", (-26.0, -7.0), (1.0, 0.0), 0.88),
-            (4, "RCB", (-26.0, 7.0), (1.0, 0.0), 0.86),
-            (5, "RB", (-22.0, 20.0), (3.0, 0.0), 0.79),
-            (6, "CDM", (-8.0, 4.0), (2.0, 1.0), 0.82),  # won the ball
-            (7, "LCM", (-6.0, -12.0), (5.0, -1.0), 0.77),
-            (8, "RCM", (-10.0, 14.0), (4.0, 1.0), 0.75),
-            (9, "LW", (2.0, -20.0), (7.0, -1.0), 0.81),
-            (10, "ST", (14.0, -6.0), (7.0, -1.0), 0.84),  # running behind
-            (11, "RW", (8.0, 22.0), (6.0, 1.0), 0.80),
+            (1, (-46.0, 0.0), (0.0, 0.0), 1.0),
+            (2, (-24.0, -20.0), (2.0, 0.0), 0.80),
+            (3, (-26.0, -7.0), (1.0, 0.0), 0.88),
+            (4, (-26.0, 7.0), (1.0, 0.0), 0.86),
+            (5, (-22.0, 20.0), (3.0, 0.0), 0.79),
+            (6, (-8.0, 4.0), (2.0, 1.0), 0.82),  # won the ball
+            (7, (-6.0, -12.0), (5.0, -1.0), 0.77),
+            (8, (-10.0, 14.0), (4.0, 1.0), 0.75),
+            (9, (2.0, -20.0), (7.0, -1.0), 0.81),
+            (10, (14.0, -6.0), (7.0, -1.0), 0.84),  # running behind
+            (11, (8.0, 22.0), (6.0, 1.0), 0.80),
         ],
     )
-    away = _make_team(
-        Team.AWAY,
-        -1,
+    away = _away_team(
         [
             (21, "GK", (50.0, 0.0), (0.0, 0.0), 1.0),
             (22, "RB", (10.0, -24.0), (3.0, -1.0), 0.62),

@@ -26,7 +26,7 @@ calibrated `P(success)`), or utilities (higher = better, negatives allowed)? The
 
 *Why it matters:* every edge-weight function, every soft-constraint coefficient, and the
 critic's output units all depend on this. Choosing late means rewriting all of them.
-*Blocks:* M1 edge-weight work, soft-constraint implementation, critic calibration.
+*Blocks:* M1 edge-weight work, soft-constraint implementation, critic calibration, and converting `role_fit`'s raw `[0, 1]` score into a Hungarian cost (D-022).
 *Leaning:* log-probabilities — the doc notes this is cleanest when edge weights are trained
 independently from different data sources, which is exactly the situation (opponent model,
 historical success rates, and critic output come from three different places).
@@ -88,6 +88,9 @@ directly — they are all inference problems.
 *Sub-questions:* online estimator updated per possession, or offline fit between matches?
 How many possessions before the "book" is trustworthy enough to weight? What is the prior
 before any data exists (league average? scouting input? uninformative?)
+*Now has teeth in the code:* away players carry `attributes=None` and `role_fit` refuses to
+score them (D-021). Opponent role matching is blocked until this question is answered, which
+is the honest state of affairs rather than a gap to paper over with default 50s.
 
 ---
 
@@ -120,6 +123,60 @@ controlled area is preserved. `time_to_point` has its own mirror test.
 *Caveat:* this closes the question for **geometry**, not for plays — there are no plays yet.
 Re-open as a checklist item when M1 lands hand-authored plays, since a play could still hard-
 code a sign somewhere the geometry does not.
+
+---
+
+## Player roles and matching (added M0.5)
+
+### Q-020 · Are the physical reference ranges right? · `provisional` → D-019
+`PHYSICAL_RANGES` maps SI capability onto 0–1 so role weights can mix it with 0–100
+attributes: `max_speed` 5.5–9.2 m/s, `max_accel` 4.5–8.0 m/s², `reaction_time` 0.34–0.14 s.
+
+*Why it matters:* these set how much a physical edge is worth *relative to* a technical
+one. Too narrow a range and everyone saturates at 0 or 1, flattening the distinction; too
+wide and pace stops mattering. Every role that weights a physical attribute is affected.
+*What would settle it:* percentiles from real tracking data (SoccerNet, D-007).
+
+### Q-021 · Should fatigue degrade technical attributes too? · `open`
+Fatigue currently degrades only physical inputs to role fit (D-006, extended by D-019):
+a tired player is slower, but passes and crosses exactly as well as when fresh.
+
+*Why it matters:* tired players demonstrably make worse decisions and strike the ball
+worse. If that is real and unmodelled, late-game role assignments are systematically
+over-confident — and late-game is precisely when substitutions and role changes matter.
+*Complication:* a blanket degradation would double-count for roles that weight both, and
+the right curve is probably not the same for a sprint as for a pass.
+
+### Q-022 · Is the role catalogue complete, and at the right granularity? · `open`
+Twelve roles, each justified by a named play in §3. But §3's play list is itself partial,
+and no play has actually been authored yet (M1), so nothing has really exercised the
+catalogue.
+
+*The specific risk:* roles defined before the plays that consume them tend to be a guess
+at what will be needed. The first three hand-authored plays are the real test.
+*Open sub-question:* should roles compose (an "overlap runner" being "wide runner" +
+"crosser") rather than being flat? Composition would cut duplication in the weight tables.
+
+### Q-023 · How does footedness interact with the flank? · `open`
+`inverted_winger` gates on `weak_foot ≥ 55`, which is a proxy. What actually matters is
+whether a player's strong foot is the *inside* foot for the flank they are on — a
+left-footed player is an inverted winger on the right and an orthodox one on the left.
+
+*Why it matters:* the whole point of the inverted role is cutting inside onto the strong
+foot. The current gate would accept a two-footed player on either flank (fine) but cannot
+distinguish a left-footed player on the left from one on the right (not fine).
+*Blocked on:* a role needs to know the flank it is being assigned on, which is play
+context — so this waits for `Play` (Q-009). `PositionalRole.flank` exists ready for it.
+
+### Q-024 · Should `role_familiarity` be graded rather than binary? · `open`
+`practised_roles` is a set: you have rehearsed a role or you have not. §5 says
+"penalise assigning a player to a role/play they haven't practised, if tracked".
+
+*The question:* is a binary flag enough, or does familiarity need levels (rehearsed /
+trained / never), or a count decaying over time like `predictability_penalty` does?
+*Note:* this only affects the soft penalty's shape, so it is not urgent — but the data
+model has to support whatever is chosen, and widening a set to a mapping later touches
+every roster file.
 
 ---
 
