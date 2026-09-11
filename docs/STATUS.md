@@ -6,14 +6,14 @@ Milestones deliberately follow the design doc's build order (§6): the space lay
 "is this good for us right now" scoring function come before the ranking graph, and both come
 before the generative model. See D-008.
 
-**Last updated:** 2026-09-11
+**Last updated:** 2026-09-11 (M2)
 
 | Milestone | State | Summary |
 |---|---|---|
 | **M0** — Space & feasibility foundation | `done` | Domain model, pitch-control / lane / xT layer, kinematic feasibility, debug renderer |
 | **M0.5** — Player roles & matching | `done` | Attributes, positional slots vs. play roles, roster loading, the two role hard-checks |
 | **M1** — Play ranking system (module 2) | `not started` | Weighted graph, hard-constraint pre-filter, assignment solve, hand-authored plays |
-| **M2** — Dashboard & opponent model (module 1) | `not started` | Opponent inference, the running "book", game-state tracking |
+| **M2** — Dashboard & opponent model (module 1) | partial | Spine, measurements, marking + pressing inference, our own book. Opponent *attributes* still uninferred |
 | **M3** — AI/ML play generator (module 3) | `blocked` | Blocked on M0+M1 validation with hand-authored plays, per D-008 |
 | **X** — Cross-cutting | partial | Sim loop, tuning harness, test infrastructure |
 
@@ -105,20 +105,41 @@ stops short of the cost matrix: coverage is answerable now, ranking is not (D-02
 
 ---
 
-## M2 — Dashboard & opponent model (module 1) `not started`
+## M2 — Dashboard & opponent model (module 1) `partial`
+
+Built: the stateful spine, every single-frame measurement, two inferences with confidence,
+and our own play book. Not built: opponent attribute inference and the cross-possession
+book on the opponent — which remain the blocking gap for opponent role matching.
 
 | Task | Status | Blocked by | Notes |
 |---|---|---|---|
-| Formation-shape metrics (centroid, width, depth, compactness) | `not started` | — | §2; straightforward from positions |
-| Defensive-line height and compactness tracking | `not started` | — | |
-| Marking-scheme inference (man vs. zonal) | `not started` | Q-008 | Inference problem, not a measurement |
-| Pressing-trigger detection and press intensity | `not started` | Q-008 | |
+| **Stateful observer spine** | `done` | — | `dashboard/observer.py`; time-bounded buffer, events derived from carrier deltas, possession segmentation (D-024) |
+| Confidence machinery | `done` | — | `dashboard/estimate.py`; decayed observation counts + maturity gate, so an immature estimate cannot be acted on by accident (D-023) |
+| Formation-shape metrics (centroid, width, depth, compactness) | `done` | — | Already on `TeamState`; `team_shape` composes rather than forks them |
+| Defensive-line height, tilt, width, gaps | `done` | — | `defensive_line`; `largest_gap_between` is what §3's CB–fullback-gap waypoint needs |
+| Block height and high/mid/low classification | `done` | — | Thresholds conventional, not fitted (Q-025) |
+| **Pressure on the ball carrier** | `done` | — | The §2 item M0 was missing. Only opponents who can actually arrive contribute — an earlier version let defenders drifting back past the ball register as a press |
+| Zone occupancy and situation key | `done` | — | Situation granularity unverified until plays exist (Q-026) |
+| Marking-scheme inference (man vs. zonal) | `done` | — | Four signals (D-027); recovers both schemes plus per-defender assignments and zone estimates from scripted ground truth |
+| Pressing-trigger detection and press intensity | `done` | — | Conditional rates with deferred labelling (D-025), so a common pass type is not mistaken for a trigger |
+| Historical "book" — **our own** plays | `done` | — | `dashboard/book.py`; §5's `predictability_penalty` and `historical_success_rate`. Needs no inference |
+| Scripted scenarios with ground truth | `done` | — | `soccersim/scenarios.py`; two positive cases, two negative controls (D-026) |
+| `dashboard_report.py` CLI | `done` | — | Scores every estimator against planted truth; non-zero exit on failure |
 | Per-defender tendency estimates | `not started` | Q-008 | Recovery speed, 1v1 rate, jockey-side preference |
-| **Infer opponent attributes** | `not started` | **Q-008** | Away players carry `attributes=None` and cannot be role-matched at all (D-021). This is the blocking gap, not a nicety |
-| Historical "book" — per-possession updates | `not started` | Q-008 | Feeds `mismatch_bonus` and `predictability_penalty` |
+| **Infer opponent attributes** | `not started` | **Q-008** | Away players still carry `attributes=None` (D-021). Now the single blocking gap for opponent role matching — the spine and confidence machinery it needs are in place |
+| Historical book on the **opponent** | `not started` | Q-008, Q-028 | Feeds §5's `mismatch_bonus`; needs cross-match persistence |
 | Set-piece marking assignments | `not started` | Q-010 | |
-| Fatigue / stamina model over match time | `not started` | — | Currently a static field on `PlayerState`; already degrades both arrival times and role fit |
-| Game-state tracking (score, clock, phase, ball state) | partial | — | Types exist in `domain/state.py`; no transitions yet |
+| Fatigue / stamina model over match time | `not started` | — | Still a static field; already degrades arrival times and role fit |
+| Game-state transitions (clock, phase) | `not started` | — | The observer reads phase changes but nothing drives them |
+
+### M2 follow-ups
+
+| Task | Status | Notes |
+|---|---|---|
+| Replace nearest-neighbour marking with assignment stability | `not started` | Q-027; fixes zonal false positives and handles switching marks. Reuses M1's Hungarian solve |
+| Sweep the dashboard's ~12 thresholds on held-out scenarios | `not started` | Q-025 — current values were set against the scenarios that test them |
+| Seed the opponent model before kickoff | `not started` | Q-028; a persisted per-opponent book is what §2's "running book" implies |
+| Run our own team through the estimators as a live check | `not started` | Q-029; we know our own scheme, so we are the ideal labelled case |
 
 ---
 
@@ -145,9 +166,9 @@ Blocked on M0+M1 validation with hand-authored plays (D-008). Listed for complet
 
 | Task | Status | Blocked by | Notes |
 |---|---|---|---|
-| pytest suite + analytic test cases | `done` | — | 151 tests; run with `-W error::RuntimeWarning` to keep NaN/overflow surprises out |
+| pytest suite + analytic test cases | `done` | — | 403 tests; run with `-W error::RuntimeWarning` to keep NaN/overflow surprises out |
 | Static snapshot renderer | `done` | — | D-011 |
-| Tick-based sim loop | `not started` | Q-012 | Needed once M1 selection runs, to see abort-and-reselect (D-002) |
+| Tick-based sim loop | `not started` | Q-012 | Needed once M1 selection runs, to see abort-and-reselect (D-002). `scenarios.py`'s stepper is test scaffolding, **not** this |
 | Animation / match replay output | `not started` | — | After the sim loop |
 | Per-epoch performance measurement | `not started` | Q-012 | Decides D-009's backtrack trigger |
 | CI (run pytest on push) | `not started` | — | |

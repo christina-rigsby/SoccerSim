@@ -17,8 +17,8 @@ Full design in [`docs/soccer_simulation_design.md`](docs/soccer_simulation_desig
 
 ## Where the project is
 
-**M0 (space and feasibility foundation) and M0.5 (player roles and matching) are
-built.** The ranking graph above them is not.
+**M0 (space and feasibility foundation), M0.5 (player roles and matching), and most of
+M2 (the information dashboard) are built.** The ranking graph — module 2 — is not.
 
 That order is deliberate: the ranking system's constraint checks, the generator's
 candidate ranking, and even a naive rule-based fallback all depend on having a
@@ -34,6 +34,11 @@ that exists means writing them against geometry that does not.
 | matplotlib debug renderer | `soccersim/viz/` |
 | Attributes, positional slots, play roles, fit scoring | `soccersim/domain/{attributes,roles}.py` |
 | Roster loading; `eligibility` and `min_role_coverage` | `soccersim/domain/roster.py`, `soccersim/constraints/roles.py` |
+| Match observer, possession segmentation, derived events | `soccersim/dashboard/observer.py` |
+| Single-frame measurements (block, line, pressure, zones) | `soccersim/dashboard/measurements.py` |
+| Marking-scheme and pressing inference, with confidence | `soccersim/dashboard/{marking,pressing,estimate}.py` |
+| Our own play-usage and success-rate book | `soccersim/dashboard/book.py` |
+| Scripted scenarios with planted ground truth | `soccersim/scenarios.py` |
 
 ## Three documents worth reading before writing code
 
@@ -62,9 +67,10 @@ pip install -e ".[dev]"
 ## Running
 
 ```bash
-pytest                              # 273 tests
+pytest                              # 403 tests
 python scripts/demo_snapshot.py     # writes out/{kickoff,wing_overload,counter_attack}.png
 python scripts/validate_roster.py   # validates the squad, prints role coverage
+python scripts/dashboard_report.py  # scores the opponent model against known ground truth
 ```
 
 Then **look at the PNGs**. The space layer's characteristic failure is subtly wrong
@@ -106,6 +112,45 @@ is a raw `[0, 1]` quality reading, explicitly not a cost or a probability (D-022
 the weight algebra is still unresolved (Q-001). Coverage — "is this play possible with
 this squad at all" — needs no weight semantics and works today. Ranking candidates
 against each other does, and waits.
+
+## How the dashboard is verified
+
+The space layer is verified by eye (look at the PNGs). The opponent model cannot be — it
+infers things that are not directly observable, so "does the output look plausible" is
+worthless. Instead `soccersim/scenarios.py` plants known behaviour and
+`scripts/dashboard_report.py` scores what the estimators recover:
+
+```
+man_marking     scheme MAN, 8/8 assignments recovered exactly
+zonal           scheme ZONAL, 13% man-share against a 60% bar
+backpass_press  P(press | back/middle) = 1.00, P(press | forward/middle) = 0.29
+passive_block   identical pass script, no triggers, rates 0.00 on mature evidence
+```
+
+**The negative controls carry as much weight as the positive ones.** An estimator that
+answers "man-marking" to everything scores perfectly on a man-marking scenario. So the
+zonal scenario runs *identical* attacker paths, and the passive scenario runs an
+*identical* pass script — anything reported there is an artefact rather than a finding.
+
+Two results worth reading carefully. `P(press | forward/middle) = 0.29` is not zero,
+because defenders who just pressed a backpass are still near the ball when the next pass
+goes forward; `MIN_TRIGGER_RATE` excludes it while admitting the 1.00, which is the
+conditional-rate design doing its job. And in the zonal scenario 2 of 11 defenders are
+still misread as markers (Q-027) — quantified rather than tuned away, because tightening
+thresholds until one scenario came out clean would be fitting to the test.
+
+## Nothing can act on a guess by accident
+
+Every inferred value is an `Estimate` carrying decayed observation counts and a maturity
+threshold. `value` is always readable for inspection; **`mature_value` returns `None`
+until there is enough evidence.** The safe path is the obvious one, which matters because
+§5's `mismatch_bonus` feeds opponent-model data straight into play ranking — and a model
+that is confidently wrong early picks plays that generate more evidence of its own
+choosing (D-023).
+
+Evidence is decayed rather than counted, so a stale estimate stops being mature. That is
+intended: a team that pressed in the first half and sat deep in the second should not be
+described by the average.
 
 ## The one function to understand first
 

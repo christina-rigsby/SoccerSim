@@ -10,6 +10,201 @@ actually settled — always paired with an `OPEN_QUESTIONS.md` entry).
 
 ---
 
+## D-028 · The dashboard is asymmetric: we measure ourselves, we infer the opponent
+**Date:** 2026-09-11 · **Status:** `active`
+
+`Dashboard.team_report()` returns measurements only. `Dashboard.opponent_model()` runs
+the estimators.
+
+**Rationale:** we chose our own scheme, so "inferring" it would be measuring our own
+intent through a noisy proxy. §2 splits the same way — "team state (self)" is a list of
+observables, while the opponent model is explicitly the part that "grows over time".
+
+**Alternatives considered viable:**
+- *Run the estimators symmetrically.* Cheap, and would give a sanity check (the model
+  should recover the scheme we know we are playing). Worth doing as a **test** technique
+  rather than as a product feature — noted as a follow-up.
+- *Model ourselves only through the book.* Which is what we do; §5's
+  `predictability_penalty` and `historical_success_rate` are self-knowledge, and they are
+  recorded rather than inferred.
+
+**Backtrack trigger:** we need to know how *legible* our own play is to an opponent —
+at which point running our own estimators against ourselves becomes the natural measure
+of predictability, and the asymmetry goes.
+
+---
+
+## D-027 · Marking inference needs four signals, not one
+**Date:** 2026-09-11 · **Status:** `provisional` (see Q-027)
+
+A defender reads as man-marking only when all four hold: a consistent nearest attacker
+(target stability), movement aligned with that attacker (displacement cosine), mean
+separation inside a marking radius, and that separation *held steady*.
+
+**Rationale, learned the hard way:** stability and alignment alone reported the zonal
+scenario as `MIXED`. A zonal defender *sliding across with the ball* moves nearly
+parallel to the ball carrier, so alignment cannot separate the two hypotheses. What
+distinguishes them is separation: a marker holds a couple of metres and keeps holding
+it, while a zonal defender's distance to any given attacker swings freely as attackers
+rotate through the zone. Being close to your man is close to the definition of marking
+them, so gating on proximity is principled rather than a patch.
+
+Frames where the target barely moved are not observed at all, rather than counted as
+evidence for zonal: a defender who did not move had nothing to track, and treating
+that as evidence would let stationary play accumulate a false verdict.
+
+**Alternatives considered viable:**
+- *Alignment alone* — tried, insufficient, as above.
+- *Voronoi/assignment-based inference* — solve a bipartite matching between defenders
+  and attackers each frame and measure how stable the matching is. More principled and
+  handles switching marks; heavier, and needs the Hungarian machinery M1 will bring
+  anyway.
+- *Classifier trained on labelled tracking data.* The real answer eventually (D-007).
+
+**Backtrack trigger:** Q-027 — a zonal defender who sits permanently close to one
+attacker is still misread as a marker (2 of 11 in the zonal scenario). If that rate
+rises with more realistic movement, move to the assignment-stability formulation rather
+than adding a fifth threshold.
+
+---
+
+## D-026 · Estimators are validated against scripted scenarios with planted ground truth
+**Date:** 2026-09-11 · **Status:** `active`
+
+`soccersim/scenarios.py` generates snapshot sequences in which the opponent's behaviour
+is known by construction, each carrying a `ScenarioTruth`. Tests assert the estimator
+recovers it.
+
+**Rationale:** an estimator infers things that are not directly observable, so without
+ground truth you can only check that it *runs*. Planting the answer is the only way to
+score it.
+
+**Negative controls are half the point.** An estimator that answers "man-marking" to
+everything scores perfectly on a man-marking scenario. So `zonal` runs the *identical*
+attacker paths with zonal defenders, and `passive_block` runs the *identical* pass
+script with no pressing — anything reported there is an artefact of attacker movement or
+pass frequency rather than a finding about the opponent.
+
+**This is not the simulator.** It contains a crude constant-speed position stepper
+purely to make positions change. No ball physics, no play execution, no decisions. The
+real tick loop stays deferred until M1 gives it something to execute (D-011).
+
+**Alternatives considered viable:**
+- *A minimal tick-based sim loop.* Realistic motion, but no ground truth about marking or
+  triggers — you would have to script those behaviours anyway, making it this plus
+  physics, and committing to movement choices M1 has not settled.
+- *Wait for real tracking data.* Honest, but M3 is blocked behind M1, so it shelves most
+  of §2 indefinitely.
+
+**Backtrack trigger:** the estimators pass every scenario but fail on real tracking data
+— which would mean the scenarios are too clean. Expected, and the reason these are a
+floor rather than a ceiling.
+
+---
+
+## D-025 · Press triggers are conditional rates with deferred labelling
+**Date:** 2026-09-11 · **Status:** `active`
+
+Every pass is entered as a *trial* keyed by `(direction, third)` and labelled pressed or
+unpressed once its lookahead window has elapsed, via a pending queue. Triggers are the
+keys whose rate exceeds a floor on mature evidence.
+
+**Rationale:** counting presses that followed backpasses mostly measures how common
+backpasses are. What matters is `P(press | backpass in the middle third)`, and that
+needs the *unpressed* backpasses counted too. Without it, any team that passes backwards
+a lot gets diagnosed as pressing on backpasses, and §5's `mismatch_bonus` acts on an
+artefact of pass frequency.
+
+Labelling has to be deferred because at the moment a pass happens you cannot yet know
+whether a press followed.
+
+The `passive_block` scenario demonstrates the difference: identical pass script, and the
+rate for `back/middle` comes out 0.00 on mature evidence — an *evidenced absence*, not a
+lack of data.
+
+**Alternatives considered viable:**
+- *Count presses per preceding pass type.* Simpler, and wrong for the reason above.
+- *Score triggers by lift over the base press rate* (`P(press|X) / P(press)`). Better
+  for spotting a mild but real association; harder to threshold, and needs a stable base
+  rate.
+
+**Backtrack trigger:** a trigger that matters is diluted because it fires only in a
+narrow sub-case the `(direction, third)` key cannot express — then the key needs more
+dimensions (score, scoreline, ball height), with the usual cost that finer keys mean
+fewer trials each.
+
+---
+
+## D-024 · A stateful observer, with history bounded by match time
+**Date:** 2026-09-11 · **Status:** `active`
+
+`MatchObserver` ingests snapshots, derives events from the deltas, segments possessions,
+and retains a buffer bounded by *elapsed match time* rather than frame count.
+
+**Rationale:** every M0/M0.5 function is a pure function of one instant, and §2's
+opponent model is defined by things that accumulate. Those cannot be fields on
+`GameState`, because there is nowhere for them to accumulate. This is the somewhere.
+
+Bounding by time rather than frames means a 10 Hz feed and a 1 Hz feed retain the same
+*window of history*, so an estimator's behaviour does not silently depend on sample rate.
+
+**Events are derived, not supplied.** Watching `ball.carrier_id` change recovers passes
+and turnovers, and a pass's direction relative to the passing team is exactly what
+trigger inference keys on. No action vocabulary needed — which matters, because that
+arrives with M1.
+
+Two deliberate strictnesses: a backwards clock raises rather than being tolerated, since
+out-of-order replay would silently corrupt every decayed estimate; and a possession's end
+position is taken from the last frame *that team held the ball*, not from the turnover
+frame, because progress should measure how far they moved the ball rather than where the
+opponent happened to win it.
+
+**Alternatives considered viable:**
+- *Pure streaming, no buffer.* Smallest footprint, but press-trigger detection genuinely
+  needs the seconds before a press began.
+- *Unbounded history with periodic batch refits.* Most accurate offline; sits badly with
+  a 0.5–1 s per-epoch budget.
+
+**Backtrack trigger:** an estimator needs a window longer than is affordable to buffer.
+Then it keeps its own running summary rather than the buffer growing.
+
+---
+
+## D-023 · Every inferred value carries its own maturity
+**Date:** 2026-09-11 · **Status:** `active`
+
+`Estimate` wraps every inferred quantity with a decayed observation count and a maturity
+threshold. `value` is always readable for inspection; `mature_value` returns `None` until
+the threshold is crossed; `require_mature()` raises with the shortfall.
+
+**Rationale:** §5's `mismatch_bonus` feeds opponent-model data straight into play
+ranking. If the model is confidently wrong after one possession, plays get chosen on
+noise — and because the chosen play then generates more observations of its own
+choosing, the error is self-reinforcing. A bare point estimate makes that impossible to
+guard against.
+
+The API is shaped so the safe path is the obvious one: the natural
+`if estimate.mature_value is not None` is correct by default, with no discipline required
+from the caller.
+
+Observations are **decayed, not counted**: a team that pressed in the first half and sat
+deep in the second should not be described by the average of the two. A consequence worth
+noting is that a stale estimate *stops* being mature, which is intended — old evidence
+should not stay actionable.
+
+**Alternatives considered viable:**
+- *Bayesian posteriors per estimate.* Genuine uncertainty intervals, and they compose
+  properly. Heavier, and the priors are themselves unknown (Q-008 asks what they should
+  be). The better destination once there is data to set priors from.
+- *Point estimates only.* Simplest; nothing then stops a one-possession sample driving a
+  play choice.
+
+**Backtrack trigger:** a consumer needs to weigh two estimates of differing confidence
+against each other, rather than just gate on them. A count cannot express that
+faithfully — move to posteriors.
+
+---
+
 ## D-022 · Role fit is a raw `[0, 1]` quality reading, not a cost or a probability
 **Date:** 2026-09-11 · **Status:** `active`
 

@@ -92,6 +92,20 @@ before any data exists (league average? scouting input? uninformative?)
 score them (D-021). Opponent role matching is blocked until this question is answered, which
 is the honest state of affairs rather than a gap to paper over with default 50s.
 
+**Partially answered by M2.** Two of the sub-questions are now settled in code:
+- *Marking scheme* — inferred from four movement signals (D-027), recovering both
+  man-marking and zonal from scripted ground truth, plus per-defender assignments and zone
+  estimates.
+- *Pressing triggers and intensity* — inferred as conditional rates (D-025).
+- *Online or offline?* — online and incremental, over a time-bounded buffer (D-024).
+- *What is the prior before any data?* — answered structurally rather than numerically: an
+  estimate below its maturity threshold reports nothing actionable, so there is no prior to
+  pick (D-023). That defers rather than resolves the question for a Bayesian formulation.
+
+**Still open, and now the blocking remainder:** per-defender tendencies (recovery speed,
+1v1 win rate, preferred jockey side), the cross-possession "book" on the opponent, and
+above all **opponent attribute inference** — the one that unblocks opponent role matching.
+
 ---
 
 ## Play representation (design doc §3)
@@ -123,6 +137,75 @@ controlled area is preserved. `time_to_point` has its own mirror test.
 *Caveat:* this closes the question for **geometry**, not for plays — there are no plays yet.
 Re-open as a checklist item when M1 lands hand-authored plays, since a play could still hard-
 code a sign somewhere the geometry does not.
+
+---
+
+## Dashboard and opponent model (added M2)
+
+### Q-025 · Are any of the dashboard's thresholds right? · `provisional` → D-023, D-027
+The estimators are built on roughly a dozen constants, none fitted:
+
+| Constant | Value | Governs |
+|---|---|---|
+| `DEFAULT_HALF_LIFE` | 180 s | how fast opponent evidence is forgotten |
+| `USAGE_HALF_LIFE` / `OUTCOME_HALF_LIFE` | 300 s / 3600 s | play-usage vs. success-rate decay |
+| `PRESS_ONSET` | 0.75 | intensity at which a press is "underway" |
+| `TRIGGER_LOOKAHEAD` | 2.5 s | how long after a pass a press counts as triggered by it |
+| `MIN_TRIGGER_RATE` | 0.55 | rate above which a trigger is reported |
+| `STABILITY` / `ALIGNMENT` / `MARKING_RADIUS` / `DISTANCE_VARIATION` | 0.60 / 0.45 / 8 m / 3.5 m | the four marking signals |
+| `LOW_BLOCK_CEILING` / `HIGH_BLOCK_FLOOR` | 0.34 / 0.72 | block classification |
+| maturity thresholds | 4–30 obs | when an estimate becomes actionable |
+
+*Why it matters:* these set both sensitivity and how long the model takes to become
+useful. The scenarios show the current values recover planted behaviour, but a scenario the
+thresholds were tuned against is weak evidence — that is close to fitting the test.
+*What would settle it:* a sweep over each constant measuring recovery accuracy and
+time-to-maturity on *held-out* scenarios, then real tracking data (D-007).
+
+### Q-026 · Is `situation_key` the right definition of "similar"? · `provisional`
+§5's `predictability_penalty` is proportional to recent usage "against similar opponent
+situations". The current key is `(ball third, opponent block, match phase)` — 3 × 3 × 4 = 36
+buckets at most.
+
+*The tension:* too coarse and genuinely different situations share a bucket, so a play looks
+repetitive when it was a response to different problems. Too fine and every situation is
+unique, so nothing ever looks repetitive and the penalty never fires.
+*Not yet testable:* no plays exist (M1), so nothing has exercised the bucketing.
+
+### Q-027 · Zonal defenders who sit close to one attacker read as markers · `open`
+In the zonal scenario, 2 of 11 defenders are reported as man-marking. They are the wide
+midfielders, who happen to sit ~2 m from the opposing wingers and slide with the ball — by
+the four signals in D-027 that is indistinguishable from marking.
+
+*Quantified rather than tuned away.* Tightening thresholds until this specific scenario
+came out clean would be fitting to the scenario. The team-level verdict is correct
+(13% man-share against a 60% majority bar), and `marker_of` requires maturity, so the
+practical impact today is small.
+*The real fix, when it matters:* infer marking as *assignment stability* — solve a
+bipartite matching between defenders and attackers each frame and measure how stable the
+matching is — rather than as per-defender nearest-neighbour tracking. That also handles
+defenders switching marks, which the current approach cannot express at all. It needs the
+Hungarian machinery M1 brings anyway.
+
+### Q-028 · How should the opponent model be seeded before kickoff? · `open`
+Every estimate starts immature, so for the opening minutes the ranking layer has no
+opponent model at all.
+
+*Why it matters:* §5's `mismatch_bonus` and `score_time_alignment` are inert early, which
+is safe but wasteful — a scouting report or last season's data would be informative from
+the first whistle.
+*Options:* a persisted per-opponent book carried between matches (which is what §2's
+"running book on the opponent" implies); a league-average prior; manual scouting input.
+*Interacts with:* Q-023's Bayesian alternative, where a prior is the natural mechanism.
+
+### Q-029 · Should our own team be run through the estimators as a check? · `open`
+The dashboard is deliberately asymmetric (D-028): we measure ourselves and infer the
+opponent. But we *know* our own marking scheme, which makes us the perfect labelled test
+case — running the estimator against ourselves would score it continuously, in real
+conditions, with no scripting.
+
+*Cheap to try.* The counter-argument is that it doubles estimator cost per epoch for a
+diagnostic, and Q-012's budget is unmeasured.
 
 ---
 
