@@ -79,7 +79,7 @@ The opponent pool is versioned and frozen (pool v2, D-045): seven scripted style
 never in formation. `possession` and `wing_play` are held out: they are not in Phase A data
 or league training and are used only to evaluate. Changing the pool means bumping
 `pool_version`, regenerating Phase A data (`phase-a`, `heldout-ref`), retraining the critic
-and generator, and starting a new run lineage; `data/run_pool_v2.sh` does all of it.
+and generator, and starting a new run lineage; `data/pipeline.sh` does all of it, resumably.
 
 ### Seeing what self-play is doing
 

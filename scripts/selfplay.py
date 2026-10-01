@@ -58,7 +58,8 @@ def cmd_heldout_ref(a):
     root = data_paths()["heldout_reference"]
     if root is None:
         raise SystemExit("configs/league.yaml has no data.heldout_reference")
-    out = run_jobs(heldout_reference_jobs(a.episodes, seed=a.seed), root, "heldout_ref", workers=a.workers)
+    jobs = _not_logged(heldout_reference_jobs(a.episodes, seed=a.seed), root / "run=heldout_ref")
+    out = run_jobs(jobs, root, "heldout_ref", workers=a.workers)
     print(json.dumps(out, indent=2))
 
 
