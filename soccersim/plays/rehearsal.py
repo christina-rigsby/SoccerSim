@@ -19,8 +19,8 @@ proves nothing about whether a play would work against a real defence.
 
 from __future__ import annotations
 
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
-from typing import Callable, Mapping
 
 import numpy as np
 

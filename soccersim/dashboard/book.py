@@ -25,7 +25,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .estimate import DEFAULT_HALF_LIFE, DecayingRate, DecayingTally, Estimate
+from .estimate import DecayingRate, DecayingTally, Estimate
 
 #: Usage decays faster than opponent-model evidence: §5 wants diversification *within* a
 #: match, so a play used ten minutes ago should have largely stopped being penalised.

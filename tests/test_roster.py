@@ -14,7 +14,6 @@ from soccersim.domain.entities import PositionalRole, Team
 from soccersim.domain.pitch import vec
 from soccersim.domain.roster import (
     DEFAULT_ROSTER_PATH,
-    Roster,
     RosterError,
     load_roster,
     parse_roster,

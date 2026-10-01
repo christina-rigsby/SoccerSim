@@ -5,6 +5,8 @@ SI physical scale — particularly ``reaction_time``, where lower is better and 
 normalisation silently inverts the meaning of every comparison.
 """
 
+import dataclasses
+
 import pytest
 
 from soccersim.domain.attributes import (
@@ -43,7 +45,7 @@ class TestAttributes:
         assert "crossing" in str(error.value)
 
     def test_is_immutable(self):
-        with pytest.raises(Exception):
+        with pytest.raises(dataclasses.FrozenInstanceError):
             Attributes().crossing = 90  # type: ignore[misc]
 
     def test_as_dict_round_trips(self):

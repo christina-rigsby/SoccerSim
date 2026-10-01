@@ -1,0 +1,65 @@
+# Formation slots in the team's attacking frame (attack toward +x; +y is the team's
+# left). Each slot has a kind (mapped to a side-relative hint at play instantiation,
+# spec §3.6), an out-of-possession base position and an in-possession base position.
+#
+# kind -> hint: GK->GK, CB->CB_near/CB_far, FB->FB_near/FB_far, DM->DM, CM->CM, AM->AM,
+# W->W_near/W_far, ST->ST. "near" is decided by the slot's y sign vs the frozen side.
+
+shape:
+  shift_x_in: 0.55       # fraction of ball x the block follows, in possession
+  shift_x_out: 0.45      # ... and out of possession
+  shift_y: 0.35
+  width_in: 1.0          # lateral scaling in possession
+  width_out: 0.75        # lateral scaling out of possession
+  onside_margin: 0.8     # in possession, attackers hold this far behind the offside line
+  max_depth_ahead_of_ball_out: 12.0  # out of possession, nobody stays more than this far ahead of the ball
+
+formations:
+  "4-3-3":
+    GK:   {kind: GK, out: [-48, 0], in: [-45, 0]}
+    LB:   {kind: FB, out: [-32, 20], in: [-4, 27]}
+    LCB:  {kind: CB, out: [-35, 7], in: [-20, 11]}
+    RCB:  {kind: CB, out: [-35, -7], in: [-20, -11]}
+    RB:   {kind: FB, out: [-32, -20], in: [-4, -27]}
+    CDM:  {kind: DM, out: [-24, 0], in: [-9, 0]}
+    LCM:  {kind: CM, out: [-14, 11], in: [5, 13]}
+    RCM:  {kind: CM, out: [-14, -11], in: [5, -13]}
+    LW:  {kind: W,  out: [-4, 21],   in: [16, 25]}
+    ST:   {kind: ST, out: [0, 0], in: [26, 0]}
+    RW:  {kind: W,  out: [-4, -21],  in: [16, -25]}
+  "4-4-2":
+    GK:   {kind: GK, out: [-48, 0], in: [-45, 0]}
+    LB:   {kind: FB, out: [-32, 20], in: [-5, 27]}
+    LCB:  {kind: CB, out: [-35, 7], in: [-20, 11]}
+    RCB:  {kind: CB, out: [-35, -7], in: [-20, -11]}
+    RB:   {kind: FB, out: [-32, -20], in: [-5, -27]}
+    LM:  {kind: W,  out: [-16, 21],  in: [6, 25]}
+    LCM:  {kind: CM, out: [-18, 7], in: [2, 8]}
+    RCM:  {kind: DM, out: [-18, -7], in: [-2, -8]}
+    RM:  {kind: W,  out: [-16, -21], in: [6, -25]}
+    LS:   {kind: ST, out: [-2, 6], in: [25, 6]}
+    RS:   {kind: AM, out: [-4, -6], in: [20, -6]}
+  "3-5-2":
+    GK:   {kind: GK, out: [-48, 0], in: [-45, 0]}
+    LCB:  {kind: CB, out: [-34, 12], in: [-19, 16]}
+    CB:   {kind: CB, out: [-36, 0], in: [-22, 0]}
+    RCB:  {kind: CB, out: [-34, -12], in: [-19, -16]}
+    LWB:  {kind: FB, out: [-26, 25], in: [6, 28]}
+    RWB:  {kind: FB, out: [-26, -25], in: [6, -28]}
+    CDM:  {kind: DM, out: [-22, 0], in: [-6, 0]}
+    LCM:  {kind: CM, out: [-12, 10], in: [8, 12]}
+    RCM:  {kind: CM, out: [-12, -10], in: [8, -12]}
+    LS:   {kind: ST, out: [0, 6], in: [26, 6]}
+    RS:   {kind: AM, out: [-2, -6], in: [22, -6]}
+
+# Capability profiles by slot kind (spec §3.7, all in [0, 1]). Per-episode
+# randomisation jitters these (sim.yaml randomisation.capability_jitter).
+profiles:
+  GK: {pace: 0.35, acceleration: 0.45, stamina: 0.5, passing: 0.55, vision: 0.5, crossing: 0.2, dribbling: 0.25, first_touch: 0.55, finishing: 0.1, aerial: 0.8, tackling: 0.3, positioning: 0.75, composure: 0.65}
+  CB: {pace: 0.5, acceleration: 0.5, stamina: 0.65, passing: 0.58, vision: 0.5, crossing: 0.3, dribbling: 0.4, first_touch: 0.55, finishing: 0.3, aerial: 0.8, tackling: 0.78, positioning: 0.75, composure: 0.62}
+  FB: {pace: 0.72, acceleration: 0.7, stamina: 0.8, passing: 0.58, vision: 0.5, crossing: 0.65, dribbling: 0.55, first_touch: 0.55, finishing: 0.35, aerial: 0.5, tackling: 0.65, positioning: 0.6, composure: 0.55}
+  DM: {pace: 0.55, acceleration: 0.55, stamina: 0.8, passing: 0.72, vision: 0.68, crossing: 0.4, dribbling: 0.55, first_touch: 0.68, finishing: 0.4, aerial: 0.6, tackling: 0.72, positioning: 0.72, composure: 0.7}
+  CM: {pace: 0.6, acceleration: 0.62, stamina: 0.82, passing: 0.72, vision: 0.7, crossing: 0.5, dribbling: 0.62, first_touch: 0.68, finishing: 0.5, aerial: 0.5, tackling: 0.58, positioning: 0.62, composure: 0.66}
+  AM: {pace: 0.65, acceleration: 0.7, stamina: 0.72, passing: 0.74, vision: 0.78, crossing: 0.55, dribbling: 0.74, first_touch: 0.74, finishing: 0.65, aerial: 0.42, tackling: 0.4, positioning: 0.55, composure: 0.68}
+  W:  {pace: 0.82, acceleration: 0.82, stamina: 0.72, passing: 0.6, vision: 0.6, crossing: 0.7, dribbling: 0.78, first_touch: 0.66, finishing: 0.6, aerial: 0.4, tackling: 0.35, positioning: 0.5, composure: 0.6}
+  ST: {pace: 0.76, acceleration: 0.75, stamina: 0.7, passing: 0.55, vision: 0.55, crossing: 0.4, dribbling: 0.66, first_touch: 0.7, finishing: 0.8, aerial: 0.7, tackling: 0.3, positioning: 0.62, composure: 0.7}

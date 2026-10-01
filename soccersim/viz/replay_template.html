@@ -1,0 +1,354 @@
+<title>__HEADING__</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: scoreboard strip, then pitch (wide) beside a tactics panel, then the play timeline. */
+:root {
+  --bg: #eef2ee; --panel: #ffffff; --ink: #16201a; --muted: #5a675e; --line: #d3dcd5;
+  --turf: #2e6a45; --turf-band: #2a6240; --chalk: rgba(240, 248, 241, .85);
+  --home: #1d5bcc; --away: #c5303a; --gen: #b97f00; --gen-soft: rgba(185, 127, 0, .14);
+  --ok: #217a45; --bad: #a33a2c;
+  --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --body: "IBM Plex Sans", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1411; --panel: #161f1a; --ink: #e2ebe4; --muted: #92a298; --line: #2a372f;
+    --turf: #1e4a30; --turf-band: #1b432b; --chalk: rgba(225, 240, 228, .7);
+    --home: #5e95ff; --away: #ff6a72; --gen: #f2b52e; --gen-soft: rgba(242, 181, 46, .16);
+    --ok: #5fcf8c; --bad: #ff8a78; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1411; --panel: #161f1a; --ink: #e2ebe4; --muted: #92a298; --line: #2a372f;
+  --turf: #1e4a30; --turf-band: #1b432b; --chalk: rgba(225, 240, 228, .7);
+  --home: #5e95ff; --away: #ff6a72; --gen: #f2b52e; --gen-soft: rgba(242, 181, 46, .16);
+  --ok: #5fcf8c; --bad: #ff8a78; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 14px; margin: 0; }
+.wrap { max-width: 1320px; margin: 0 auto; padding-inline: 16px; padding-block: 16px 32px; display: grid; gap: 14px; }
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; }
+h1 { font-family: var(--display); font-weight: 700; font-size: 30px; letter-spacing: .01em; margin: 0; text-wrap: balance; }
+.sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+select, button { font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; }
+button { cursor: pointer; }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--home); outline-offset: 2px; }
+.board { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; }
+.score { font-family: var(--display); font-size: 34px; font-weight: 700; font-variant-numeric: tabular-nums; display: flex; gap: 10px; align-items: center; }
+.score .h { color: var(--home); } .score .a { color: var(--away); }
+.clock { font-family: var(--mono); font-size: 15px; font-variant-numeric: tabular-nums; color: var(--muted); }
+.meta { color: var(--muted); font-size: 13px; }
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 14px; align-items: start; }
+@media (max-width: 980px) { .main { grid-template-columns: minmax(0, 1fr); } }
+.pitchbox { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px; min-width: 0; }
+canvas { display: block; width: 100%; height: auto; max-width: 100%; border-radius: 4px; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 8px 2px 2px; }
+.controls input[type=range] { flex: 1 1 200px; min-width: 0; accent-color: var(--home); }
+.side { display: grid; gap: 12px; min-width: 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px; min-width: 0; }
+.label { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.team { display: grid; gap: 4px; }
+.team + .team { border-top: 1px solid var(--line); margin-top: 10px; padding-top: 10px; }
+.teamname { display: flex; align-items: center; gap: 8px; font-family: var(--display); font-size: 18px; font-weight: 600; }
+.chip { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none; }
+.playname { font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; }
+.badge { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+.badge.gen { background: var(--gen-soft); border-color: var(--gen); color: var(--gen); font-weight: 600; }
+.tabs { display: flex; gap: 6px; margin-bottom: 8px; }
+.tabs button[aria-pressed=true] { border-color: var(--ink); font-weight: 600; }
+.dec-head { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 6px; font-size: 13px; }
+.tablewrap { overflow-x: auto; max-height: 300px; overflow-y: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+td, th { padding: 4px 6px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { font-weight: 500; color: var(--muted); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+tr.chosen td { font-weight: 600; }
+tr.chosen td:first-child::before { content: "▶ "; color: var(--ink); }
+tr.infeasible td { color: var(--muted); }
+tr.genrow td:first-child { color: var(--gen); }
+pre { font-family: var(--mono); font-size: 11.5px; max-height: 260px; overflow: auto; margin: 0; white-space: pre; background: var(--bg); padding: 8px; border-radius: 6px; }
+.timeline { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; display: grid; gap: 6px; }
+.lane { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 8px; align-items: center; }
+.track { position: relative; height: 24px; background: var(--bg); border-radius: 4px; cursor: pointer; overflow: hidden; }
+.bar { position: absolute; top: 2px; bottom: 2px; border-radius: 3px; font-size: 10.5px; color: #fff; padding: 3px 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 14px; }
+.bar.gen { background: repeating-linear-gradient(135deg, var(--gen), var(--gen) 6px, color-mix(in srgb, var(--gen) 75%, #000) 6px, color-mix(in srgb, var(--gen) 75%, #000) 12px); color: #1b1300; font-weight: 600; }
+.cursor { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--ink); pointer-events: none; }
+.ev { position: absolute; top: 4px; width: 8px; height: 16px; margin-left: -4px; border-radius: 2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; color: var(--muted); font-size: 12px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 18px; height: 10px; border-radius: 2px; display: inline-block; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1 id="heading">__HEADING__</h1>
+      <div class="sub" id="sub"></div>
+    </div>
+    <label class="meta" for="episode">Episode
+      <select id="episode"></select>
+    </label>
+  </header>
+
+  <div class="board">
+    <div class="score"><span class="h">Home</span><span id="sh">0</span><span>–</span><span id="sa">0</span><span class="a">Away</span></div>
+    <div class="clock" id="clock">0.0 s</div>
+    <div class="meta" id="poss"></div>
+  </div>
+
+  <div class="main">
+    <div class="pitchbox">
+      <canvas id="pitch" width="1130" height="760" aria-label="Pitch replay"></canvas>
+      <div class="controls">
+        <button id="play" type="button">Play</button>
+        <label class="meta" for="speed">Speed</label>
+        <select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select>
+        <input id="scrub" type="range" min="0" max="0" value="0" step="1" aria-label="Time">
+        <label class="meta"><input id="targets" type="checkbox" checked> Targets</label>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="card" id="teams"></div>
+      <div class="card">
+        <div class="tabs" role="group" aria-label="Decision team">
+          <button type="button" id="tab0" aria-pressed="true">Home decision</button>
+          <button type="button" id="tab1" aria-pressed="false">Away decision</button>
+        </div>
+        <div id="decision"></div>
+      </div>
+      <div class="card" id="gencard" hidden>
+        <div class="label">Generated play in use</div>
+        <pre id="genyaml"></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="legend">
+      <span><i class="sw" style="background:var(--home)"></i>Home library play</span>
+      <span><i class="sw" style="background:var(--away)"></i>Away library play</span>
+      <span><i class="sw" style="background:var(--gen)"></i>Generated play (Module 3)</span>
+      <span><i class="sw" style="background:var(--ink)"></i>Shot / goal</span>
+    </div>
+    <div class="lane"><div class="label">Home</div><div class="track" id="track0"></div></div>
+    <div class="lane"><div class="label">Away</div><div class="track" id="track1"></div></div>
+    <div class="lane"><div class="label">Events</div><div class="track" id="trackE"></div></div>
+  </div>
+</div>
+
+<script>
+const DATA = __DATA__;
+const $ = (id) => document.getElementById(id);
+const canvas = $("pitch"), ctx = canvas.getContext("2d");
+let ep = null, k = 0, playing = false, last = 0, acc = 0, decTeam = 0;
+
+function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+const W = 113, H = 76;  // pitch + 4 m margins, metres
+function sx(x) { return (x + 56.5) / W * canvas.width; }
+function sy(y) { return (38 - y) / H * canvas.height; }
+function sm(m) { return m / W * canvas.width; }
+
+function drawPitch() {
+  ctx.fillStyle = css("--turf"); ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = css("--turf-band");
+  for (let i = 0; i < 10; i += 2) ctx.fillRect(sx(-52.5 + i * 10.5), sy(34), sm(10.5), sm(68));
+  ctx.strokeStyle = css("--chalk"); ctx.lineWidth = Math.max(1.2, canvas.width / 700);
+  const line = (pts) => { ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(sx(x), sy(y)) : ctx.moveTo(sx(x), sy(y))); ctx.stroke(); };
+  line([[-52.5, -34], [52.5, -34], [52.5, 34], [-52.5, 34], [-52.5, -34]]);
+  line([[0, -34], [0, 34]]);
+  ctx.beginPath(); ctx.arc(sx(0), sy(0), sm(9.15), 0, Math.PI * 2); ctx.stroke();
+  for (const s of [-1, 1]) {
+    line([[s * 52.5, -20.16], [s * 36, -20.16], [s * 36, 20.16], [s * 52.5, 20.16]]);
+    line([[s * 52.5, -9.16], [s * 47, -9.16], [s * 47, 9.16], [s * 52.5, 9.16]]);
+    line([[s * 52.5, -3.66], [s * 54.5, -3.66], [s * 54.5, 3.66], [s * 52.5, 3.66]]);
+    ctx.beginPath(); ctx.arc(sx(s * 41.5), sy(0), 2, 0, Math.PI * 2); ctx.fillStyle = css("--chalk"); ctx.fill();
+  }
+}
+
+function playInfo(f, tm) { return f.plays[tm] || f.plays[String(tm)] || null; }
+
+function draw() {
+  const f = ep.frames[k];
+  drawPitch();
+  const cols = [css("--home"), css("--away")];
+  const showT = $("targets").checked;
+  ctx.font = `600 ${Math.max(10, canvas.width / 95)}px ${css("--body")}`;
+  ctx.textAlign = "center";
+  for (const tm of [0, 1]) {
+    const acts = f.plays["acts" + tm] || {};
+    const info = playInfo(f, tm);
+    const roles = info ? info.roles : {};
+    const gen = info && info.source !== "library";
+    for (let i = tm * 11; i < tm * 11 + 11; i++) {
+      const [x, y] = f.p[i];
+      const a = acts[i];
+      if (showT && a && a[0] !== "hold") {
+        ctx.setLineDash([4, 4]); ctx.strokeStyle = cols[tm]; ctx.globalAlpha = .75; ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.moveTo(sx(x), sy(y)); ctx.lineTo(sx(a[1]), sy(a[2])); ctx.stroke();
+        ctx.setLineDash([]); ctx.globalAlpha = 1;
+      }
+      ctx.beginPath(); ctx.arc(sx(x), sy(y), sm(1.25), 0, Math.PI * 2);
+      ctx.fillStyle = cols[tm]; ctx.fill();
+      ctx.lineWidth = roles[i] ? 2.5 : 1.2;
+      ctx.strokeStyle = roles[i] && gen ? css("--gen") : "#ffffff"; ctx.stroke();
+      if (roles[i]) {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(roles[i], sx(x), sy(y) - sm(1.9));
+      }
+    }
+  }
+  if (f.fl) {
+    ctx.strokeStyle = "#ffffff"; ctx.globalAlpha = .55; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(sx(f.b[0]), sy(f.b[1])); ctx.lineTo(sx(f.fl[1]), sy(f.fl[2])); ctx.stroke(); ctx.globalAlpha = 1;
+  }
+  ctx.beginPath(); ctx.arc(sx(f.b[0]), sy(f.b[1]), sm(f.bh === "air" ? 1.0 : 0.7), 0, Math.PI * 2);
+  ctx.fillStyle = "#ffffff"; ctx.fill(); ctx.strokeStyle = "#111"; ctx.lineWidth = 1.2; ctx.stroke();
+  updatePanels(f);
+}
+
+function esc(s) { return String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c])); }
+
+function updatePanels(f) {
+  $("sh").textContent = f.s[0]; $("sa").textContent = f.s[1];
+  $("clock").textContent = f.t.toFixed(1) + " s";
+  $("poss").textContent = f.poss === 0 ? "Home in possession" : f.poss === 1 ? "Away in possession" : "Loose ball";
+  $("scrub").value = k;
+  let html = "", genPlay = null;
+  for (const tm of [0, 1]) {
+    const info = playInfo(f, tm);
+    const name = tm ? "Away" : "Home";
+    const col = tm ? "var(--away)" : "var(--home)";
+    let body = `<div class="meta">Shape controller (no active play)</div>`;
+    if (info) {
+      const gen = info.source !== "library";
+      const rec = ep.plays.find((p) => p.team === tm && p.play_id === info.id && p.t_start <= f.t + 1e-6 && (p.t_end ?? 1e9) >= f.t - 0.11);
+      body = `<div class="playname">${esc(info.id)}</div>
+        <div><span class="badge ${gen ? "gen" : ""}">${gen ? "generated" : "library"}</span>
+        <span class="badge">step ${esc(info.step)}</span>
+        ${rec ? `<span class="badge">ends: ${esc(rec.end_reason)}</span>` : ""}</div>`;
+      if (gen && rec && rec.play_yaml) genPlay = rec.play_yaml;
+    }
+    html += `<div class="team"><div class="teamname"><i class="chip" style="background:${col}"></i>${name}</div>${body}</div>`;
+  }
+  $("teams").innerHTML = html;
+  $("gencard").hidden = !genPlay;
+  if (genPlay) $("genyaml").textContent = toYaml(genPlay);
+  renderDecision(f.t);
+  for (const id of ["track0", "track1", "trackE"]) {
+    const c = $(id).querySelector(".cursor");
+    if (c) c.style.left = (100 * f.t / ep.duration) + "%";
+  }
+}
+
+function toYaml(o, ind = "") {
+  if (Array.isArray(o)) {
+    if (o.every((v) => typeof v !== "object" || v === null)) return "[" + o.join(", ") + "]";
+    return o.map((v) => "\n" + ind + "- " + toYaml(v, ind + "  ").trimStart()).join("");
+  }
+  if (o && typeof o === "object") {
+    return Object.entries(o).map(([key, v]) => {
+      const inner = toYaml(v, ind + "  ");
+      return "\n" + ind + key + ":" + (inner.startsWith("\n") ? inner : " " + inner);
+    }).join("");
+  }
+  return String(o);
+}
+
+function renderDecision(t) {
+  const ds = ep.decisions.filter((d) => d.team === decTeam && d.t <= t + 1e-6);
+  const d = ds[ds.length - 1];
+  if (!d) { $("decision").innerHTML = `<div class="meta">No decision yet.</div>`; return; }
+  const gap = d.gap ? `<span class="badge gen">library gap</span>` : "";
+  const gen = d.gen ? `<span class="badge gen">generator consulted</span>` : "";
+  const outcome = d.chosen ? `chose <b>${esc(d.chosen)}</b>` : d.kept ? "kept the active play" : "no feasible play";
+  const rows = d.c.map((c) => {
+    const cls = [c[0] === d.chosen ? "chosen" : "", c[2] ? "" : "infeasible", c[1] !== "library" ? "genrow" : ""].join(" ");
+    return `<tr class="${cls}"><td>${esc(c[0])}</td><td>${c[2] ? "feasible" : esc(c[3])}</td><td class="num">${c[4] == null ? "–" : c[4].toFixed(4)}</td></tr>`;
+  }).join("");
+  $("decision").innerHTML = `<div class="dec-head"><span class="meta">t = ${d.t.toFixed(1)} s · ${esc(d.reason)}</span> ${gap} ${gen}</div>
+    <div class="dec-head">${outcome}</div>
+    <div class="tablewrap"><table><thead><tr><th>Candidate</th><th>Status</th><th>Score (EPV)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function buildTimeline() {
+  for (const tm of [0, 1]) {
+    const tr = $("track" + tm);
+    tr.innerHTML = "";
+    for (const p of ep.plays.filter((q) => q.team === tm)) {
+      const b = document.createElement("div");
+      const gen = p.source !== "library";
+      b.className = "bar" + (gen ? " gen" : "");
+      if (!gen) b.style.background = tm ? "var(--away)" : "var(--home)";
+      b.style.left = (100 * p.t_start / ep.duration) + "%";
+      b.style.width = Math.max(0.4, 100 * ((p.t_end ?? ep.duration) - p.t_start) / ep.duration) + "%";
+      b.textContent = p.play_id;
+      b.title = `${p.play_id} (${p.source}) ${p.t_start}–${p.t_end}s · ${p.end_reason}`;
+      tr.appendChild(b);
+    }
+  }
+  const te = $("trackE"); te.innerHTML = "";
+  for (const e of ep.events) {
+    const m = document.createElement("div");
+    m.className = "ev";
+    m.style.left = (100 * e.t / ep.duration) + "%";
+    const big = e.type === "shot_taken" || e.type === "goal";
+    m.style.background = big ? "var(--ink)" : (e.team === 0 ? "var(--home)" : "var(--away)");
+    m.style.opacity = big ? 1 : .5;
+    if (e.type === "goal") m.style.height = "20px";
+    m.title = `${e.t}s ${e.type} (${e.team === 0 ? "home" : e.team === 1 ? "away" : "-"})`;
+    te.appendChild(m);
+  }
+  for (const id of ["track0", "track1", "trackE"]) {
+    const c = document.createElement("div"); c.className = "cursor"; $(id).appendChild(c);
+    $(id).onclick = (ev) => {
+      const r = $(id).getBoundingClientRect();
+      seek(Math.round((ev.clientX - r.left) / r.width * (ep.frames.length - 1)));
+    };
+  }
+}
+
+function seek(i) { k = Math.max(0, Math.min(ep.frames.length - 1, i)); draw(); }
+
+function load(i) {
+  ep = DATA.episodes[i];
+  const sc = ep.scenario || {};
+  $("sub").textContent = `${ep.title} · ${sc.home_formation || ""} vs ${sc.away_formation || ""} · ended by ${ep.end} after ${ep.duration}s`;
+  $("scrub").max = ep.frames.length - 1;
+  buildTimeline();
+  seek(0);
+}
+
+function tick(ts) {
+  if (playing) {
+    acc += (ts - last) / 1000 * parseFloat($("speed").value);
+    while (acc >= 0.1) { acc -= 0.1; k++; }
+    if (k >= ep.frames.length - 1) { k = ep.frames.length - 1; playing = false; $("play").textContent = "Play"; }
+    draw();
+  }
+  last = ts;
+  requestAnimationFrame(tick);
+}
+
+DATA.episodes.forEach((e, i) => { const o = document.createElement("option"); o.value = i; o.textContent = e.title; $("episode").appendChild(o); });
+$("episode").onchange = (e) => load(+e.target.value);
+$("episode").parentElement.hidden = DATA.episodes.length < 2;
+$("play").onclick = () => { if (k >= ep.frames.length - 1) k = 0; playing = !playing; $("play").textContent = playing ? "Pause" : "Play"; };
+$("scrub").oninput = (e) => seek(+e.target.value);
+$("targets").onchange = () => draw();
+for (const tm of [0, 1]) $("tab" + tm).onclick = () => {
+  decTeam = tm; $("tab0").setAttribute("aria-pressed", tm === 0); $("tab1").setAttribute("aria-pressed", tm === 1); draw();
+};
+document.addEventListener("keydown", (e) => {
+  if (e.target.tagName === "SELECT" || e.target.tagName === "INPUT" && e.target.type !== "range") return;
+  if (e.code === "Space") { e.preventDefault(); $("play").click(); }
+  if (e.code === "ArrowRight") seek(k + 10);
+  if (e.code === "ArrowLeft") seek(k - 10);
+});
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => draw());
+load(0);
+requestAnimationFrame(tick);
+</script>

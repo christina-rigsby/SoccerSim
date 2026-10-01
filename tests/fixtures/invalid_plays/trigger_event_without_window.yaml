@@ -1,0 +1,15 @@
+# expect: events in triggers need an explicit within_s window
+id: bad_play
+name: Bad
+phase: transition_attack
+objective: create_chance
+roles:
+  - {id: R1, hints: [CM], starts_with_ball: true}
+triggers: {event: possession_won}
+success: {event: shot_taken}
+max_duration_s: 5
+steps:
+  - id: s1
+    actions: [{role: R1, type: shoot}]
+    done_when: {event: shot_taken}
+    timeout_s: 2

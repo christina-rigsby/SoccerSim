@@ -1,0 +1,22 @@
+# League configuration (spec §11 Phase C).
+
+scripted_styles:
+  high_press:
+    favour: {high_press_sideline_trap: 0.04, counterpress_five_seconds: 0.04}
+  mid_block:
+    favour: {mid_block_compact: 0.04}
+  low_block_counter:
+    favour: {low_block_box_protection: 0.04, direct_counterattack: 0.04}
+  possession:
+    favour: {third_man_combination: 0.03, switch_of_play: 0.03, recycle_possession: 0.03}
+
+held_out_styles: [possession]
+
+snapshot_every: 5          # updates between frozen snapshots of the main agent
+main_exploiter_reset_every: 20
+pfsp_weighting: squared    # f(p) = (1 - p)^2 over the main agent's win rate vs each opponent
+elo_k: 24
+initial_elo: 1000
+held_out_eval_every: 20
+held_out_drop_flag: 0.25   # flag if held-out EPV drops by more than this fraction
+formations: ["4-3-3", "4-4-2", "3-5-2"]

@@ -19,7 +19,7 @@ from enum import Enum
 
 import numpy as np
 
-from ..domain.entities import PlayerState, PositionalRole, Team
+from ..domain.entities import PlayerState, Team
 from ..domain.pitch import Pitch
 from ..domain.state import GameState, TeamState
 from ..kinematics import player_time_to_point

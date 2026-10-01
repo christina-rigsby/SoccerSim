@@ -22,7 +22,7 @@ class Team(Enum):
     AWAY = "away"
 
     @property
-    def other(self) -> "Team":
+    def other(self) -> Team:
         return Team.AWAY if self is Team.HOME else Team.HOME
 
 
@@ -111,7 +111,7 @@ class CapabilityProfile:
     max_accel: float = 6.5  # m/s^2
     reaction_time: float = 0.20  # s
 
-    def degraded(self, stamina: float) -> "CapabilityProfile":
+    def degraded(self, stamina: float) -> CapabilityProfile:
         """This profile scaled by ``stamina`` in [0, 1] (D-006).
 
         Reaction time lengthens as stamina falls; speed and acceleration shrink.
@@ -197,7 +197,7 @@ class PlayerState:
         """Capability after fatigue degradation — what arrival-time code should use."""
         return self.capability.degraded(self.stamina)
 
-    def moved_to(self, position, velocity=None) -> "PlayerState":
+    def moved_to(self, position, velocity=None) -> PlayerState:
         """A copy at a new position (and optionally velocity)."""
         return replace(
             self,

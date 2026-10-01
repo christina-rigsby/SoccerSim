@@ -22,8 +22,9 @@ from __future__ import annotations
 
 import json
 import pathlib
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field, replace
-from typing import Any, Iterable, Mapping
+from typing import Any
 
 import numpy as np
 
@@ -173,7 +174,7 @@ class Roster:
             )
         return states
 
-    def with_attributes(self, player_id: int, **changes: float) -> "Roster":
+    def with_attributes(self, player_id: int, **changes: float) -> Roster:
         """A copy with one player's attributes adjusted — for what-if tuning."""
         entry = self.entry(player_id)
         updated = replace(entry, attributes=replace(entry.attributes, **changes))

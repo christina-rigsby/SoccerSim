@@ -1,0 +1,34 @@
+# Starter library play (spec §6.8).
+id: recycle_possession
+name: Recycle to the safest option
+version: 1
+phase: in_possession
+objective: retain_possession
+strategy: circulation
+fallback: true
+roles:
+  - id: R1
+    desc: Ball carrier
+    hints: [CB_near, CB_far, DM, CM, FB_near, FB_far, AM, W_near, W_far, ST, GK]
+    starts_with_ball: true
+triggers:
+  all:
+    - possession: us
+    - has_ball: R1
+steps:
+  - id: s1
+    choose:
+      - when: {pressure_on: {ref: role:R1, gt: 4}}
+        actions: [{role: R1, type: carry, to: {pc_best: {anchor: ball, radius: 8}, score: pc}, speed: jog, protect: true}]
+      - when: always
+        actions: [{role: R1, type: pass, to: {best_teammate: {score: pass_p}}, style: ground}]
+    done_when: {any: [{event: pass_completed}, {step_elapsed_s: {gt: 2}}]}
+    timeout_s: 3
+    on_timeout: abort
+success:
+  any: [{event: pass_completed}, {all: [{possession: us}, {elapsed_s: {gt: 2}}]}]
+abort:
+  any: [{event: possession_lost}]
+max_duration_s: 4
+cooldown_s: 0
+soft_hints: {risk: 0.1, chain_depth: 1, tempo: slow}

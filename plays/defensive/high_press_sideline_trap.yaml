@@ -1,0 +1,61 @@
+# Starter library play (spec §6.9).
+id: high_press_sideline_trap
+name: Sideline pressing trap
+version: 1
+phase: out_of_possession
+objective: regain_possession
+strategy: high_press
+roles:
+  - id: P1
+    desc: First presser, curves run to force play wide
+    hints: [ST, W_near, AM]
+    requires: {stamina: 0.5}
+    prefers: {pace: 0.8, acceleration: 0.8}
+  - id: P2
+    desc: Cover-shadow presser blocking the inside lane
+    hints: [AM, CM, ST]
+    requires: {stamina: 0.5}
+  - id: M1
+    desc: Midfielder marking nearest central receiver
+    hints: [CM, DM]
+    prefers: {tackling: 0.6, positioning: 0.6}
+  - id: F1
+    desc: Full-back jumping onto the wide receiver
+    hints: [FB_near]
+    requires: {pace: 0.5}
+    prefers: {tackling: 0.8}
+  - id: B
+    desc: Back line stepping up
+    hints: [CB_near, CB_far, FB_far]
+    group: {count: 3}
+triggers:
+  all:
+    - possession: them
+    - ball_in_zone: [final_third.near_wing, final_third.near_halfspace, mid_opp.near_wing]
+    - teammates_near: {ref: ball, radius: 20, ge: 3}
+hard_constraints:
+  - game: {minute: {lt: 88}}
+steps:
+  - id: s1
+    actions:
+      - {role: P1, type: press, target: {opponent: ball_carrier}, curve: force_outside, intensity: 1.0}
+      - {role: P2, type: block_lane, from: ball_carrier, to: nearest_receiver}
+      - {role: M1, type: mark, target: {opponent: "in_zone:mid_opp.center"}, tightness: 2, goal_side: true}
+      - {role: F1, type: mark, target: {opponent: "in_zone:mid_opp.near_wing"}, tightness: 1.5, goal_side: true}
+      - {role: B, type: compact_shift, line_height: 50, width: 40, ball_shift: 0.7}
+    done_when:
+      any:
+        - event: possession_won
+        - event: ball_out_them_last
+        - ball_behind_line: {line: our_second_line}
+    timeout_s: 8
+    on_timeout: abort
+success:
+  any: [{event: possession_won}, {event: ball_out_them_last}]
+abort:
+  any:
+    - ball_behind_line: {line: our_second_line, by: 5}
+    - event: goal_conceded
+max_duration_s: 10
+cooldown_s: 6
+soft_hints: {risk: 0.6, chain_depth: 1, tempo: fast}

@@ -1,0 +1,48 @@
+# Module 3 training (spec §10–12). "quick" values make the pipeline runnable in minutes
+# on a laptop CPU; "spec" values match the spec's sizes and are what a real run uses.
+
+profile: quick
+
+rewards:
+  goal: 1.0
+  c_loss_own_half: 0.01
+  regain_bonus: 0.02
+  gamma_per_play: 0.97
+  retain_cap: 0.02          # cap on summed reward from consecutive non-improving retain_possession plays
+
+encoder:
+  quick: {hidden: 64, layers: 3, heads: 4}
+  spec: {hidden: 128, layers: 4, heads: 4}
+
+generator:
+  quick: {d_model: 128, layers: 3, heads: 4, max_len: 160}
+  spec: {d_model: 256, layers: 6, heads: 8, max_len: 192}
+  sample_temperature: 1.0
+
+critic:
+  quick: {d_model: 64, layers: 2, heads: 4, epochs: 12, lr: 0.002, batch: 128}
+  spec: {d_model: 128, layers: 3, heads: 4, epochs: 40, lr: 0.001, batch: 256}
+
+response:
+  quick: {epochs: 10, lr: 0.002}
+  spec: {epochs: 30, lr: 0.001}
+
+bc:
+  quick: {epochs: 6, lr: 0.001, batch: 64}
+  spec: {epochs: 30, lr: 0.0005, batch: 128}
+
+mutation:
+  quick: {mutants_per_play: 6, rollouts: 6, keep_quantile: 0.5}
+  spec: {mutants_per_play: 40, rollouts: 20, keep_quantile: 0.25}
+
+ppo:
+  quick: {updates: 6, episodes_per_update: 8, epochs: 3, clip: 0.2, kl_beta: 0.05, lr: 0.0003}
+  spec: {updates: 400, episodes_per_update: 64, epochs: 4, clip: 0.2, kl_beta: 0.05, lr: 0.0001}
+
+qd:
+  min_evals_quick: 3
+  min_evals_spec: 50
+
+phase_a:
+  quick: {episodes: 240}
+  spec: {episodes: 12000}   # ~200k decision records

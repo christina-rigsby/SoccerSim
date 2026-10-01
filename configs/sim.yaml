@@ -1,0 +1,122 @@
+# Simulator parameters (spec §7). Every number here is an initial guess meant to be
+# tuned; change it here and say why in the commit message rather than hardcoding a fix.
+
+tick_s: 0.1
+
+pitch:
+  length: 105.0
+  width: 68.0
+  goal_width: 7.32
+
+movement:
+  base_speed: 7.0            # max speed = base_speed + pace_speed * pace  (m/s)
+  pace_speed: 2.5
+  base_accel: 3.0            # accel = base_accel + accel_gain * acceleration  (m/s^2)
+  accel_gain: 2.0
+  stamina_speed_floor: 0.85  # max speed scaled by floor + (1 - floor) * stamina_current
+  speed_fractions: {jog: 0.55, fast: 0.8, max: 1.0}
+  dribble_speed_factor: 0.82 # carrying the ball caps speed at this fraction of max
+  protect_speed_factor: 0.55
+  arrive_radius: 1.0         # a run completes within this distance of its target
+  separation_radius: 1.2     # soft repulsion between players closer than this
+
+stamina:
+  sprint_threshold: 0.7      # fraction of max speed above which a player is sprinting
+  drain_per_s: 0.012         # at full sprint, scaled by (1.2 - stamina capability)
+  recover_per_s: 0.004
+
+ball:
+  friction: 2.5              # ground deceleration, m/s^2
+  gravity: 9.81
+  control_radius: 1.1        # a player can play a ground ball within this distance
+  air_contest_radius: 2.5    # players within this of a landing ball contest it
+  dribble_offset: 0.6        # ball sits this far ahead of a carrier
+  max_ground_speed: 30.0
+
+pass:
+  reaction_time: 0.7         # Spearman-style reaction time used by the intercept model
+  intercept_sharpness: 5.0   # logistic slope on the time margin (1/s)
+  intercept_bias: 0.05       # seconds of slack a defender needs beyond the ball
+  receiver_sharpness: 2.5
+  path_samples: 24
+  arrival_speed:             # ball speed on arrival at the target, by style
+    ground: 7.0
+    driven: 12.0
+    through: 8.0
+    driven_low: 11.0
+  flight_speed:              # average horizontal speed of an aerial ball, by style
+    lofted: 17.0
+    whipped: 22.0
+    clear: 22.0
+  aerial_base_success: 0.85  # uncontested landing success before contest
+  noise:
+    angle_base_deg: 7.0      # angular sigma = base * (1 - passing) * (1 + pressure_gain * pressure)
+    speed_base: 0.10         # relative speed sigma, same scaling
+    pressure_gain: 1.0
+    style_multiplier: {ground: 1.0, driven: 1.2, through: 1.3, lofted: 1.6, whipped: 1.5, driven_low: 1.3, clear: 2.5}
+
+control:
+  base: 0.97                 # P(control) of a soft ball with no pressure and first_touch 1
+  first_touch_weight: 0.18
+  speed_penalty_per_ms: 0.012  # per m/s above comfortable_speed
+  comfortable_speed: 9.0
+  pressure_penalty: 0.18     # scaled by exp(-nearest_opp / 2)
+  deflect_speed: 4.0
+
+duel:
+  tackle_range: 1.4
+  attempt_interval_s: 0.6    # a defender attempts at most one tackle per interval
+  base_success: 0.45
+  skill_gain: 0.6            # success += gain * (tackling - dribbling)
+  behind_penalty: 0.25       # tackles from behind the carrier lose this much
+  protect_penalty: 0.12
+  foul_prob_on_fail: 0.22
+  foul_prob_from_behind: 0.45
+  intensity_rate:            # attempt probability multiplier by defensive action
+    press: 1.0
+    tackle: 1.4
+    jockey: 0.35
+    default: 0.5
+
+shot:
+  b0: -0.5
+  b_angle: 1.5
+  b_dist: 0.13
+  pressure_factor: 0.4
+  header_factor: 0.6
+  finishing_base: 0.7
+  finishing_gain: 0.6
+  gk_factor_min: 0.7
+  gk_factor_max: 1.4
+  gk_offset_scale: 5.0       # metres of GK misplacement that add +0.5 to the factor
+  save_catch_prob: 0.55      # of non-goal on-target shots, fraction caught by the GK
+  on_target_prob: 0.55       # of non-goals, fraction on target
+  corner_from_save: 0.35
+  shot_speed: 26.0
+  max_range: 35.0
+
+restarts:
+  setup_s: 1.5               # players reorganise for this long before the taker gets the ball
+  kickoff_setup_s: 2.0
+
+offside:
+  enabled: true
+  tolerance: 0.0
+
+episode:
+  possession_change_grace_s: 8.0
+  max_time_s: 40.0
+
+# Domain randomisation (spec §11 anti-exploit). Each episode samples uniformly from
+# these ranges when randomise=true.
+randomisation:
+  reaction_time: [0.6, 0.8]
+  noise_scale: [0.8, 1.25]
+  friction: [2.2, 2.8]
+  capability_jitter: 0.15
+
+# A held-out physics config for overfitting checks (spec §11).
+held_out:
+  pass: {reaction_time: 0.78, intercept_sharpness: 4.0}
+  ball: {friction: 2.9}
+  noise_scale: 1.35

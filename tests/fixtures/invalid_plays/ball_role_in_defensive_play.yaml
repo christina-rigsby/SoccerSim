@@ -1,0 +1,14 @@
+# expect: starts_with_ball is only allowed in possession phases
+id: bad_play
+phase: out_of_possession
+objective: regain_possession
+roles:
+  - {id: P1, hints: [ST], starts_with_ball: true}
+triggers: {possession: them}
+success: {event: possession_won}
+max_duration_s: 5
+steps:
+  - id: s1
+    actions: [{role: P1, type: press, target: {opponent: ball_carrier}}]
+    done_when: {event: possession_won}
+    timeout_s: 2

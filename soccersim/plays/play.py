@@ -23,9 +23,9 @@ applied again).
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, replace
-from enum import Enum
-from typing import Any, Iterable, Mapping
+from collections.abc import Mapping
+from dataclasses import dataclass, field
+from typing import Any
 
 import numpy as np
 

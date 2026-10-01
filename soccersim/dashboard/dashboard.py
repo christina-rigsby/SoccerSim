@@ -14,7 +14,7 @@ a consumer has to pass through ``mature_value`` or ``require_mature`` to act on 
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import numpy as np
 

@@ -5,21 +5,35 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "soccersim"
 version = "0.1.0"
-description = "Soccer play-selection simulation: space/geometry and feasibility foundation"
+description = "Soccer play-selection simulation with self-play play generation"
 requires-python = ">=3.11"
 dependencies = [
     "numpy>=1.26,<3",
-    # scipy is not imported by the M0 foundation layer; it lands with the
-    # Hungarian assignment solve in M1 (see docs/STATUS.md).
     "scipy>=1.11,<2",
     "matplotlib>=3.8,<4",
+    "pydantic>=2.5,<3",
+    "PyYAML>=6",
+    "pyarrow>=14",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+dev = ["pytest>=8", "ruff>=0.5"]
+# Module 3 (critic, response model, generator, PPO). The rest of the package runs without it.
+ml = ["torch>=2.2"]
 
 [tool.setuptools.packages.find]
 include = ["soccersim*"]
+
+[tool.setuptools.package-data]
+soccersim = ["viz/*.html"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E741", "B905"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

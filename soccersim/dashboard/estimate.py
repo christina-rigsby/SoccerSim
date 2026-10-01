@@ -25,8 +25,9 @@ fractional.
 
 from __future__ import annotations
 
+from collections.abc import Hashable
 from dataclasses import dataclass, field
-from typing import Generic, Hashable, TypeVar
+from typing import Generic, TypeVar
 
 import numpy as np
 

@@ -17,8 +17,8 @@ minimum capability threshold... regardless of assignment cost", which is "distin
 
 from __future__ import annotations
 
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
-from typing import Iterable, Sequence
 
 from ..domain.entities import PlayerState
 from ..domain.roles import PlayRole, RoleFit, get_role, role_fit

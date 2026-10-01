@@ -5,7 +5,6 @@ the dependency structure, and both are things §5 asks for that a flat step list
 express.
 """
 
-import numpy as np
 import pytest
 
 from soccersim.domain.actions import ACTIONS, get_action

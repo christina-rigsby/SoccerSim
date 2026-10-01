@@ -1,0 +1,58 @@
+# Starter library play (spec §6.11).
+id: low_block_box_protection
+name: Low block protecting the box
+version: 1
+phase: out_of_possession
+objective: protect_goal
+strategy: low_block
+roles:
+  - id: G_BACK
+    hints: [FB_near, CB_near, CB_far, FB_far]
+    group: {count: 4}
+  - id: G_MID
+    hints: [W_near, CM, DM, W_far]
+    group: {count: 4}
+  - id: F1
+    desc: Forward staying high as counter outlet
+    hints: [ST]
+    prefers: {pace: 0.8}
+  - id: F2
+    desc: Forward dropping to screen the pivot
+    hints: [AM, ST]
+  - id: GK
+    hints: [GK]
+triggers:
+  all:
+    - possession: them
+    - ball_in_zone: ["own_third.*", own_box_edge]
+steps:
+  - id: s1
+    actions:
+      - {role: G_BACK, type: compact_shift, line_height: 12, width: 36, ball_shift: 0.5}
+      - {role: G_MID, type: compact_shift, line_height: 22, width: 34, ball_shift: 0.7}
+      - {role: F2, type: block_lane, from: ball_carrier, to: "in_zone:zone14"}
+      - {role: F1, type: hold_position, to: {anchor: own_goal, offset: [50, 0]}}
+      - {role: GK, type: set_position, mode: cover_line}
+    done_when: always
+    timeout_s: 0.1
+    on_timeout: next
+  - id: s2
+    choose:
+      - when: {ball_in_zone: [own_box, own_box_edge]}
+        actions:
+          - {actor: {nearest_to_ball_in: G_BACK}, type: press, target: {opponent: ball_carrier}, curve: force_outside, intensity: 1.0}
+          - {actor: {nearest_to_ball_in: G_MID}, type: block_shot}
+      - when: always
+        actions:
+          - {actor: {nearest_to_ball_in: G_MID}, type: jockey, target: {opponent: ball_carrier}}
+    done_when:
+      any: [{event: possession_won}, {event: ball_out_them_last}, {ball_in_zone: "mid_own.*"}]
+    timeout_s: 20
+    on_timeout: next
+success:
+  any: [{event: possession_won}, {event: ball_out_them_last}, {ball_in_zone: "mid_own.*"}]
+abort:
+  any: [{event: goal_conceded}]
+max_duration_s: 20
+cooldown_s: 0
+soft_hints: {risk: 0.15, chain_depth: 1, tempo: slow}

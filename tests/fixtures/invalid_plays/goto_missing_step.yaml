@@ -1,0 +1,17 @@
+# expect: goto target 's7' does not exist
+id: bad_play
+name: Bad
+phase: in_possession
+objective: retain_possession
+roles:
+  - {id: R1, hints: [CM], starts_with_ball: true}
+  - {id: R2, hints: [CM]}
+triggers: {possession: us}
+success: {event: pass_completed}
+max_duration_s: 5
+steps:
+  - id: s1
+    actions: [{role: R1, type: pass, to: {role: R2}}]
+    done_when: {event: pass_completed}
+    timeout_s: 2
+    on_timeout: goto:s7

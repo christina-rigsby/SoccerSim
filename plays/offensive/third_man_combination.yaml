@@ -1,0 +1,82 @@
+# Starter library play (spec §6.2).
+id: third_man_combination
+name: Third-man combination through midfield
+version: 1
+phase: in_possession
+objective: progress_ball
+strategy: central_combination
+roles:
+  - id: R1
+    desc: Deep passer on the ball
+    hints: [CB_near, DM, CB_far]
+    requires: {passing: 0.5}
+    starts_with_ball: true
+  - id: R2
+    desc: Wall player checking to the ball
+    hints: [CM, DM, AM]
+    requires: {first_touch: 0.5, passing: 0.5}
+    prefers: {composure: 0.8}
+  - id: R3
+    desc: Third man arriving between the lines
+    hints: [AM, CM, W_near]
+    requires: {first_touch: 0.4}
+    prefers: {vision: 0.8, dribbling: 0.5}
+  - id: R4
+    desc: Striker pinning the last line
+    hints: [ST]
+    prefers: {pace: 0.6}
+triggers:
+  all:
+    - possession: us
+    - has_ball: R1
+    - ball_in_zone: [own_third.center, own_third.near_halfspace, own_third.far_halfspace, mid_own.*, mid_opp.center, mid_opp.near_halfspace]
+    - lane_open: {from: R1, to: {role: R2}, min_p: 0.75}
+    - not: {lane_open: {from: R1, to: {role: R3}, min_p: 0.6}}
+hard_constraints:
+  - not: {pressure_on: {ref: role:R1, lt: 1.5}}
+steps:
+  - id: s1
+    actions:
+      - {role: R2, type: check_to_ball, distance: 6, duration_s: 1.0}
+      - {role: R3, type: third_man_run, to: {pc_best: {zone: mid_opp.center}, score: pc_xt}}
+      - {role: R4, type: hold_position, to: {anchor: line:opp_last_line, offset: [-1, 0]}}
+    done_when: {step_elapsed_s: {gt: 0.8}}
+    timeout_s: 1.5
+    on_timeout: next
+  - id: s2
+    actions:
+      - {role: R1, type: pass, to: {role: R2}, style: driven}
+    done_when: {has_ball: R2}
+    timeout_s: 2.5
+    on_timeout: abort
+  - id: s3
+    choose:
+      - when: {lane_open: {from: R2, to: {role: R3, lead: 2}, min_p: 0.6}}
+        actions: [{role: R2, type: pass, to: {role: R3, lead: 2}, style: ground, one_touch: true}]
+      - when: always
+        actions: [{role: R2, type: pass, to: {role: R1}, style: ground, one_touch: true}]
+    done_when: {any: [{has_ball: R3}, {has_ball: R1}]}
+    timeout_s: 2.5
+    on_timeout: abort
+  - id: s4
+    start_when: {has_ball: R3}
+    choose:
+      - when: {lane_open: {from: R3, to: {space_behind: {line: opp_last_line, lane: center, depth: 6}}, min_p: 0.45}}
+        actions:
+          - {role: R4, type: spin_in_behind, line: opp_last_line, lane: center, depth: 6}
+          - {role: R3, type: pass, to: {space_behind: {line: opp_last_line, lane: center, depth: 6}}, style: through}
+      - when: always
+        actions: [{role: R3, type: carry, to: {zone: zone14}, speed: fast}]
+    done_when: {any: [{event: pass_completed}, {ball_in_zone: zone14}, {event: possession_lost}]}
+    timeout_s: 4
+    on_timeout: abort
+success:
+  any:
+    - all: [{has_ball: R3}, {ball_beyond_line: {line: opp_second_line}}]
+    - ball_in_zone: zone14
+    - all: [{possession: us}, {ball_beyond_line: {line: opp_last_line}}]
+abort:
+  any: [{event: possession_lost}, {all: [{has_ball: R1}, {step_elapsed_s: {gt: 1.0}}]}]
+max_duration_s: 12
+cooldown_s: 10
+soft_hints: {risk: 0.35, chain_depth: 3, tempo: fast}

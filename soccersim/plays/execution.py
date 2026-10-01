@@ -24,9 +24,9 @@ what makes the correct timing expressible.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from collections.abc import Iterable, Mapping
+from dataclasses import dataclass
 from enum import Enum
-from typing import Iterable, Mapping
 
 import numpy as np
 

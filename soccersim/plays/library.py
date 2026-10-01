@@ -13,8 +13,8 @@ from __future__ import annotations
 
 import json
 import pathlib
+from collections.abc import Iterator
 from dataclasses import dataclass, field
-from typing import Iterator
 
 from .play import Play, PlayError, play_from_spec
 

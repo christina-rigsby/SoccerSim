@@ -1,0 +1,15 @@
+# Placeholder expected-threat surface (spec §8.4): a 16 x 12 grid over the pitch in the
+# attacking frame, built from distance and angle to the attacked goal. Its shape is
+# plausible, its magnitudes are guesses (see D-015 / Q-006). M6 replaces it with a
+# value-iterated xT fitted from simulator events (dashboard/xt.py::fit_xt).
+nx: 16
+ny: 12
+peak: 0.30          # xT in front of goal
+decay_m: 16.0       # e-folding distance from goal
+angle_weight: 0.6   # weight on the subtended goal angle (radians)
+floor: 0.004        # minimum xT anywhere
+
+# placeholder | fitted. "fitted" loads fitted_path (written by scripts/selfplay.py fit-xt)
+# and falls back to the placeholder if the file does not exist.
+source: placeholder
+fitted_path: data/xt/xt_sim.json

@@ -1,0 +1,16 @@
+# expect: unknown action type 'bicycle_kick'
+id: bad_play
+name: Bad
+phase: in_possession
+objective: retain_possession
+roles:
+  - {id: R1, hints: [CM], starts_with_ball: true}
+  - {id: R2, hints: [CM]}
+triggers: {possession: us}
+success: {event: pass_completed}
+max_duration_s: 5
+steps:
+  - id: s1
+    actions: [{role: R1, type: bicycle_kick}]
+    done_when: {event: shot_taken}
+    timeout_s: 2

@@ -59,7 +59,7 @@ class TestScenarios:
     def test_a_non_chaining_pass_script_is_rejected(self):
         """A break in the chain teleports the ball, so the observer records a pass from
         the wrong origin while an earlier press may still be live."""
-        from soccersim.scenarios import _pressing_scenario, ScenarioTruth
+        from soccersim.scenarios import ScenarioTruth, _pressing_scenario
 
         with pytest.raises(ValueError, match="does not chain"):
             _pressing_scenario(

@@ -1,0 +1,75 @@
+# Starter library play (spec §6.7).
+id: direct_counterattack
+name: Direct counterattack after regain
+version: 1
+phase: transition_attack
+objective: create_chance
+strategy: counter
+roles:
+  - id: R1
+    desc: Ball winner / first passer
+    hints: [DM, CM, CB_near, FB_near]
+    starts_with_ball: true
+  - id: R2
+    desc: Fastest forward, runs in behind
+    hints: [ST, W_near, W_far]
+    requires: {pace: 0.6}
+    prefers: {pace: 1.0, finishing: 0.6}
+  - id: R3
+    desc: Second runner (opposite channel)
+    hints: [W_far, W_near, AM]
+    requires: {pace: 0.5}
+  - id: R4
+    desc: Trailing support
+    hints: [AM, CM]
+triggers:
+  all:
+    - event: {type: possession_won, within_s: 1.5}
+    - has_ball: R1
+    - ball_in_zone: [own_third.*, mid_own.*, mid_opp.*]
+    - goal_side_count: {team: them, le: 5}
+steps:
+  - id: s1
+    actions:
+      - {role: R2, type: spin_in_behind, line: opp_last_line, lane: center, depth: 8}
+      - {role: R3, type: run_to, to: {anchor: ball, offset: [25, -18]}, speed: max}
+      - {role: R4, type: run_to, to: {anchor: ball, offset: [12, 0]}, speed: fast}
+    done_when: {step_elapsed_s: {gt: 0.3}}
+    timeout_s: 0.5
+    on_timeout: next
+  - id: s1b
+    choose:
+      - when: {lane_open: {from: R1, to: {space_behind: {line: opp_last_line, lane: center, depth: 8}}, min_p: 0.45}}
+        actions: [{role: R1, type: pass, to: {space_behind: {line: opp_last_line, lane: center, depth: 8}}, style: through}]
+      - when: {lane_open: {from: R1, to: {role: R4}, min_p: 0.75}}
+        actions: [{role: R1, type: pass, to: {role: R4}, style: driven}]
+      - when: always
+        actions: [{role: R1, type: carry, to: {anchor: ball, offset: [10, 0]}, speed: fast}]
+    done_when: {any: [{event: pass_completed}, {step_elapsed_s: {gt: 2}}]}
+    timeout_s: 3
+    on_timeout: abort
+  - id: s2
+    choose:
+      - when: {has_ball: R4}
+        actions: [{role: R4, type: pass, to: {best_teammate: {score: pc_xt}}, style: through}]
+      - when: always
+        actions: [{actor: ball_holder, type: carry, to: {anchor: penalty_spot, offset: [0, 0]}, speed: max}]
+    done_when: {any: [{ball_in_zone: box}, {event: pass_completed}, {pressure_on: {ref: ball_holder, lt: 2}}]}
+    timeout_s: 5
+    on_timeout: next
+  - id: s3
+    choose:
+      - when: {xg: {ref: ball_holder, gt: 0.08}}
+        actions: [{actor: ball_holder, type: shoot, placement: auto, style: placed}]
+      - when: always
+        actions: [{actor: ball_holder, type: pass, to: {best_teammate: {score: xt, zone: box}}, style: ground}]
+    done_when: {any: [{event: shot_taken}, {event: pass_completed}]}
+    timeout_s: 3
+    on_timeout: abort
+success:
+  any: [{event: shot_taken}, {all: [{possession: us}, {ball_in_zone: box}]}]
+abort:
+  any: [{event: possession_lost}, {goal_side_count: {team: them, ge: 7}}]
+max_duration_s: 14
+cooldown_s: 0
+soft_hints: {risk: 0.5, chain_depth: 3, tempo: fast}

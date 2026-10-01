@@ -23,8 +23,8 @@ with M1. :data:`Violation` is shaped so they slot in unchanged.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable
 
 import numpy as np
 

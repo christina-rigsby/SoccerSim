@@ -13,9 +13,9 @@ from soccersim.domain.entities import Team
 from soccersim.domain.fixtures import opponent_buildup_snapshot, wing_overload_snapshot
 from soccersim.plays import PlayExecution, PlayState, StepState, load_library
 from soccersim.plays.anchors import anchor_from_spec
-from soccersim.plays.triggers import trigger_from_spec
 from soccersim.plays.play import Play, PlayStep
 from soccersim.plays.rehearsal import rehearse
+from soccersim.plays.triggers import trigger_from_spec
 
 OVERLAP = {"wide_creator": 11, "overlap_runner": 5, "box_target": 10, "runner_in_behind": 9}
 UNDERLAP = {"wide_creator": 11, "underlap_runner": 5, "deep_lying_passer": 6, "box_target": 10}

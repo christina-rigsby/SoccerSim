@@ -8,16 +8,6 @@ as onside in every case, which is where a naive implementation using ``>=`` goes
 import numpy as np
 import pytest
 
-from soccersim.domain.entities import (
-    BallState,
-    CapabilityProfile,
-    PlayerState,
-    Team,
-    Waypoint,
-)
-from soccersim.domain.fixtures import wing_overload_snapshot
-from soccersim.domain.pitch import Pitch, vec
-from soccersim.domain.state import GameState, TeamState
 from soccersim.constraints.feasibility import (
     Violation,
     check_in_bounds,
@@ -28,6 +18,14 @@ from soccersim.constraints.feasibility import (
     is_offside,
     reachability,
 )
+from soccersim.domain.entities import (
+    CapabilityProfile,
+    PlayerState,
+    Team,
+    Waypoint,
+)
+from soccersim.domain.fixtures import wing_overload_snapshot
+from soccersim.domain.pitch import Pitch, vec
 
 PITCH = Pitch()
 # Back four at x = 40, 30, 25, 20 -> the second-last defender is at x = 30.

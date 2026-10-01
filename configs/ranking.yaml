@@ -1,0 +1,73 @@
+# Module 2 — play ranking (spec §9). All scores are in EPV units.
+
+# objective -> strategy weighted graph. graph_path_value(objective, strategy) =
+# objective_value[objective] * modifiers + strategy_value[strategy].
+objective_value:
+  retain_possession: 0.010
+  progress_ball: 0.030
+  create_chance: 0.045
+  score: 0.060
+  regain_possession: 0.035
+  delay: 0.015
+  protect_goal: 0.030
+
+strategy_value:
+  wide_overload: 0.004
+  central_combination: 0.006
+  switch_overload: 0.004
+  exploit_depth: 0.006
+  local_combination: 0.005
+  build_from_back: 0.010
+  counter: 0.012
+  circulation: 0.0
+  high_press: 0.004
+  mid_block: 0.002
+  low_block: 0.004
+  counterpress: 0.010
+  generated: 0.0
+
+# Game-state modifiers: multiply an objective's value when the condition holds.
+game_state_modifiers:
+  - when: {score_diff_lt: 0, minute_gt: 75}
+    multiply: {create_chance: 1.6, score: 1.8, retain_possession: 0.5}
+  - when: {score_diff_gt: 0, minute_gt: 75}
+    multiply: {retain_possession: 1.8, protect_goal: 1.5, create_chance: 0.8}
+
+# Soft penalties (subtracted).
+penalties:
+  risk: 0.02              # * soft_hints.risk
+  fatigue: 0.015          # * mean (1 - stamina) of bound players
+  tactical_fit: 0.01      # * mean hint-rank cost of the assignment
+  chain_depth: 0.005      # kappa * chain_depth
+  execution_confidence: 0.012  # * (1 - mean prefers-weighted capability of bound players)
+
+lambda_assign: 0.01       # * normalized_assignment_cost
+
+assignment:
+  w_hint: 1.0
+  w_pref: 1.0
+  w_dist: 0.25            # per second of travel time to the role start
+  w_fatigue: 0.5
+  infeasible_cost: 1000000.0
+  travel_speed: 7.0       # m/s used to turn distance into travel time
+
+selection:
+  temperature: 0.0        # 0 = argmax; self-play overrides with tau > 0
+  preempt_margin: 0.02
+  rerank_interval_s: 2.0
+
+critic:
+  enabled: false
+  weight: 1.0             # critic value enters the score in EPV units
+  lookahead: false        # optional response-model one-step lookahead (spec §10.5)
+  lookahead_gamma: 0.5
+
+# Module 3 activation. "on_gap" (default) = the generator is consulted only when no
+# non-fallback library play is feasible, or the best library score is below
+# `threshold`. "always" = every decision samples k generated plays (spec Phase C).
+generator:
+  enabled: false
+  activation: on_gap
+  threshold: 0.03
+  k: 4
+  phases: [in_possession, transition_attack]
