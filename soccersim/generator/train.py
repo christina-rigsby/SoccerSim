@@ -442,3 +442,38 @@ def compare_generated_vs_library(ckpt: str | Path, n_episodes: int = 24, workers
     meets = gm >= lm - 0.2 * abs(lm)
     return {"library_mean": lm, "generated_mean": gm, "library_plays": means["library"][1],
             "generated_plays": means["generated"][1], "meets_target": bool(meets)}
+
+
+def compare_critic_ranking(ckpt: str | Path, n_episodes: int = 60, workers: int = 4, seed: int = 21) -> dict[str, Any]:
+    """M7 acceptance: Module 2 with the critic in the score vs without, same games and opponents."""
+    from ..selfplay.runner import run_jobs
+    from ..sim.scenarios import SCENARIO_TYPES, sample_scenario
+
+    rng = np.random.default_rng(seed)
+    base = []
+    for _ in range(n_episodes):
+        sc = sample_scenario(rng, SCENARIO_TYPES[:-2] + ("random_open_play",))
+        base.append({"seed": int(rng.integers(1 << 31)), "scenario": sc.to_dict(),
+                     "away": {"id": "library", "kind": "library", "temperature": 0.0}, "randomise": False,
+                     "max_time_s": 30.0})
+    specs = {
+        "without_critic": {"id": "library", "kind": "library", "temperature": 0.0},
+        "with_critic": {"id": "critic", "kind": "agent", "checkpoint": str(ckpt), "generator": False,
+                        "critic": True, "temperature": 0.0},
+    }
+    out = {}
+    for name, home in specs.items():
+        jobs = [{**b, "episode_id": f"C-{name}-{i}", "home": home} for i, b in enumerate(base)]
+        res: list[dict] = []
+        run_jobs(jobs, None, workers=workers, on_result=res.append, progress_every=0)
+        r = [row["reward"] for x in res for row in x["rows"] if row["team"] == 0]
+        epv = [row["epv_end"] - row["epv_start"] for x in res for row in x["rows"] if row["team"] == 0]
+        out[name] = {"mean_play_reward": float(np.mean(r)), "mean_epv_delta": float(np.mean(epv)),
+                     "plays": len(r), "shots": int(sum(x["episode"]["shots_home"] for x in res))}
+    out["improves"] = out["with_critic"]["mean_play_reward"] > out["without_critic"]["mean_play_reward"]
+    path = Path(ckpt) / "critic_metrics.json"
+    if path.exists():
+        m = json.loads(path.read_text())
+        m["ranking_ab"] = out
+        path.write_text(json.dumps(m, indent=2))
+    return out
