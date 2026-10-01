@@ -1,2 +1,3 @@
   BC examples from logs: 12000
   earlier promoted plays: 11 from runs [1, 2]
+  mutation filtering: 209 plays evaluated, 109 survivors (73 from earlier promoted plays)
