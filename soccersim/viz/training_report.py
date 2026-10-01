@@ -78,6 +78,8 @@ def runs_summary(models_dir: str | Path) -> list[dict[str, Any]]:
         rows.append({
             "run": n, "continued_from": st.get("continued_from"), "start_reason": st.get("start_reason"),
             "pool_fingerprint": st.get("pool_fingerprint"), "updates": st.get("update", 0),
+            "pool_version": (st.get("pool") or {}).get("pool_version", 1),
+            "held_out_styles": (st.get("pool") or {}).get("held_out_styles", []),
             "seeded_from_runs": st.get("seeded_from_runs") or [],
             "gate": None if not gate else {"passed": gate.get("passed"), "failed": gate.get("failed_styles", []),
                                            "styles": gate.get("styles", {})},
@@ -188,19 +190,24 @@ def build_highlights(models_dir: str | Path, out: str | Path, n_games: int = 12,
     league_dir = latest_run_dir(models_dir) or Path(models_dir) / "league"
     ckpt = league_dir if (league_dir / "main.pt").exists() else Path(models_dir)
     gfile = "main.pt" if ckpt == league_dir else "generator.pt"
-    styles = list(load_config("league")["scripted_styles"])
+    from ..selfplay.policies import style_spec
+
+    lcfg = load_config("league")
+    styles = list(lcfg["scripted_styles"])
+    forms = list(lcfg["formations"])
     rng = np.random.default_rng(seed)
     types = ("final_third_attack", "transition_win", "mid_progression", "random_open_play")
     jobs = []
     for k in range(n_games):
-        sc = Scenario(type=types[k % len(types)], attacking_team=0, minute=float(rng.uniform(10, 85)))
+        sc = Scenario(type=types[k % len(types)], attacking_team=0, minute=float(rng.uniform(10, 85)),
+                      home_formation=str(rng.choice(forms)), away_formation=str(rng.choice(forms)))
         jobs.append({
             "episode_id": f"H{k:02d}", "seed": int(rng.integers(1 << 31)), "scenario": sc.to_dict(),
             "home": {"id": "agent", "kind": "agent", "checkpoint": str(ckpt), "generator_file": gfile,
                      "activation": "on_gap", "k": 4, "critic": True, "gen_temperature": 0.8},
-            "away": {"id": styles[k % len(styles)], "kind": "style", "style": styles[k % len(styles)]},
+            "away": style_spec(styles[k % len(styles)], lcfg),
             "randomise": False, "save_tracking": True, "max_time_s": 30.0,
-            "title": f"Agent vs {styles[k % len(styles)]} · {sc.type}",
+            "title": f"Agent ({sc.home_formation}) vs {styles[k % len(styles)]} ({sc.away_formation}) · {sc.type}",
         })
     base = dict(jobs[0], episode_id="H-lib", home={"id": "library", "kind": "library"},
                 title=f"Library only vs {styles[0]} · {jobs[0]['scenario']['type']} (baseline)")

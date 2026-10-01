@@ -73,6 +73,14 @@ generator only if the opponent pool is unchanged and the previous run passed its
 per-style regression gate; otherwise it starts from the last good or the pretrained
 generator (D-044). `league --fresh` and `league --force-continue` override that choice.
 
+The opponent pool is versioned and frozen (pool v2, D-045): seven scripted styles
+(`high_press`, `mid_block`, `low_block_counter`, `possession`, `direct`, `wing_play`,
+`chaotic`) that differ in which plays they prefer or avoid and how predictable they are,
+never in formation. `possession` and `wing_play` are held out: they are not in Phase A data
+or league training and are used only to evaluate. Changing the pool means bumping
+`pool_version`, regenerating Phase A data (`phase-a`, `heldout-ref`), retraining the critic
+and generator, and starting a new run lineage; `data/run_pool_v2.sh` does all of it.
+
 ### Seeing what self-play is doing
 
 - `out/selfplay_report.html` — where the library runs out on the pitch, play usage, critic

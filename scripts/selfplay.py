@@ -1,6 +1,7 @@
 """Self-play pipeline CLI (spec §11, milestones M6–M9).
 
     python scripts/selfplay.py phase-a --episodes 13000 --workers 4      # >=200k decision records
+    python scripts/selfplay.py heldout-ref --episodes 1500               # library v held-out styles
     python scripts/selfplay.py report                                    # play frequency / success
     python scripts/selfplay.py fit-xt                                    # sim-derived xT
     python scripts/selfplay.py train-critic                              # M7 critic + response model
@@ -9,7 +10,8 @@
     python scripts/selfplay.py promote                                   # latest run's elites -> run_<N>/
     python scripts/selfplay.py viz                                       # HTML report + replays
 
-Defaults read ``configs/training.yaml`` (profile ``quick`` or ``spec``).
+Defaults read ``configs/training.yaml`` (profile ``quick`` or ``spec``). The self-play data
+root defaults to the current opponent pool's (``configs/league.yaml: data``).
 """
 
 from __future__ import annotations
@@ -22,7 +24,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-DATA = ROOT / "data" / "selfplay"
 MODELS = ROOT / "data" / "models"
 OUT = ROOT / "out"
 
@@ -33,6 +34,17 @@ def cmd_phase_a(a):
     jobs = phase_a_jobs(a.episodes, seed=a.seed, temperature=a.temperature, tracking_every=a.tracking_every,
                         run_id=a.run_id)
     out = run_jobs(jobs, a.root, a.run_id, workers=a.workers)
+    print(json.dumps(out, indent=2))
+
+
+def cmd_heldout_ref(a):
+    from soccersim.selfplay.runner import heldout_reference_jobs, run_jobs
+    from soccersim.selfplay.runs import data_paths
+
+    root = data_paths()["heldout_reference"]
+    if root is None:
+        raise SystemExit("configs/league.yaml has no data.heldout_reference")
+    out = run_jobs(heldout_reference_jobs(a.episodes, seed=a.seed), root, "heldout_ref", workers=a.workers)
     print(json.dumps(out, indent=2))
 
 
@@ -87,8 +99,10 @@ def cmd_viz(a):
 
 
 def main() -> None:
+    from soccersim.selfplay.runs import data_paths
+
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--root", default=str(DATA), help="self-play log directory")
+    p.add_argument("--root", default=str(data_paths()["selfplay"]), help="self-play log directory")
     p.add_argument("--models", default=str(MODELS), help="model / league directory")
     p.add_argument("--profile", default=None, help="training profile: quick | spec")
     p.add_argument("--workers", type=int, default=4)
@@ -100,6 +114,10 @@ def main() -> None:
     s.add_argument("--tracking-every", type=int, default=500)
     s.add_argument("--run-id", default="phase_a")
     s.set_defaults(fn=cmd_phase_a)
+    s = sub.add_parser("heldout-ref", help="library v held-out styles, for promotion medians only")
+    s.add_argument("--episodes", type=int, default=1500)
+    s.add_argument("--seed", type=int, default=7)
+    s.set_defaults(fn=cmd_heldout_ref)
     sub.add_parser("report").set_defaults(fn=cmd_report)
     s = sub.add_parser("fit-xt")
     s.add_argument("--out", default=str(ROOT / "data" / "xt" / "xt_sim.json"))

@@ -7,8 +7,9 @@ Players:
 - **main exploiter** — trained only against the current main agent; reset to the Phase B
   generator every ``main_exploiter_reset_every`` updates.
 - **league exploiter** — trained against the whole pool.
-- **scripted styles** — library-only teams with fixed play weights; ``possession`` is held
-  out of training entirely and only used for evaluation.
+- **scripted styles** — library-only teams with fixed play preferences and their own selection
+  temperature; the ``held_out_styles`` are kept out of training entirely and only used for
+  evaluation (they are not in Phase A data either).
 
 Opponents are sampled with prioritised fictitious self-play. Each update runs games in a
 process pool, logs them to Parquet (continual critic data), updates every learner with
@@ -36,18 +37,22 @@ from ..schema import load_library
 from ..sim.env import held_out_sim
 from ..sim.scenarios import SCENARIO_TYPES, sample_scenario
 from .pfsp import pfsp_weights
+from .policies import check_styles, style_spec
 from .qd_archive import Archive, descriptor, seed_archive
 from .runner import run_jobs
 from .runs import (
     LEARNERS,
     PROMOTED_DIR,
+    check_base_models,
     latest_run_dir,
     next_run_number,
     plan_start,
     pool_definition,
     pool_fingerprint,
+    pool_label,
     prior_promoted,
     read_state,
+    run_dirs,
     runs_root,
 )
 
@@ -60,7 +65,7 @@ class League:
     passing an existing run directory resumes it."""
 
     RUN_KEYS = ("run", "promotion_run", "pool", "pool_fingerprint", "continued_from", "start_from", "start_reason",
-                "seeded_from_runs", "gate")
+                "seeded_from_runs", "seeds_to_evaluate", "gate")
 
     def __init__(self, models_dir: str | Path, data_root: str | Path, profile: str | None = None,
                  seed: int = 0, run_dir: str | Path | None = None, start_mode: str = "auto",
@@ -72,6 +77,7 @@ class League:
         self.lcfg = load_config("league")
         self.rng = np.random.default_rng(seed)
         self.lib = load_library()
+        check_styles(self.lcfg, self.lib)
         self.promoted_root = Path(promoted_root) if promoted_root else PROMOTED_DIR
         min_evals = self.tcfg["qd"][f"min_evals_{self.prof}"]
         if run_dir is None:
@@ -106,6 +112,7 @@ class League:
 
     def _create(self, n: int, start_mode: str, min_evals: int) -> None:
         """Set up run ``n``: starting generator (option 4 guardrails), KL anchor, seeded archive."""
+        check_base_models(self.models, self.lcfg)
         plan = plan_start(self.models, self.lcfg, start_mode)
         prev_dir = latest_run_dir(self.models)
         self.dir.mkdir(parents=True, exist_ok=False)
@@ -135,7 +142,10 @@ class League:
             state["elo"][snap] = state["elo"].get("main", self.lcfg["initial_elo"])
         prior = prior_promoted(before_run=n, root=self.promoted_root)
         archive = Archive(min_evals)
-        seed_archive(archive, prior)
+        # Earlier evaluations only count if they were earned against this same opponent pool.
+        fp = pool_fingerprint(self.lcfg)
+        same_pool = {k for k, d in run_dirs(self.models).items() if read_state(d).get("pool_fingerprint") == fp}
+        state["seeds_to_evaluate"] = seed_archive(archive, prior, keep_evals_from=same_pool)
         archive.save(self.dir / "archive.json")
         state["seeded_from_runs"] = sorted({p.provenance.get("run") for p in prior if p.provenance})
         (self.dir / "state.json").write_text(json.dumps(state, indent=1, default=str))
@@ -144,7 +154,7 @@ class League:
 
     def spec(self, pid: str) -> dict[str, Any]:
         if pid in self.lcfg["scripted_styles"]:
-            return {"id": pid, "kind": "style", "style": pid, "temperature": 0.01}
+            return style_spec(pid, self.lcfg)
         if pid == "library":
             return {"id": "library", "kind": "library", "temperature": 0.01}
         file = f"{pid}.pt" if pid in LEARNERS else f"{pid.replace('@', '_')}.pt"
@@ -278,6 +288,34 @@ class League:
                 self.archive.add(e["play"], e["desc"], rw, job["opponent"], source="refine")
         return len(jobs)
 
+    def evaluate_seeds(self, workers: int = 4) -> int:
+        """Evaluate archive seeds carried in from a different opponent pool against this run's
+        training styles, so they defend their niche on today's terms (D-045)."""
+        from ..generator.train import _eval_generated_job
+
+        todo = [pid for pid in (self.run_info.get("seeds_to_evaluate") or []) if pid in self.archive.plays]
+        if not todo:
+            return 0
+        rollouts = max(2, -(-self.archive.min_evals // len(self.styles)))
+        jobs = []
+        for pid in todo:
+            e = self.archive.plays[pid]
+            for style in self.styles:
+                jobs.append({"play": e["play"], "band": e["desc"][0], "opponent": style,
+                             "seeds": [int(s) for s in self.rng.integers(0, 1 << 30, rollouts * 3)],
+                             "rollouts": rollouts})
+        import multiprocessing as mp
+
+        with mp.get_context("fork").Pool(workers) as pool:
+            results = pool.map(_eval_generated_job, jobs)
+        for job, r in zip(jobs, results, strict=True):
+            e = self.archive.plays[r["id"]]
+            for rw in r["rewards"]:
+                e["evals"].append([float(rw), job["opponent"], f"seed-reeval-run{e.get('prior_run')}"])
+        self.run_info["seeds_to_evaluate"] = []
+        self.save()
+        return len(todo)
+
     def evaluate(self, n: int = 8, workers: int = 4, activation: str = "on_gap") -> dict[str, Any]:
         """Main agent vs every scripted style (held-out one included) vs the library baseline."""
         out: dict[str, Any] = {}
@@ -395,8 +433,12 @@ def run_league(models_dir: str | Path, data_root: str | Path, updates: int | Non
     """Create the next run (or resume ``run_dir``), train, check, evaluate and gate it."""
     lg = League(models_dir, data_root, profile, run_dir=run_dir, start_mode=start_mode, promoted_root=promoted_root)
     ri = lg.run_info
-    print(f"  run {ri['run']}: starts from {ri['start_from']} ({ri['start_reason']}); "
-          f"archive seeded from runs {ri.get('seeded_from_runs') or 'none'}", flush=True)
+    print(f"  run {ri['run']} (opponent pool {pool_label(lg.lcfg)}): starts from {ri['start_from']} "
+          f"({ri['start_reason']}); archive seeded from runs {ri.get('seeded_from_runs') or 'none'}", flush=True)
+    if ri.get("seeds_to_evaluate"):
+        k = lg.evaluate_seeds(workers)
+        print(f"  re-evaluated {k} archive seeds from a different opponent pool against "
+              f"{', '.join(lg.styles)}", flush=True)
     n = updates or lg.tcfg["ppo"][lg.prof]["updates"]
     every = lg.lcfg["held_out_eval_every"]
     for _ in range(n):

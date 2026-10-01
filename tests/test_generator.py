@@ -256,7 +256,7 @@ def test_prior_promoted_seed_the_archive_and_are_not_promoted_again(tmp_path):
     assert [p.id for p in prior_promoted(before_run=2, root=root)] == ["gen_old"]
     assert prior_promoted(before_run=1, root=root) == []
     a = Archive(min_evals=2)
-    assert seed_archive(a, prior_promoted(root=root)) == 1
+    assert seed_archive(a, prior_promoted(root=root)) == []
     cell = next(iter(a.cells().values()))
     assert cell["elite"] == "gen_old" and a.plays["gen_old"]["prior_run"] == 1
     # A new play in the same niche must beat the carried-in elite to take the niche.
@@ -267,6 +267,12 @@ def test_prior_promoted_seed_the_archive_and_are_not_promoted_again(tmp_path):
     assert next(iter(a.cells().values()))["elite"] == "gen_old"
     a.add(new, desc, 0.09, "z")
     assert next(iter(a.cells().values()))["elite"] == "gen_new"
+    # From a run with a different opponent pool, the old evaluations are dropped and the play
+    # is returned for re-evaluation against the current pool.
+    b = Archive(min_evals=2)
+    assert seed_archive(b, prior_promoted(root=root), keep_evals_from={2, 3}) == ["gen_old"]
+    assert b.plays["gen_old"]["evals"] == [] and b.plays["gen_old"]["prior_run"] == 1
+    assert seed_archive(Archive(2), prior_promoted(root=root), keep_evals_from={1}) == []
 
 
 def test_mutants_of_promoted_plays_record_their_lineage():
@@ -277,3 +283,68 @@ def test_mutants_of_promoted_plays_record_their_lineage():
     rng = np.random.default_rng(1)
     m = next(x for x in (mutate(parent, rng) for _ in range(50)) if x is not None)
     assert m.provenance["parent"] == "gen_parent" and m.provenance["parent_run"] == 2
+
+
+def test_pool_v2_styles_are_valid_and_two_are_held_out():
+    from soccersim.config import load_config
+    from soccersim.schema import load_library
+    from soccersim.selfplay.policies import check_styles, style_spec
+
+    lc = load_config("league")
+    check_styles(lc, load_library())
+    assert len(lc["scripted_styles"]) == 7 and sorted(lc["held_out_styles"]) == ["possession", "wing_play"]
+    assert style_spec("chaotic", lc)["temperature"] > style_spec("high_press", lc)["temperature"]
+    # Styles differ in what they do, never in formation (D-045).
+    assert all(set(st) <= {"favour", "temperature"} for st in lc["scripted_styles"].values())
+    bad = {**lc, "scripted_styles": {**lc["scripted_styles"], "x": {"favour": {"no_such_play": 0.1}}}}
+    with pytest.raises(ValueError, match="no_such_play"):
+        check_styles(bad, load_library())
+    with pytest.raises(ValueError, match="nothing left"):
+        check_styles({**lc, "held_out_styles": list(lc["scripted_styles"])}, load_library())
+
+
+def test_held_out_styles_never_appear_in_training_data():
+    from soccersim.config import load_config
+    from soccersim.selfplay.runner import heldout_reference_jobs, phase_a_jobs
+
+    held = set(load_config("league")["held_out_styles"])
+    teams = {j[side]["id"] for j in phase_a_jobs(400, seed=3) for side in ("home", "away")}
+    assert not teams & held and len(teams) == 1 + 7 - len(held)
+    forms = {j["scenario"]["home_formation"] for j in phase_a_jobs(60, seed=3)}
+    assert len(forms) > 1  # formations stay random for every team
+    ref = heldout_reference_jobs(20)
+    assert {j[s]["id"] for j in ref for s in ("home", "away")} == held | {"library"}
+
+
+def test_forced_evaluations_randomise_formations():
+    from soccersim.config import load_config
+    from soccersim.generator.train import forced_scenario
+
+    lc = load_config("league")
+    pairs = {(forced_scenario("mid_progression", 0, k, lc).home_formation,
+              forced_scenario("mid_progression", 0, k, lc).away_formation) for k in range(30)}
+    assert len(pairs) > 3
+    assert forced_scenario("mid_progression", 0, 5, lc) == forced_scenario("mid_progression", 0, 5, lc)
+    old = forced_scenario("mid_progression", 0, 5, {**lc, "randomise_eval_formations": False})
+    assert (old.home_formation, old.away_formation) == ("4-3-3", "4-3-3")
+
+
+def test_base_models_must_match_the_opponent_pool(tmp_path):
+    import json
+
+    from soccersim.config import load_config
+    from soccersim.selfplay.runs import check_base_models, pool_definition, pool_fingerprint
+
+    lc = load_config("league")
+    with pytest.raises(RuntimeError, match="predates pool versioning"):
+        check_base_models(tmp_path, lc)  # pool v2 needs models trained for it
+    v1 = {k: v for k, v in lc.items() if k not in ("pool_version", "randomise_eval_formations", "formations")}
+    check_base_models(tmp_path, v1)  # legacy models are fine for a legacy (v1) pool
+    assert pool_definition(v1) != pool_definition(lc)
+    meta = {"critic_pool_fingerprint": pool_fingerprint(lc), "generator_pool_fingerprint": "something_else"}
+    (tmp_path / "meta.json").write_text(json.dumps(meta))
+    with pytest.raises(RuntimeError, match="generator"):
+        check_base_models(tmp_path, lc)
+    meta["generator_pool_fingerprint"] = pool_fingerprint(lc)
+    (tmp_path / "meta.json").write_text(json.dumps(meta))
+    check_base_models(tmp_path, lc)

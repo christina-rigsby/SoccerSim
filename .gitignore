@@ -10,3 +10,5 @@ out/
 .DS_Store
 data/selfplay/
 data/models/
+data/selfplay_pool_v2/
+data/heldout_reference_pool_v2/

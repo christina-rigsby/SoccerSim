@@ -147,7 +147,8 @@ def train_critic_and_response(root: str | Path, out_dir: str | Path, profile: st
     }
     (out / "critic_metrics.json").write_text(json.dumps(result, indent=2))
     meta = _meta(out)
-    meta.update(profile=prof, critic_trained=time.strftime("%Y-%m-%d %H:%M"), data_root=str(root))
+    meta.update(profile=prof, critic_trained=time.strftime("%Y-%m-%d %H:%M"), data_root=str(root),
+                **_pool_meta("critic"))
     (out / "meta.json").write_text(json.dumps(meta, indent=2))
     return {k: v for k, v in result.items() if not k.endswith("history")}
 
@@ -185,12 +186,33 @@ def evaluate_response(resp: ResponseModel, train: Dataset, test: Dataset, bs: in
             "event_bce": float(np.concatenate(bce).mean()), "event_base_bce": float(base_bce)}
 
 
+def _pool_meta(what: str) -> dict:
+    """The opponent pool a model was trained for (checked before a league run starts)."""
+    from ..selfplay.runs import pool_fingerprint
+
+    lcfg = load_config("league")
+    return {f"{what}_pool_fingerprint": pool_fingerprint(lcfg), f"{what}_pool_version": lcfg.get("pool_version", 1)}
+
+
 def _meta(out: Path) -> dict:
     p = out / "meta.json"
     return json.loads(p.read_text()) if p.exists() else {}
 
 
 # -- mutation filtering ------------------------------------------------------------------------
+
+
+def forced_scenario(typ: str, attacking: int, seed: int, league_cfg: dict | None = None) -> Scenario:
+    """Scenario for a forced play evaluation. With ``randomise_eval_formations`` (pool v2) both
+    formations are drawn from the pool's formations, deterministically per seed, so a play's
+    evaluation does not hinge on one formation match-up (D-045)."""
+    lcfg = league_cfg or load_config("league")
+    if not lcfg.get("randomise_eval_formations"):
+        return Scenario(type=typ, attacking_team=attacking)
+    forms = list(lcfg["formations"])
+    rng = np.random.default_rng([seed, 9173])
+    return Scenario(type=typ, attacking_team=attacking, home_formation=str(rng.choice(forms)),
+                    away_formation=str(rng.choice(forms)))
 
 
 def _eval_play_job(job: dict) -> dict:
@@ -203,7 +225,7 @@ def _eval_play_job(job: dict) -> dict:
         types, attacking = PLAY_SCENARIOS[job["parent"]]
     rewards, states = [], []
     for seed in job["seeds"]:
-        sc = Scenario(type=types[seed % len(types)], attacking_team=attacking)
+        sc = forced_scenario(types[seed % len(types)], attacking, seed)
         run = run_play(lib, play.id, seed, sc, max_time_s=20.0, extra=play)
         rec = run.forced_record(play.id)
         if rec is None:
@@ -225,7 +247,7 @@ def _eval_generated_job(job: dict) -> dict:
     typ = BAND_SCENARIOS.get(job["band"], "random_open_play")
     rewards = []
     for seed in job["seeds"]:
-        run = run_play(lib, play.id, seed, Scenario(type=typ, attacking_team=0), max_time_s=20.0, extra=play,
+        run = run_play(lib, play.id, seed, forced_scenario(typ, 0, seed), max_time_s=20.0, extra=play,
                        opponent_style=job.get("opponent"))
         rec = run.forced_record(play.id)
         if rec is None:
@@ -419,7 +441,7 @@ def pretrain_generator(root: str | Path, out_dir: str | Path, profile: str | Non
               "validity": validity, "matched": matched, "elapsed_s": round(time.time() - t0, 1)}
     (out / "generator_metrics.json").write_text(json.dumps(result, indent=2, default=str))
     meta = _meta(out)
-    meta.update(generator_trained=time.strftime("%Y-%m-%d %H:%M"), profile=prof)
+    meta.update(generator_trained=time.strftime("%Y-%m-%d %H:%M"), profile=prof, **_pool_meta("generator"))
     (out / "meta.json").write_text(json.dumps(meta, indent=2))
     return {k: v for k, v in result.items() if k != "history"}
 

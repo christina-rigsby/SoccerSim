@@ -10,6 +10,46 @@ actually settled — always paired with an `OPEN_QUESTIONS.md` entry).
 
 ---
 
+## D-045 · Opponent pool v2: seven styles, two held out, formations never tied to a style
+**Date:** 2026-10-01 · **Status:** `active`
+
+The scripted opponent pool is versioned (`pool_version` in `configs/league.yaml`) and frozen
+at v2. Changing anything in `runs.pool_definition` is a version bump and starts a new run
+lineage (D-044), so runs only ever continue along one pool.
+
+- **Seven styles:** `high_press`, `mid_block`, `low_block_counter`, `possession`, `direct`,
+  `wing_play`, `chaotic`. Each is defined by play preferences only: score bonuses for the
+  library plays it likes and negative bonuses for the ones it avoids, plus a selection
+  temperature (`chaotic` has no preferences and a higher temperature, so it is unpredictable).
+- **No formation per style.** Every style, and every forced play evaluation (archive
+  refinement, archive seeds, promotion), draws its formation at random from `formations`.
+  A style can only be recognised from what it does, not from its shape.
+- **Two held-out styles, `possession` and `wing_play`,** used only for evaluation and the
+  regression gate. They are also kept out of Phase A self-play data, so the critic, response
+  model and behaviour cloning never see them (in pool v1, `possession` was in Phase A data
+  and only kept out of league training). Promotion still needs the library's median reward
+  against them; that comes from separate held-out reference games
+  (`data/heldout_reference_pool_v2/`) that no training step reads.
+- **Base models are tied to a pool.** `meta.json` records the pool fingerprint the critic
+  and generator were trained for; a league run refuses to start on models trained for a
+  different pool. Pool v1 models are kept in `data/models/pool_v1/`, and runs 1–3 keep
+  their own copies.
+- **Carried-in plays are re-judged.** Promoted plays from runs on a different pool still
+  seed the archive (D-044, option 3) but without their old evaluations, which were earned
+  against different opponents; the run re-evaluates them against its training styles first.
+- **The reward does not change with the pool** (same xT surface, same reward config), so
+  scores across pools stay comparable.
+
+**Rationale:** the v1 styles differed only by a small bonus on one to three plays, so
+"beats every style" said little. More distinct styles widen what the generator must cope
+with, and two held-out styles make the generalisation check less dependent on one opponent.
+Fixing formations per style was rejected: the generator could learn to key on formation, a
+shortcut that fails as soon as a real team plays a style in a different shape.
+
+**Alternatives considered viable:** a learned or randomly perturbed style each game
+(domain randomisation over preferences) instead of seven fixed styles; rotating which
+styles are held out across lineages.
+
 ## D-044 · League runs build on earlier runs, but only along a consistent opponent pool
 **Date:** 2026-10-01 · **Status:** `active` (see Q-037)
 

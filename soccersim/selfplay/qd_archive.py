@@ -101,14 +101,19 @@ class Archive:
         return a
 
 
-def seed_archive(archive: Archive, plays) -> int:
+def seed_archive(archive: Archive, plays, keep_evals_from: set[int] | None = None) -> list[str]:
     """Option 3: seed a new run's archive with earlier runs' promoted plays.
 
     Each keeps the evaluations recorded in its provenance (mean and count per opponent), so a
     new play only takes over a niche by beating it there. Seeded plays are marked with
     ``prior_run`` and are never promoted again.
+
+    ``keep_evals_from``: runs whose evaluations are still comparable (same opponent pool).
+    Plays from other runs are seeded without evaluations — their old numbers were earned
+    against different opponents — and the returned ids must be re-evaluated before training.
+    ``None`` keeps every play's evaluations.
     """
-    n = 0
+    pending = []
     for play in plays:
         prov = play.provenance or {}
         cell = prov.get("archive_cell")
@@ -117,7 +122,12 @@ def seed_archive(archive: Archive, plays) -> int:
         desc = [cell["band"], cell["lane"], cell["tempo"], int(cell["passes"]), cell["objective"]]
         d = play.model_dump(mode="json", exclude_none=True)
         per_opp = (prov.get("metrics") or {}).get("per_opponent") or {}
-        evals = []
+        evals: list = []
+        if keep_evals_from is not None and prov.get("run") not in keep_evals_from:
+            archive.plays[play.id] = {"play": d, "cell": cell_key(desc), "desc": desc, "evals": [],
+                                      "prior_run": prov.get("run")}
+            pending.append(play.id)
+            continue
         for opp, m in per_opp.items():
             if m.get("mean_reward") is None:
                 continue
@@ -127,5 +137,4 @@ def seed_archive(archive: Archive, plays) -> int:
             evals = [[mean, "unknown", f"run{prov.get('run')}"]] * archive.min_evals
         archive.plays[play.id] = {"play": d, "cell": cell_key(desc), "desc": desc, "evals": evals,
                                   "prior_run": prov.get("run")}
-        n += 1
-    return n
+    return pending

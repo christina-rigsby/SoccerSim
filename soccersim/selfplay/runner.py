@@ -24,15 +24,23 @@ from .worker import run_job
 
 def phase_a_jobs(n: int, seed: int = 0, temperature: float = 0.01, include_styles: bool = True,
                  tracking_every: int = 0, run_id: str = "a") -> list[dict[str, Any]]:
+    """Phase A games: library v library and library v the *training* scripted styles.
+
+    Held-out styles never appear here, so neither the critic, the response model nor the
+    generator's behaviour cloning has seen them (D-045). Each style plays at its own
+    temperature; ``temperature`` applies to the library team.
+    """
+    from .policies import style_spec
+
     league = load_config("league")
     rng = np.random.default_rng(seed)
-    styles = list(league["scripted_styles"]) if include_styles else []
+    held = set(league["held_out_styles"])
+    styles = [s for s in league["scripted_styles"] if s not in held] if include_styles else []
     jobs = []
     for i in range(n):
         sc = sample_scenario(rng, SCENARIO_TYPES[:-2] + ("random_open_play",), tuple(league["formations"]))
         specs = [{"id": "library", "kind": "library", "temperature": temperature}]
-        if styles:
-            specs += [{"id": s, "kind": "style", "style": s, "temperature": temperature} for s in styles]
+        specs += [style_spec(s, league) for s in styles]
         home = specs[int(rng.integers(len(specs)))]
         away = specs[int(rng.integers(len(specs)))]
         jobs.append({
@@ -40,6 +48,29 @@ def phase_a_jobs(n: int, seed: int = 0, temperature: float = 0.01, include_style
             "home": home, "away": away, "randomise": True,
             "save_tracking": bool(tracking_every and i % tracking_every == 0),
         })
+    return jobs
+
+
+def heldout_reference_jobs(n: int, seed: int = 7, temperature: float = 0.01,
+                           run_id: str = "heldout_ref") -> list[dict[str, Any]]:
+    """Library v each held-out style, for promotion's library medians only.
+
+    Logged to a separate root (``league.yaml: data.heldout_reference``) that no training
+    step reads, so held-out styles stay unseen during training.
+    """
+    from .policies import style_spec
+
+    league = load_config("league")
+    rng = np.random.default_rng(seed)
+    held = list(league["held_out_styles"])
+    lib = {"id": "library", "kind": "library", "temperature": temperature}
+    jobs = []
+    for i in range(n):
+        sc = sample_scenario(rng, SCENARIO_TYPES[:-2] + ("random_open_play",), tuple(league["formations"]))
+        style = style_spec(held[i % len(held)], league)
+        home, away = (lib, style) if rng.random() < 0.5 else (style, lib)
+        jobs.append({"episode_id": f"{run_id}-{i:06d}", "seed": int(rng.integers(1 << 31)), "scenario": sc.to_dict(),
+                     "home": home, "away": away, "randomise": True, "save_tracking": False})
     return jobs
 
 

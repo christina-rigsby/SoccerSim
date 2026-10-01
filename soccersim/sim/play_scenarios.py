@@ -55,12 +55,12 @@ def run_play(library: dict[str, Play], play_id: str, seed: int, scenario: Scenar
     env.reset(seed, scenario)
     forced = ForcedPolicy(library, play_id, extra=extra, ignore_triggers=ignore_triggers,
                           rng=np.random.default_rng(seed))
-    style = None
+    style, temperature = None, None
     if opponent_style:
-        from ..selfplay.policies import style_bonus
+        from ..selfplay.policies import style_bonus, style_temperature
 
-        style = style_bonus(opponent_style)
-    other = RankingPolicy(library, rng=np.random.default_rng(seed + 1), style=style)
+        style, temperature = style_bonus(opponent_style), style_temperature(opponent_style)
+    other = RankingPolicy(library, rng=np.random.default_rng(seed + 1), style=style, temperature=temperature)
     res = env.run(forced, other, max_time_s=max_time_s, stop_on_turnover=False, stop_on_goal=True)
     return PlayRun(seed, scenario, res)
 
