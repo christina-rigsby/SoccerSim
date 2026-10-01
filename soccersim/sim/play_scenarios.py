@@ -49,12 +49,18 @@ class PlayRun:
 
 
 def run_play(library: dict[str, Play], play_id: str, seed: int, scenario: Scenario, max_time_s: float = 25.0,
-             extra: Play | None = None, ignore_triggers: bool = False, env: MatchEnv | None = None) -> PlayRun:
+             extra: Play | None = None, ignore_triggers: bool = False, env: MatchEnv | None = None,
+             opponent_style: str | None = None) -> PlayRun:
     env = env or MatchEnv()
     env.reset(seed, scenario)
     forced = ForcedPolicy(library, play_id, extra=extra, ignore_triggers=ignore_triggers,
                           rng=np.random.default_rng(seed))
-    other = RankingPolicy(library, rng=np.random.default_rng(seed + 1))
+    style = None
+    if opponent_style:
+        from ..selfplay.policies import style_bonus
+
+        style = style_bonus(opponent_style)
+    other = RankingPolicy(library, rng=np.random.default_rng(seed + 1), style=style)
     res = env.run(forced, other, max_time_s=max_time_s, stop_on_turnover=False, stop_on_goal=True)
     return PlayRun(seed, scenario, res)
 

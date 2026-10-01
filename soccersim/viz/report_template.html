@@ -1,0 +1,361 @@
+<title>SoccerSim Self-Play Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a single reading column of numbered pipeline stages (Phase A -> B -> C), each a band of charts. */
+:root {
+  --bg: #f1f4f1; --surface: #fcfcfb; --ink: #15201a; --ink-2: #4f5c53; --ink-3: #7b877f; --rule: #dbe2dc;
+  --grid: #e6ebe7; --turf: #e3ece4; --chalk: #b9c8bd;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a;
+  --seq-0: #eef4fc; --seq-1: #b7d3f6; --seq-2: #6da7ec; --seq-3: #2a78d6; --seq-4: #184f95;
+  --div-neg: #e34948; --div-mid: #f0efec; --div-pos: #2a78d6;
+  --good: #217a45; --bad: #b3372a;
+  --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --body: "IBM Plex Sans", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1411; --surface: #1a1a19; --ink: #f2f5f2; --ink-2: #c3c2b7; --ink-3: #8f978f; --rule: #2d342f;
+    --grid: #2a2f2b; --turf: #1d2a21; --chalk: #3e5444;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+    --seq-0: #1e2733; --seq-1: #184f95; --seq-2: #256abf; --seq-3: #3987e5; --seq-4: #86b6ef;
+    --div-neg: #e66767; --div-mid: #383835; --div-pos: #3987e5;
+    --good: #5fcf8c; --bad: #ff8a78; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1411; --surface: #1a1a19; --ink: #f2f5f2; --ink-2: #c3c2b7; --ink-3: #8f978f; --rule: #2d342f;
+  --grid: #2a2f2b; --turf: #1d2a21; --chalk: #3e5444;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+  --seq-0: #1e2733; --seq-1: #184f95; --seq-2: #256abf; --seq-3: #3987e5; --seq-4: #86b6ef;
+  --div-neg: #e66767; --div-mid: #383835; --div-pos: #3987e5;
+  --good: #5fcf8c; --bad: #ff8a78; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 56px; display: grid; gap: 36px; }
+h1 { font-family: var(--display); font-size: 44px; line-height: 1; margin: 0; letter-spacing: .01em; text-wrap: balance; }
+h2 { font-family: var(--display); font-size: 28px; margin: 0; text-wrap: balance; display: flex; gap: 12px; align-items: baseline; }
+h2 .stage { font-family: var(--mono); font-size: 13px; color: var(--ink-3); font-weight: 400; letter-spacing: .04em; }
+h3 { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+p { margin: 0; max-width: 68ch; color: var(--ink-2); }
+.lede { font-size: 17px; color: var(--ink-2); max-width: 70ch; margin-top: 10px; }
+section { display: grid; gap: 16px; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 820px) { .grid2, .grid3 { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 14px 16px; min-width: 0; display: grid; gap: 8px; align-content: start; }
+.note { font-size: 13px; color: var(--ink-3); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px; }
+.tile .label { font-size: 12px; color: var(--ink-3); letter-spacing: .04em; }
+.tile .value { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.tile .sub { font-size: 12px; color: var(--ink-2); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; color: var(--ink-2); }
+.legend i { display: inline-block; width: 14px; height: 4px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { fill: var(--ink-2); font-family: var(--body); font-size: 11px; }
+.chart .axis text { fill: var(--ink-3); font-variant-numeric: tabular-nums; }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { padding: 5px 8px; border-bottom: 1px solid var(--rule); text-align: left; }
+th { font-weight: 500; color: var(--ink-3); font-size: 12px; }
+td.n { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+details { border-top: 1px solid var(--rule); padding-top: 6px; }
+summary { cursor: pointer; font-size: 13px; color: var(--ink-2); }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
+pre { font-family: var(--mono); font-size: 12px; overflow: auto; max-height: 320px; background: var(--bg); padding: 10px; border-radius: 6px; margin: 6px 0 0; }
+.pill { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink-2); }
+.pill.good { color: var(--good); border-color: currentColor; }
+.pill.bad { color: var(--bad); border-color: currentColor; }
+.flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; color: var(--ink-2); }
+.flow b { font-weight: 600; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 4px 9px; }
+a { color: var(--s1); }
+#tip { position: fixed; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 12px; padding: 6px 8px; border-radius: 6px; max-width: 280px; z-index: 10; font-variant-numeric: tabular-nums; }
+.empty { font-size: 13px; color: var(--ink-3); padding: 12px 0; }
+</style>
+
+<div class="wrap" id="app">
+  <header>
+    <h1>Self-Play Lab</h1>
+    <p class="lede">How SoccerSim's play generator learns. Teams first play each other with only the twelve hand-written plays (Phase A). A critic learns what each play is worth in each situation, and a generator learns to write plays in the play language (Phase B). Then the generator competes in a league against copies of itself, exploiters and scripted styles (Phase C). At match time it is called when no hand-written play fits the situation.</p>
+  </header>
+  <div class="tiles" id="tiles"></div>
+  <div class="flow" aria-label="Pipeline"><b>Phase A · library self-play</b> → <b>critic + response model</b> → <b>Phase B · BC + mutation filtering</b> → <b>Phase C · PPO in a league</b> → <b>QD archive</b> → <b>promoted plays (human review)</b></div>
+
+  <section id="gaps">
+    <h2><span class="stage">A</span>Where the play library runs out</h2>
+    <p>For every decision our team made with the ball, Module 2 checked all hand-written plays against their triggers, hard constraints and role requirements. When none fits except the always-available recycle play, that is a <em>library gap</em>, and it is when the generator is consulted.</p>
+    <div class="grid2">
+      <div class="panel"><h3>Library-gap rate by pitch zone</h3><div class="note">Attacking left to right; "near" is the ball side. Darker means the library more often had nothing to offer.</div><div class="chart" id="gapPitch"></div></div>
+      <div class="panel"><h3>How often each play is feasible when we have the ball</h3><div class="note">Share of possession decisions where the play passed every check.</div><div class="chart" id="feasBars"></div></div>
+    </div>
+  </section>
+
+  <section id="usage">
+    <h2><span class="stage">A</span>Library self-play results</h2>
+    <div class="grid2">
+      <div class="panel"><h3>Play choices and success</h3><div class="legend"><span><i style="background:var(--s1)"></i>Share of decisions</span><span><i style="background:var(--s3)"></i>Success rate</span></div><div class="chart" id="usageBars"></div></div>
+      <div class="panel"><h3>Expected threat: placeholder vs fitted from self-play</h3><div class="note">16 × 12 grid, attacking right. The fitted surface comes from value iteration over simulated passes, carries and shots.</div><div class="chart" id="xtMaps"></div></div>
+    </div>
+  </section>
+
+  <section id="models">
+    <h2><span class="stage">B</span>Critic, response model and generator pretraining</h2>
+    <div class="grid3">
+      <div class="panel"><h3>Critic error on held-out games</h3><div class="legend"><span><i style="background:var(--s1)"></i>Critic</span><span><i style="background:var(--s2)"></i>Per-play average</span></div><div class="chart" id="criticCurve"></div></div>
+      <div class="panel"><h3>Predicting the opponent's next play</h3><div class="legend"><span><i style="background:var(--s1)"></i>Response model</span><span><i style="background:var(--s2)"></i>Always guess the most common</span></div><div class="chart" id="respCurve"></div></div>
+      <div class="panel"><h3>Behaviour cloning</h3><div class="legend"><span><i style="background:var(--s1)"></i>Held-out token accuracy</span></div><div class="chart" id="bcCurve"></div><div id="validity"></div></div>
+    </div>
+    <div class="panel"><h3>Mutation filtering: parent play vs its best mutant</h3><div class="note">Each library play was mutated (offsets, action swaps, targets, steps, pass styles, roles) and replayed in matching scenarios. Survivors joined the imitation data.</div><div class="legend"><span><i style="background:var(--s1)"></i>Parent</span><span><i style="background:var(--s2)"></i>Best mutant</span></div><div class="chart" id="mutDots"></div></div>
+  </section>
+
+  <section id="league">
+    <h2><span class="stage">C</span>The league</h2>
+    <p>Each update the main agent plays opponents sampled by prioritised fictitious self-play (harder opponents more often), then PPO nudges the generator toward plays that raised expected possession value, with a KL leash to the pretrained generator.</p>
+    <div class="grid2">
+      <div class="panel"><h3>Reward of the generated plays the main agent called</h3><div class="note">Mean play reward in EPV units per update.</div><div class="chart" id="rewardCurve"></div></div>
+      <div class="panel"><h3>Elo</h3><div class="legend"><span><i style="background:var(--s1)"></i>Main</span><span><i style="background:var(--s2)"></i>Main exploiter</span><span><i style="background:var(--s3)"></i>League exploiter</span></div><div class="chart" id="eloCurve"></div></div>
+      <div class="panel"><h3>Share of the main agent's plays that were generated</h3><div class="chart" id="shareCurve"></div></div>
+      <div class="panel"><h3>Opponent sampling weights (latest update)</h3><div class="chart" id="pfspBars"></div></div>
+    </div>
+    <div class="panel"><h3>Payoff matrix</h3><div class="note">Row player's score against the column player (win 1, draw 0.5, loss 0). Blue favours the row, red the column.</div><div class="chart" id="payoff"></div></div>
+  </section>
+
+  <section id="archive">
+    <h2><span class="stage">C</span>Quality-diversity archive and promotion</h2>
+    <p>Every generated play the league executes is filed by where it starts, its tempo, number of passes and objective. Each niche keeps its best play once it has enough evaluations. Elites that beat the library median in their niche against every scripted style are exported for human review.</p>
+    <div class="grid2">
+      <div class="panel"><h3>Archive coverage by start zone</h3><div class="note">Number of elite plays per start zone.</div><div class="chart" id="archGrid"></div></div>
+      <div class="panel"><h3>Top elites</h3><div class="tablewrap" id="eliteTable"></div></div>
+    </div>
+    <div class="panel"><h3>Promoted plays, pending review</h3><div id="promoted"></div></div>
+  </section>
+
+  <section id="eval">
+    <h2><span class="stage">Eval</span>Main agent vs the library, against every scripted style</h2>
+    <p>Mean reward per play when each team plays the scripted styles. The <em>possession</em> style was never used in training.</p>
+    <div class="panel"><div class="legend"><span><i style="background:var(--s1)"></i>Library only</span><span><i style="background:var(--s2)"></i>Main agent (generator on library gaps)</span></div><div class="chart" id="evalBars"></div><div id="evalNote" class="note"></div></div>
+    <div id="replayLink"></div>
+  </section>
+</div>
+<div id="tip" hidden></div>
+
+<script>
+const D = __DATA__;
+const $ = (id) => document.getElementById(id);
+const NS = "http://www.w3.org/2000/svg";
+const tip = $("tip");
+const fmt = (v, d = 3) => v == null || Number.isNaN(v) ? "–" : Math.abs(v) >= 1000 ? Math.round(v).toLocaleString() : (+v).toFixed(d);
+const pct = (v) => v == null ? "–" : (100 * v).toFixed(1) + "%";
+function el(tag, attrs = {}, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function svg(host, w, h) { host.innerHTML = ""; return el("svg", { viewBox: `0 0 ${w} ${h}`, role: "img", style: `max-width:${Math.round(w * 1.35)}px` }, host); }
+function hover(node, html) {
+  node.addEventListener("mousemove", (e) => { tip.hidden = false; tip.innerHTML = html; tip.style.left = Math.min(e.clientX + 12, innerWidth - 290) + "px"; tip.style.top = (e.clientY + 12) + "px"; });
+  node.addEventListener("mouseleave", () => { tip.hidden = true; });
+}
+function empty(host, msg) { host.innerHTML = `<div class="empty">${msg}</div>`; }
+function niceTicks(lo, hi, n = 4) {
+  if (lo === hi) { hi = lo + 1; }
+  const span = hi - lo, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => s >= step0);
+  const out = []; for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-12; v += step) out.push(+v.toFixed(10));
+  return out;
+}
+
+function lineChart(host, series, opts = {}) {
+  const pts = series.flatMap((s) => s.points);
+  if (!pts.length) return empty(host, opts.empty || "No data yet.");
+  const W = 420, H = 200, L = 48, R = 14, T = 10, B = 26;
+  const s = svg(host, W, H);
+  const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+  let x0 = Math.min(...xs), x1 = Math.max(...xs); if (x0 === x1) x1 = x0 + 1;
+  const yt = niceTicks(opts.y0 ?? Math.min(...ys), opts.y1 ?? Math.max(...ys));
+  const y0 = yt[0], y1 = yt[yt.length - 1];
+  const X = (v) => L + (v - x0) / (x1 - x0) * (W - L - R), Y = (v) => T + (1 - (v - y0) / (y1 - y0 || 1)) * (H - T - B);
+  const ax = el("g", { class: "axis" }, s);
+  for (const v of yt) { el("line", { x1: L, x2: W - R, y1: Y(v), y2: Y(v), stroke: "var(--grid)", "stroke-width": 1 }, ax); const t = el("text", { x: L - 6, y: Y(v) + 4, "text-anchor": "end" }, ax); t.textContent = opts.yfmt ? opts.yfmt(v) : fmt(v, opts.yd ?? 3); }
+  for (const v of niceTicks(x0, x1, 5).filter((v) => Number.isInteger(v))) { const t = el("text", { x: X(v), y: H - 8, "text-anchor": "middle" }, ax); t.textContent = v; }
+  if (opts.xlabel) { const t = el("text", { x: W - R, y: H - 8, "text-anchor": "end" }, ax); t.textContent = opts.xlabel; }
+  for (const se of series) {
+    if (!se.points.length) continue;
+    el("path", { d: se.points.map((p, i) => (i ? "L" : "M") + X(p[0]) + "," + Y(p[1])).join(""), fill: "none", stroke: se.color, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, s);
+    for (const p of se.points) {
+      el("circle", { cx: X(p[0]), cy: Y(p[1]), r: 4, fill: se.color, stroke: "var(--surface)", "stroke-width": 2 }, s);
+      const hit = el("circle", { cx: X(p[0]), cy: Y(p[1]), r: 10, fill: "transparent" }, s);
+      hover(hit, `<b>${se.name}</b><br>${opts.xlabel || "x"} ${p[0]}: ${opts.yfmt ? opts.yfmt(p[1]) : fmt(p[1], 4)}`);
+    }
+  }
+}
+
+function hbars(host, items, opts = {}) {
+  // items: [{label, values:[v1, v2?], tips?}] ; colors per value index
+  if (!items.length) return empty(host, opts.empty || "No data yet.");
+  const n = items[0].values.length, bar = Math.min(12, 22 / n), gap = 2;
+  const rowH = n * bar + (n - 1) * gap + 12;
+  const W = 460, L = opts.left || 190, R = 46, H = items.length * rowH + 24;
+  const s = svg(host, W, H);
+  const all = items.flatMap((i) => i.values).filter((v) => v != null);
+  const lo = Math.min(0, ...all), hi = Math.max(0, ...all, opts.max ?? 0);
+  const X = (v) => L + (v - lo) / ((hi - lo) || 1) * (W - L - R);
+  const ax = el("g", { class: "axis" }, s);
+  for (const v of niceTicks(lo, hi, 4)) { el("line", { x1: X(v), x2: X(v), y1: 0, y2: H - 18, stroke: "var(--grid)" }, ax); const t = el("text", { x: X(v), y: H - 4, "text-anchor": "middle" }, ax); t.textContent = opts.xfmt ? opts.xfmt(v) : fmt(v, 2); }
+  items.forEach((it, i) => {
+    const y = i * rowH + 6;
+    const t = el("text", { x: L - 8, y: y + (n * bar) / 2 + 4, "text-anchor": "end" }, s); t.textContent = it.label;
+    it.values.forEach((v, k) => {
+      if (v == null) return;
+      const x0 = X(Math.min(0, v)), w = Math.max(1, Math.abs(X(v) - X(0)));
+      const r = el("rect", { x: x0, y: y + k * (bar + gap), width: w, height: bar, rx: 3, fill: opts.colors[k] }, s);
+      hover(r, `<b>${it.label}</b><br>${opts.names[k]}: ${opts.xfmt ? opts.xfmt(v) : fmt(v, 4)}${it.tip ? "<br>" + it.tip : ""}`);
+      if (opts.labelLast && k === n - 1 || n === 1) { const tl = el("text", { x: Math.max(X(v), X(0)) + 4, y: y + k * (bar + gap) + bar - 2 }, s); tl.textContent = opts.xfmt ? opts.xfmt(v) : fmt(v, 3); }
+    });
+  });
+}
+
+function seqColor(t) { const stops = ["--seq-0", "--seq-1", "--seq-2", "--seq-3", "--seq-4"]; return `var(${stops[Math.max(0, Math.min(4, Math.round(t * 4)))]})`; }
+function textOn(t) { return t > 0.6 ? "#ffffff" : "var(--ink)"; }
+
+function pitchZones(host, zones) {
+  const bands = D.bands, lanes = D.lanes.slice().reverse(); // near_wing on top... reversed so near is top
+  const W = 460, H = 300, P = 8;
+  const s = svg(host, W, H);
+  el("rect", { x: P, y: P, width: W - 2 * P, height: H - 2 * P - 18, fill: "var(--turf)", rx: 4 }, s);
+  const bx = { own_third: [-52.5, -17.5], mid_own: [-17.5, 0], mid_opp: [0, 17.5], final_third: [17.5, 52.5] };
+  const ly = { near_wing: [20.16, 34], near_halfspace: [9.16, 20.16], center: [-9.16, 9.16], far_halfspace: [-20.16, -9.16], far_wing: [-34, -20.16] };
+  const X = (x) => P + (x + 52.5) / 105 * (W - 2 * P), Y = (y) => P + (34 - y) / 68 * (H - 2 * P - 18);
+  for (const b of bands) for (const l of D.lanes) {
+    const z = zones[`${b}.${l}`]; const [x0, x1] = bx[b], [y0, y1] = ly[l];
+    const v = z ? z.gap_rate : null;
+    const r = el("rect", { x: X(x0) + 1, y: Y(y1) + 1, width: X(x1) - X(x0) - 2, height: Y(y0) - Y(y1) - 2, fill: v == null ? "transparent" : seqColor(v), rx: 2 }, s);
+    if (z) {
+      hover(r, `<b>${b.replace("_", " ")} · ${l.replace("_", " ")}</b><br>library gap: ${pct(v)}<br>${z.n.toLocaleString()} decisions`);
+      const t = el("text", { x: (X(x0) + X(x1)) / 2, y: (Y(y0) + Y(y1)) / 2 + 4, "text-anchor": "middle", style: `fill:${textOn(v)}` }, s); t.textContent = pct(v).replace(".0%", "%");
+    }
+  }
+  const lines = [[-17.5, -34, -17.5, 34], [0, -34, 0, 34], [17.5, -34, 17.5, 34]];
+  for (const [a, b, c, d] of lines) el("line", { x1: X(a), y1: Y(b), x2: X(c), y2: Y(d), stroke: "var(--chalk)", "stroke-dasharray": "0" }, s);
+  el("rect", { x: X(36), y: Y(20.16), width: X(52.5) - X(36), height: Y(-20.16) - Y(20.16), fill: "none", stroke: "var(--chalk)" }, s);
+  const lab = (x, txt, a) => { const t = el("text", { x, y: H - 4, "text-anchor": a }, s); t.textContent = txt; };
+  lab(P, "own goal", "start"); lab(W - P, "attacking →", "end");
+  const tn = el("text", { x: W / 2, y: H - 4, "text-anchor": "middle" }, s); tn.textContent = "ball side ↑";
+}
+
+function heatGrid(host, rows, cols, val, opts = {}) {
+  if (!rows.length || !cols.length) return empty(host, opts.empty || "No data yet.");
+  const cw = Math.max(38, Math.min(70, 560 / cols.length)), ch = 26, L = opts.left || 130, T = opts.top || 70;
+  const W = L + cols.length * cw + 4, H = T + rows.length * ch + 4;
+  const s = svg(host, W, H);
+  cols.forEach((c, j) => { const t = el("text", { x: L + j * cw + cw / 2, y: T - 6, "text-anchor": "start", transform: `rotate(-35 ${L + j * cw + cw / 2} ${T - 6})` }, s); t.textContent = c; });
+  rows.forEach((r, i) => {
+    const t = el("text", { x: L - 6, y: T + i * ch + ch / 2 + 4, "text-anchor": "end" }, s); t.textContent = r;
+    cols.forEach((c, j) => {
+      const v = val(r, c);
+      const fill = v == null ? "transparent" : opts.color(v);
+      const rect = el("rect", { x: L + j * cw + 1, y: T + i * ch + 1, width: cw - 2, height: ch - 2, rx: 2, fill, stroke: v == null ? "var(--grid)" : "none" }, s);
+      if (v != null) {
+        hover(rect, `<b>${r}</b> vs <b>${c}</b><br>${opts.tip ? opts.tip(r, c, v) : fmt(v)}`);
+        const tt = el("text", { x: L + j * cw + cw / 2, y: T + i * ch + ch / 2 + 4, "text-anchor": "middle", style: `fill:${opts.text ? opts.text(v) : "var(--ink)"}` }, s); tt.textContent = opts.fmt ? opts.fmt(v) : fmt(v, 2);
+      }
+    });
+  });
+}
+
+function xtMap(host, a, b) {
+  host.innerHTML = "";
+  const max = Math.max(...a.flat(), ...b.flat());
+  for (const [name, grid] of [["Placeholder", a], ["Fitted from self-play", b]]) {
+    const wrap = document.createElement("div"); const h = document.createElement("div"); h.className = "note"; h.textContent = name; wrap.appendChild(h);
+    const box = document.createElement("div"); wrap.appendChild(box); host.appendChild(wrap);
+    const ny = grid.length, nx = grid[0].length, cw = 26, ch = 16;
+    const s = svg(box, nx * cw, ny * ch);
+    for (let i = 0; i < ny; i++) for (let j = 0; j < nx; j++) {
+      const v = grid[ny - 1 - i][j];
+      const r = el("rect", { x: j * cw, y: i * ch, width: cw - 1, height: ch - 1, fill: seqColor(Math.sqrt(v / max)) }, s);
+      hover(r, `${name}<br>xT ${fmt(v, 4)}`);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+const pa = D.phase_a, gaps = D.gaps, cr = D.critic, gen = D.generator, lg = D.league || {}, hist = (lg.history || []).filter((h) => h.ppo);
+const tiles = [
+  ["Decisions logged", pa ? pa.decisions.toLocaleString() : "–", pa ? `${pa.episodes.toLocaleString()} library self-play games` : "Phase A not run"],
+  ["Library gap rate", gaps ? pct(gaps.overall_gap_rate) : "–", "possession decisions with no fitting play"],
+  ["Critic vs per-play mean", cr ? `${(100 * (1 - cr.critic.mse / cr.critic.baseline_mse)).toFixed(1)}%` : "–", cr ? "lower held-out error" : "not trained"],
+  ["Generator validity", gen ? pct(gen.validity.validity) : "–", gen ? `${gen.validity.sampled} grammar-constrained samples` : "not trained"],
+  ["League updates", lg.update ?? "–", hist.length ? `${hist.reduce((a, h) => a + h.episodes, 0)} league games` : "not run"],
+  ["Archive elites", D.archive ? D.archive.coverage.elite_cells : "–", D.archive ? `${D.archive.coverage.plays} generated plays filed` : "–"],
+];
+$("tiles").innerHTML = tiles.map(([l, v, s]) => `<div class="tile"><div class="label">${l}</div><div class="value">${v}</div><div class="sub">${s}</div></div>`).join("");
+
+if (gaps) {
+  pitchZones($("gapPitch"), gaps.zones);
+  const fp = Object.entries(gaps.plays).sort((a, b) => b[1].feasible_rate - a[1].feasible_rate);
+  hbars($("feasBars"), fp.map(([k, v]) => ({ label: k, values: [v.feasible_rate], tip: "most common blocker: " + Object.entries(v.top_reasons).filter(([r]) => r !== "feasible")[0]?.[0] })), { colors: ["var(--s1)"], names: ["feasible"], xfmt: pct });
+} else { empty($("gapPitch"), "Run Phase A first."); empty($("feasBars"), "Run Phase A first."); }
+
+if (pa) {
+  hbars($("usageBars"), pa.plays.slice(0, 12).map((p) => ({ label: p.play, values: [p.share, p.success_rate], tip: `${p.n.toLocaleString()} times · mean reward ${fmt(p.mean_reward, 4)}` })), { colors: ["var(--s1)", "var(--s3)"], names: ["share", "success"], xfmt: pct, max: 1, labelLast: false });
+} else empty($("usageBars"), "Run Phase A first.");
+xtMap($("xtMaps"), D.xt.placeholder, D.xt.fitted);
+
+if (cr) {
+  lineChart($("criticCurve"), [
+    { name: "Critic", color: "var(--s1)", points: cr.critic_history ? cr.critic_history.map((h) => [h.epoch, h.mse]) : [[1, cr.critic.mse]] },
+    { name: "Per-play average", color: "var(--s2)", points: cr.critic_history ? cr.critic_history.map((h) => [h.epoch, h.baseline_mse]) : [[1, cr.critic.baseline_mse]] },
+  ], { xlabel: "epoch", yd: 5, yfmt: (v) => v.toExponential(1) });
+  lineChart($("respCurve"), [
+    { name: "Response model", color: "var(--s1)", points: (cr.response_history || []).map((h) => [h.epoch, h.opp_acc]) },
+    { name: "Majority guess", color: "var(--s2)", points: (cr.response_history || []).map((h) => [h.epoch, h.opp_majority]) },
+  ], { xlabel: "epoch", yfmt: pct, y0: 0 });
+} else { empty($("criticCurve"), "Critic not trained yet."); empty($("respCurve"), "Response model not trained yet."); }
+
+if (gen) {
+  lineChart($("bcCurve"), [{ name: "Token accuracy", color: "var(--s1)", points: gen.history.map((h) => [h.epoch, h.token_acc]) }], { xlabel: "epoch", yfmt: pct, y0: 0 });
+  $("validity").innerHTML = `<span class="pill ${gen.validity.validity >= 0.99 ? "good" : "bad"}">validity ${pct(gen.validity.validity)} · target > 99%</span>`;
+  const ms = Object.entries(gen.mutation.summary || {});
+  hbars($("mutDots"), ms.map(([k, v]) => ({ label: k, values: [v.parent_mean, v.best_mutant_mean], tip: `${v.mutants} mutants, ${v.kept} kept` })), { colors: ["var(--s1)", "var(--s2)"], names: ["parent", "best mutant"], xfmt: (v) => fmt(v, 3) });
+} else { empty($("bcCurve"), "Generator not trained yet."); empty($("mutDots"), "Generator not trained yet."); }
+
+if (hist.length) {
+  lineChart($("rewardCurve"), [{ name: "Main agent", color: "var(--s1)", points: hist.filter((h) => h.ppo.main.n).map((h) => [h.update, h.ppo.main.mean_reward]) }], { xlabel: "update", yd: 4 });
+  const elo = (k) => hist.filter((h) => h.elo[k] != null).map((h) => [h.update, h.elo[k]]);
+  lineChart($("eloCurve"), [
+    { name: "Main", color: "var(--s1)", points: elo("main") },
+    { name: "Main exploiter", color: "var(--s2)", points: elo("main_exploiter") },
+    { name: "League exploiter", color: "var(--s3)", points: elo("league_exploiter") },
+  ], { xlabel: "update", yd: 0 });
+  lineChart($("shareCurve"), [{ name: "Generated share", color: "var(--s2)", points: hist.map((h) => [h.update, h.main_generated_share]) }], { xlabel: "update", yfmt: pct, y0: 0 });
+  const pf = Object.entries(hist[hist.length - 1].pfsp || {}).sort((a, b) => b[1] - a[1]);
+  hbars($("pfspBars"), pf.map(([k, v]) => ({ label: k, values: [v] })), { colors: ["var(--s1)"], names: ["weight"], xfmt: pct, left: 140 });
+  const pay = lg.payoff || {};
+  const players = Object.keys(pay).sort((a, b) => (a === "main" ? -1 : b === "main" ? 1 : a.localeCompare(b)));
+  const score = (r, c) => { const x = pay[r] && pay[r][c]; return x && x.n ? (x.w + 0.5 * x.d) / x.n : null; };
+  heatGrid($("payoff"), players, players, score, {
+    color: (v) => v > 0.55 ? "var(--div-pos)" : v < 0.45 ? "var(--div-neg)" : "var(--div-mid)",
+    text: (v) => (v > 0.55 || v < 0.45) ? "#ffffff" : "var(--ink)",
+    tip: (r, c, v) => { const x = pay[r][c]; return `score ${fmt(v, 2)} over ${x.n} games (W${x.w} D${x.d} L${x.l})`; }, fmt: (v) => fmt(v, 2),
+  });
+} else { for (const id of ["rewardCurve", "eloCurve", "shareCurve", "pfspBars", "payoff"]) empty($(id), "League not run yet."); }
+
+if (D.archive) {
+  const a = D.archive;
+  heatGrid($("archGrid"), D.lanes, D.bands, (r, c) => { const g = a.grid[`${c}.${r}`]; return g ? g.elites : null; }, {
+    color: (v) => seqColor(Math.min(1, v / Math.max(1, ...Object.values(a.grid).map((g) => g.elites)))), text: (v) => v / Math.max(1, ...Object.values(a.grid).map((g) => g.elites)) > 0.6 ? "#ffffff" : "var(--ink)",
+    fmt: (v) => String(v), tip: (r, c, v) => { const g = a.grid[`${c}.${r}`]; return `${v} elites · ${g.plays} plays filed · best ${fmt(g.best, 4)}`; }, left: 110, top: 60,
+  });
+  $("eliteTable").innerHTML = a.top.length ? `<table><thead><tr><th>Play</th><th>Niche</th><th class="n">Mean reward</th><th class="n">Evals</th></tr></thead><tbody>${a.top.map((t) => `<tr><td>${t.id}</td><td>${t.desc.slice(0, 2).join(" · ")} · ${t.desc[2]} · ${t.desc[3]} passes · ${t.desc[4].replace("_", " ")}</td><td class="n">${fmt(t.mean, 4)}</td><td class="n">${t.n ?? ""}</td></tr>`).join("")}</tbody></table>` : `<div class="empty">No elites yet (each needs ${a.min_evals} evaluations).</div>`;
+} else { empty($("archGrid"), "League not run yet."); }
+
+$("promoted").innerHTML = D.promoted.length ? D.promoted.map((p) => `<details><summary>${p.id}</summary><pre>${p.yaml.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]))}</pre></details>`).join("") : `<div class="empty">Nothing promoted yet.</div>`;
+
+const fe = lg.final_eval;
+if (fe && fe.main) {
+  const styles = Object.keys(fe.main);
+  hbars($("evalBars"), styles.map((s) => ({ label: s + (fe.main[s].held_out ? " (held out)" : ""), values: [fe.library[s].mean_play_reward, fe.main[s].mean_play_reward], tip: `generated plays called: ${fe.main[s].generated_plays} · shots ${fe.library[s].shots} → ${fe.main[s].shots}` })), { colors: ["var(--s1)", "var(--s2)"], names: ["library", "main agent"], xfmt: (v) => fmt(v, 4), left: 170 });
+  $("evalNote").textContent = fe.beats_all_styles ? "The main agent matches or beats the library against every style, including the held-out one." : "The main agent does not yet beat the library against every style; see the bars above.";
+} else empty($("evalBars"), "Evaluation not run yet.");
+$("replayLink").innerHTML = D.replays ? `<p><a href="selfplay_replays.html">Open the highlight replays</a>: watch the agent call generated plays when the library has a gap, next to a library-only baseline game.</p>` : "";
+</script>

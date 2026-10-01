@@ -37,4 +37,5 @@ ignore = ["E741", "B905"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q"
+addopts = "-q -m 'not slow'"
+markers = ["slow: end-to-end pipeline tests (run with -m slow)"]

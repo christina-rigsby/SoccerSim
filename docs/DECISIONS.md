@@ -10,6 +10,165 @@ actually settled — always paired with an `OPEN_QUESTIONS.md` entry).
 
 ---
 
+## D-043 · The self-play spec is built as a second stack beside the M1a play engine
+**Date:** 2026-10-01 · **Status:** `active`
+
+`docs/soccer_selfplay_spec.md` (the implementation spec for self-play play generation)
+takes precedence over the design doc where they disagree. It specifies its own play
+schema (YAML + pydantic, `plays/**`), a tick simulator, Module 2 scoring and Module 3. It
+is implemented inside the existing `soccersim` package (`schema/`, `sim/`,
+`controllers/`, `executor/`, `ranking/`, `generator/`, `selfplay/`, `eval/`, plus new
+files in `dashboard/` and `viz/`) rather than the spec's `src/soccer_sim/` layout.
+
+**Rationale:** the M1a JSON play DAG (`soccersim/plays`, `data/plays`) and the spec's
+step state machine are different languages for the same idea; translating the twelve spec
+plays into the DAG would have lost `choose`, `start_when`, group roles and dynamic actors.
+Keeping one package avoids two `pyproject`s and lets the new stack reuse `Pitch`,
+`draw_pitch` and the D-013 pitch-control form.
+
+**Alternatives considered viable:**
+- *Extend the M1a DAG to the spec's vocabulary.* Less code, but every spec play would need
+  hand translation and the generator's grammar would target a schema the spec does not define.
+- *Replace M1a outright.* Its 529 tests and the dashboard estimators still pass and still
+  document real behaviour; deleting them buys nothing yet.
+
+**Backtrack trigger:** a feature has to be implemented twice (once per stack), or someone
+edits a play in the wrong library. Then port the dashboard estimators onto `TeamView` and
+retire `soccersim/plays` + `data/plays`.
+
+---
+
+## D-042 · Score in EPV utilities; the generator is consulted on library gaps
+**Date:** 2026-10-01 · **Status:** `active` (closes Q-001, Q-002, Q-003; provisional for Q-017)
+
+Every ranking term is in EPV units and they are summed: graph path value − soft penalties −
+λ·assignment cost + critic value (spec §9.4). The critic is trained on realised play
+reward, so its output is commensurable with the rest by construction. Module 3 is called
+when no non-fallback library play is feasible, or the best library score is below
+`ranking.yaml: generator.threshold` (`activation: on_gap`); the league trains with
+`activation: always` (spec Phase C samples k = 4 per decision).
+
+**Alternatives considered viable:** log-probabilities (Q-001's leaning) — principled for
+independently trained terms, but the spec fixes EPV as the currency and rewards are EPV
+deltas; *always-on* generation at match time — more novelty, but at a cost of ~0.2 s CPU per
+decision and against the design doc's "comes online when nothing scores above threshold".
+
+**Backtrack trigger:** generated plays win almost every decision they enter (the critic is
+over-optimistic for out-of-distribution token sequences) or never win any (Q-003's failure
+mode). Either shows up as `main_generated_share` pinned near 1 or 0 in the league history.
+
+---
+
+## D-041 · Custom 2D simulator with pass outcomes sampled from the lane model
+**Date:** 2026-10-01 · **Status:** `active` (closes Q-016)
+
+The simulator resolves a pass at release: execution noise first, then per-opponent
+interception sampled from the same probabilities `lane_open` reads, with the interceptor
+steered to its interception point. Movement, ball flight, control, duels, shots, restarts
+and offside are the spec §7.2 models, all parameters in `configs/sim.yaml`.
+
+**Alternatives considered viable:** fully physical interception (ball and players move,
+first touch decides) — more emergent, but `lane_open` and execution could then disagree,
+which the spec forbids; Google Research Football — deferred to M10.
+
+**Backtrack trigger:** replays show interceptions by players who visibly could not reach the
+ball, or the logged interception rate drifts from the model's predicted rate (the test
+`test_execution_samples_the_same_intercept_model` pins it).
+
+---
+
+## D-040 · Triggers are evaluated after role assignment
+**Date:** 2026-10-01 · **Status:** `active`
+
+Spec §9.1 evaluates triggers with only the ball role provisionally bound, then assigns.
+Several starter triggers name other roles (`dist: role:R2 role:R1`, `lane_open R1 -> R2`),
+so Module 2 runs the Hungarian assignment first and evaluates triggers and hard
+constraints against the full binding.
+
+**Backtrack trigger:** assignment becomes the bottleneck of a decision (it is ~1 ms per play
+today), at which point split triggers into ball-role-only atoms (pre-filter) and the rest.
+
+---
+
+## D-039 · Self-anchored movement targets resolve once; pitch-control targets every 0.5 s
+**Date:** 2026-10-01 · **Status:** `provisional` (see Q-034)
+
+Spec §3.3 evaluates anchors live each tick. A `carry` or `run_to` whose target is anchored
+on the ball, the ball holder or the mover's own role would chase itself forever, so those
+resolve when the action is issued. `zone` / `pc_best` targets refresh every 0.5 s so the
+mover does not jitter between grid cells. Everything else is live.
+
+**Backtrack trigger:** a play needs a target that deliberately tracks the ball (e.g. "stay
+5 m behind the ball") — then make freezing an explicit schema option instead.
+
+---
+
+## D-038 · Extra end reason `completed`
+**Date:** 2026-10-01 · **Status:** `active`
+
+A play whose steps run out without its `success` predicate holding ends `completed`; spec
+§5 lists no reason for that case and calling it `success` or `abort` would mislabel critic
+training data.
+
+---
+
+## D-037 · Generated plays use a restricted grammar; library plays are tokenized lossily
+**Date:** 2026-10-01 · **Status:** `provisional` (see Q-018)
+
+The generator writes possession plays only, in a grammar with ≤ 7 roles (R1 starts with the
+ball), ≤ 5 sequential steps, ≤ 4 actions per step, `choose` with ≤ 3 branches, 15 predicate
+atoms, 8 target forms and binned numbers. The grammar is a Python coroutine that yields the
+allowed tokens, so decoding is masked and detokenization is the same code; validity is
+100 % by construction (target > 99 %). Library plays are mapped into the subset for
+behaviour cloning, dropping predicates the grammar cannot express.
+
+**Alternatives considered viable:** a full-schema grammar (defensive plays, gotos, group
+roles) — larger vocabulary and many more invalid-but-grammatical plays; a diffusion model
+over continuous waypoints — spec §16.3 keeps it behind the same `sample(obs, n)` interface.
+
+**Backtrack trigger:** the archive fills only with near-copies of library plays, or
+generated plays repeatedly need a construct the grammar lacks (visible in replays).
+
+---
+
+## D-036 · Dense GATv2 in PyTorch instead of PyTorch Geometric
+**Date:** 2026-10-01 · **Status:** `active`
+
+The state graph is always 23 nodes, fully connected. A dense attention layer over a
+(B, 23, 23) edge tensor is simpler and faster on CPU than sparse message passing, and
+removes a heavy dependency. Torch itself is an optional extra (`pip install .[ml]`).
+
+**Backtrack trigger:** variable-size graphs (substitutions, partial tracking from real data).
+
+---
+
+## D-035 · Token-level PPO with a KL leash to the Phase B generator
+**Date:** 2026-10-01 · **Status:** `active`
+
+The PPO ratio is clipped per token, with the sequence advantage shared by its tokens. A
+single sequence-level ratio over ~100 tokens moved by an order of magnitude after one
+update step in tests, which clips every sample and stalls learning.
+
+**Backtrack trigger:** credit assignment matters (e.g. the generator learns good openings
+but bad endings) — then add a per-token value head.
+
+---
+
+## D-034 · Execution tests use searched, pinned scenarios
+**Date:** 2026-10-01 · **Status:** `active`
+
+Spec §6.13 asks for a hand-crafted scenario per play where its triggers hold.
+`scripts/find_play_scenarios.py` searches seeds of matching scenario types until Module 2's
+own trigger check instantiates the play, and pins the result in
+`tests/fixtures/play_scenarios.json`. The test then replays it deterministically and
+checks the pinned end reason.
+
+**Backtrack trigger:** a pinned scenario stops instantiating its play after a simulator
+change and the script cannot find a new one within 60 seeds — that play's triggers have
+become unreachable, which is a design problem, not a test problem.
+
+---
+
 ## D-028 · The dashboard is asymmetric: we measure ourselves, we infer the opponent
 **Date:** 2026-09-11 · **Status:** `active`
 

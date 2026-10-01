@@ -14,4 +14,4 @@ than by editing the plays:
   the extra end reason `completed` (spec §5 lists no reason for this case).
 - Movement targets anchored on `ball`, `ball_holder` or the mover's own role are
   resolved once when the action is issued, so `carry: {anchor: ball, offset: [3, -5]}`
-  is a fixed destination rather than one that moves with the carrier (see D-036).
+  is a fixed destination rather than one that moves with the carrier (see D-039).

@@ -15,7 +15,66 @@ The design is three modules with a replanning loop tying them together:
 
 Full design in [`docs/soccer_simulation_design.md`](docs/soccer_simulation_design.md).
 
-## Where the project is
+## Self-play play generation (spec implementation)
+
+[`docs/soccer_selfplay_spec.md`](docs/soccer_selfplay_spec.md) is the implementation spec for
+the full system: a play-level simulator, the three modules, and a self-play pipeline that
+teaches Module 3 to write new plays. All of it (milestones M0–M9) is built:
+
+| Piece | Where |
+|---|---|
+| YAML play schema (pydantic), validator, loader; 12 starter plays | `soccersim/schema/`, `plays/` |
+| 2D simulator: movement, ball flight, pass/intercept model, control, duels, shots/xG/GK, restarts, offside | `soccersim/sim/` |
+| One controller per action type + the shape controller | `soccersim/controllers/` |
+| Module 1 team view: pitch control (53×34), xT, lines, lanes, EPV, predicate evaluator | `soccersim/dashboard/{team_state,evaluator,zones,lines,xt,pitch_control}.py` |
+| Play executor (step state machine, end reasons) | `soccersim/executor/` |
+| Module 2: hard gate, Hungarian role assignment, EPV scoring, preemption, generator hook | `soccersim/ranking/` |
+| Self-play runner (multiprocess), Parquet logs, scripted league styles, rewards | `soccersim/selfplay/` |
+| Module 3: GNN encoder, critic, response model, grammar-constrained generator, mutation, PPO | `soccersim/generator/` |
+| League (PFSP, snapshots, exploiters, Elo, payoff), MAP-Elites archive, promotion | `soccersim/selfplay/{league,qd_archive,promote}.py` |
+| Replay viewer (HTML, GIF, PNG strips) and the self-play report | `soccersim/viz/` |
+
+### Running it
+
+```bash
+pip install -e ".[dev,ml]"            # ml = torch (CPU is fine)
+python scripts/selfplay.py phase-a --episodes 13500   # library self-play, ~200k decisions
+python scripts/selfplay.py report                     # play frequency, success by play/opponent
+python scripts/selfplay.py fit-xt                     # xT recomputed from simulated events
+python scripts/selfplay.py train-critic               # critic + response model (M7)
+python scripts/selfplay.py pretrain-generator         # BC + mutation filtering (M8)
+python scripts/selfplay.py league                     # PPO in the league + QD archive (M9)
+python scripts/selfplay.py promote                    # archive elites -> plays/promoted/ for review
+python scripts/selfplay.py viz                        # out/selfplay_report.html + highlight replays
+pytest                                                # fast suite;  pytest -m slow  runs the whole pipeline
+```
+
+`configs/training.yaml` has three profiles: `smoke` (seconds, for tests), `quick` (the
+default, under an hour on a laptop CPU) and `spec` (the spec's model sizes and run lengths).
+
+### How the generator fills gaps at match time
+
+Module 2 checks every library play against its triggers, hard constraints and role
+requirements. When nothing but the always-available `recycle_possession` fits — or the
+best library score is under `ranking.yaml: generator.threshold` — it asks the generator
+for k plays conditioned on the current state. Those plays pass the same validator,
+assignment and scoring as library plays, the critic adds its value estimate, and the
+argmax wins whichever source it came from (D-042). Generated plays that keep winning are
+filed in the quality-diversity archive, and the best are exported to `plays/promoted/`
+flagged for human review.
+
+### Seeing what self-play is doing
+
+- `out/selfplay_report.html` — where the library runs out on the pitch, play usage, critic
+  and generator training curves, league reward / Elo / PFSP / payoff matrix, archive
+  coverage, promoted plays, and agent-vs-library evaluation per scripted style.
+- `out/selfplay_replays.html` — interactive replays of games where the agent called
+  generated plays: players with role labels, targets, each team's active play and step, a
+  timeline with generated plays highlighted, and the decision inspector showing every
+  candidate Module 2 scored, whether the library had a gap, and what it chose.
+
+## Where the project is (M0–M2 foundation, before the spec)
+
 
 **Built:** M0 (space and feasibility foundation), M0.5 (player roles and matching),
 most of M2 (the information dashboard), and M1a (play building).

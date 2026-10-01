@@ -17,9 +17,32 @@ the reasoning trail survives.
 
 ---
 
+## Self-play stack (spec, 2026-10-01)
+
+### Q-034 · Which movement targets should track live, and which freeze? · `provisional` → D-039
+Self-anchored targets freeze at issue; zone / pitch-control targets refresh every 0.5 s.
+The schema has `freeze: step_start` but no way to ask for "live" explicitly.
+
+### Q-035 · Why do library teams almost never shoot? · `open`
+In Phase A self-play the chance-creating plays (`wide_overlap_cross`,
+`through_ball_behind_high_line`, `one_two_wall_pass`, `direct_counterattack`) rarely reach
+their shooting step: the defensive plays close the lanes their `done_when` waits for, and no
+library play shoots from a good position outside those endings. Is that a simulator
+calibration problem (defenders too good at closing lanes), a library problem (no
+"shoot on sight" play), or correct? It is also exactly the gap Module 3 is meant to fill.
+*Evidence to collect:* shots per 90 in library-only self-play vs. real football (~12).
+
+### Q-036 · Are the simulator's pass, control and duel parameters calibrated? · `open`
+All of `configs/sim.yaml` is initial guesses (spec §7.2). Interception sharpness was raised
+to make a defender in the lane intercept ~90 % of the time; nothing else has been fitted.
+*Blocks:* trusting absolute EPV values. *Resolves with:* M10 SoccerNet calibration.
+
+---
+
 ## Ranking system (design doc §4)
 
-### Q-001 · Which weight algebra? · `open`
+### Q-001 · Which weight algebra? · `closed` → D-042
+*Closed 2026-10-01:* the self-play spec fixes EPV utilities as the single currency.
 Costs (lower = better), log-probabilities (sum = joint log-likelihood, exponentiate for a
 calibrated `P(success)`), or utilities (higher = better, negatives allowed)? The doc says to
 "pick one consistent semantics up front" and then does not pick.
@@ -31,13 +54,15 @@ critic's output units all depend on this. Choosing late means rewriting all of t
 independently from different data sources, which is exactly the situation (opponent model,
 historical success rates, and critic output come from three different places).
 
-### Q-002 · How do path weight and assignment cost combine? · `open`
+### Q-002 · How do path weight and assignment cost combine? · `closed` → D-042
+*Closed 2026-10-01:* a weighted sum in EPV units (`lambda_assign`).
 Two-stage scoring produces two numbers (§4). Sum? Weighted sum? Product? The answer is
 constrained by Q-001 — under log-probabilities a sum is the principled choice; under
 utilities it is a modelling decision.
 *Blocks:* the final `total_play_score` function.
 
-### Q-003 · How is critic output made commensurable with the soft-penalty sum? · `open`
+### Q-003 · How is critic output made commensurable with the soft-penalty sum? · `closed` → D-042
+*Closed 2026-10-01:* the critic regresses realised play reward, which is already in EPV units.
 §4 requires that "critic output must be expressed in the same units as the soft-penalty
 sum" so generated and hand-authored plays can compete in one ranking pass. A neural net
 emitting `P(success)` and a hand-tuned penalty sum are not naturally on one scale.
@@ -362,18 +387,21 @@ everything downstream in the same direction.
 
 ## Module 3 — ML generator (design doc §6)
 
-### Q-016 · Which simulator for the RL fine-tuning loop? · `open`
+### Q-016 · Which simulator for the RL fine-tuning loop? · `closed` → D-041
+*Closed 2026-10-01:* the custom 2D simulator (spec §16.1); GRF stays an M10 option.
 Google Research Football (standard, open, but its own physics and action space) vs. a
 lightweight custom simulator on the pitch-control layer (matches our representation exactly,
 but is a large build and risks learning our own modelling errors).
 
-### Q-017 · What threshold triggers the generator? · `open`
+### Q-017 · What threshold triggers the generator? · `provisional` → D-042
+*Provisional 2026-10-01:* `on_gap` — no feasible non-fallback library play, or best library score < 0.03 EPV. A fixed constant for now; game-state dependence is still open.
 Module 3 activates "when no pre-defined play scores above threshold" (§6). The threshold's
 meaning depends entirely on Q-001, and its value trades off novelty against reliability.
 *Also:* is it a fixed constant, or a function of game state (more willing to improvise when
 losing late)?
 
-### Q-018 · Transformer decoder or diffusion for the generator? · `open`
+### Q-018 · Transformer decoder or diffusion for the generator? · `provisional` → D-037
+*Provisional 2026-10-01:* transformer decoder with grammar-constrained decoding, behind `sample(obs, n)`.
 §6 notes diffusion handles multimodality well — there are usually several plausible good
 plays, not one deterministic answer — and matches recent multi-agent sports-trajectory work.
 *Deferred:* blocked behind M0/M1 validation per D-008, so no need to answer soon.

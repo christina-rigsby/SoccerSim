@@ -8,3 +8,5 @@ dist/
 venv/
 out/
 .DS_Store
+data/selfplay/
+data/models/

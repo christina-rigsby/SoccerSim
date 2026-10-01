@@ -43,6 +43,8 @@ class EpisodeResult:
     events: list[dict[str, Any]] = field(default_factory=list)
     frames: list[dict[str, Any]] = field(default_factory=list)      # 10 Hz tracking for the replay viewer
     sim_config_hash: str = ""
+    caps: list[list[float]] = field(default_factory=list)
+    kinds: list[str] = field(default_factory=list)
 
     def goals(self, team: int) -> int:
         return self.score[team]
@@ -118,7 +120,8 @@ class MatchEnv:
         start_poss = state.possession
         turnover_t: float | None = None
         result = EpisodeResult(self.seed, self.scenario.to_dict(), list(state.score), 0.0, "time_limit",
-                               sim_config_hash=config_hash(cfg))
+                               sim_config_hash=config_hash(cfg), caps=np.round(state.caps, 3).tolist(),
+                               kinds=list(state.kinds))
         n_events_logged = 0
         restart_fired = False
         end_cause = "time_limit"
@@ -158,6 +161,7 @@ class MatchEnv:
                         inst.end("preempted", views[tm])
                         self._close(inst, policies[tm], result, views[tm])
                     new.decision = rec
+                    new.state_compact = views[tm].compact()
                     new.opp_play_at_start = active[1 - tm].play.id if active[1 - tm] else None
                     active[tm] = new
                 elif inst is None or inst.ended:
@@ -240,6 +244,7 @@ class MatchEnv:
             policy.notify_end(inst, view.t)
         rec = inst.summary()
         rec["decision"] = getattr(inst, "decision", None)
+        rec["state"] = getattr(inst, "state_compact", None)
         rec["opp_play_at_start"] = getattr(inst, "opp_play_at_start", None)
         rec["opp_play_at_end"] = view.active_plays.get(1 - inst.team).play.id \
             if view.active_plays.get(1 - inst.team) is not None else None
