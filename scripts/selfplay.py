@@ -28,12 +28,26 @@ MODELS = ROOT / "data" / "models"
 OUT = ROOT / "out"
 
 
+def _not_logged(jobs, run_root: Path):
+    """Drop jobs whose episode is already logged, so an interrupted run picks up where it stopped."""
+    from soccersim.selfplay.logging import load_table
+
+    try:
+        done = set(load_table(run_root, "episodes", ["episode_id"]).column("episode_id").to_pylist())
+    except FileNotFoundError:
+        return jobs
+    todo = [j for j in jobs if j["episode_id"] not in done]
+    if len(todo) < len(jobs):
+        print(f"  {len(jobs) - len(todo)} episodes already logged; playing the remaining {len(todo)}", flush=True)
+    return todo
+
+
 def cmd_phase_a(a):
     from soccersim.selfplay.runner import phase_a_jobs, run_jobs
 
     jobs = phase_a_jobs(a.episodes, seed=a.seed, temperature=a.temperature, tracking_every=a.tracking_every,
                         run_id=a.run_id)
-    out = run_jobs(jobs, a.root, a.run_id, workers=a.workers)
+    out = run_jobs(_not_logged(jobs, Path(a.root) / f"run={a.run_id}"), a.root, a.run_id, workers=a.workers)
     print(json.dumps(out, indent=2))
 
 
@@ -78,9 +92,14 @@ def cmd_pretrain(a):
 
 def cmd_league(a):
     from soccersim.selfplay.league import run_league
+    from soccersim.selfplay.runs import latest_run_dir, read_state
 
     mode = "fresh" if a.fresh else "force" if a.force_continue else "auto"
     run_dir = Path(a.models) / "runs" / f"run_{a.resume}" if a.resume else None
+    if run_dir is None and a.resume_unfinished:
+        last = latest_run_dir(a.models)
+        if last is not None and not read_state(last).get("gate"):
+            run_dir = last  # created but never finished (no regression-gate result yet)
     print(json.dumps(run_league(a.models, a.root, updates=a.updates, profile=a.profile, workers=a.workers,
                                 start_mode=mode, run_dir=run_dir), indent=2, default=str))
 
@@ -132,6 +151,8 @@ def main() -> None:
     s.add_argument("--force-continue", action="store_true",
                    help="continue from the previous run even if the opponent pool changed or its gate failed")
     s.add_argument("--resume", type=int, default=None, help="resume an existing run number instead of a new one")
+    s.add_argument("--resume-unfinished", action="store_true",
+                   help="resume the latest run if it never finished (no gate result), else start the next one")
     s.set_defaults(fn=cmd_league)
     s = sub.add_parser("promote", help="export the latest run's archive elites for review")
     s.add_argument("--run", type=int, default=None, help="run number (default: latest)")
