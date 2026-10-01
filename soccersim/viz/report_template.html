@@ -131,7 +131,7 @@ a { color: var(--s1); }
       <div class="panel"><h3>Archive coverage by start zone</h3><div class="note">Number of elite plays per start zone.</div><div class="chart" id="archGrid"></div></div>
       <div class="panel"><h3>Top elites</h3><div class="tablewrap" id="eliteTable"></div></div>
     </div>
-    <div class="panel"><h3>Promoted plays, pending review</h3><div id="promoted"></div></div>
+    <div class="panel"><h3>Promoted plays, pending review</h3><div class="note" id="promotedWhere"></div><div id="promoted"></div></div>
   </section>
 
   <section id="eval">
@@ -352,6 +352,7 @@ if (D.archive) {
   $("eliteTable").innerHTML = a.top.length ? `<table><thead><tr><th>Play</th><th>Niche</th><th class="n">Mean reward</th><th class="n">Evals</th></tr></thead><tbody>${a.top.map((t) => `<tr><td>${t.id}</td><td>${t.desc.slice(0, 2).join(" · ")} · ${t.desc[2]} · ${t.desc[3]} passes · ${t.desc[4].replace("_", " ")}</td><td class="n">${fmt(t.mean, 4)}</td><td class="n">${t.n ?? ""}</td></tr>`).join("")}</tbody></table>` : `<div class="empty">No elites yet (each needs ${a.min_evals} evaluations).</div>`;
 } else { empty($("archGrid"), "League not run yet."); }
 
+$("promotedWhere").textContent = D.promotion_run != null ? `Saved in plays/generated_and_promoted/run_${D.promotion_run}/` : "";
 $("promoted").innerHTML = D.promoted.length ? D.promoted.map((p) => `<details><summary>${p.id}</summary><pre>${p.yaml.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]))}</pre></details>`).join("") : `<div class="empty">Nothing promoted yet.</div>`;
 
 const fe = lg.final_eval;

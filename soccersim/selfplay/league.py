@@ -72,6 +72,7 @@ class League:
         self.history: list[dict] = st.get("history", [])
         self.flags: list[str] = st.get("flags", [])
         self.final_eval: dict = st.get("final_eval", {})
+        self.promotion_run = st.get("promotion_run")  # set by promote.py; kept across saves
         min_evals = self.tcfg["qd"][f"min_evals_{self.prof}"]
         self.archive = Archive.load(self.dir / "archive.json", min_evals)
         self.styles = [s for s in self.lcfg["scripted_styles"] if s not in self.lcfg["held_out_styles"]]
@@ -284,7 +285,7 @@ class League:
         self.state_path.write_text(json.dumps({
             "update": self.update, "snapshots": self.snapshots, "elo": self.elo.ratings,
             "payoff": self.payoff.to_json(), "history": self.history, "flags": self.flags,
-            "final_eval": self.final_eval,
+            "final_eval": self.final_eval, "promotion_run": self.promotion_run,
         }, indent=1, default=str))
 
 

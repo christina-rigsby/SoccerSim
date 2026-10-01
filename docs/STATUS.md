@@ -25,7 +25,7 @@ design-doc milestones below.
 | **S-M6** self-play runner, logging, league styles, sim xT | `done` | 203,307 decisions from 14,000 games; summary report; xT refit from 230k moves (`tests/test_selfplay_pipeline.py`) |
 | **S-M7** encoder, critic, response model | `done` | Critic beats the per-play mean on held-out games; ranking A/B with vs without critic in `data/models/critic_metrics.json` |
 | **S-M8** tokenizer, grammar generator, BC + mutation | `done` | 100 % validity by construction (target > 99 %); matched-scenario EPV comparison in `generator_metrics.json` |
-| **S-M9** PPO league, QD archive, promotion | `done` (quick profile) | League history, Elo, payoff, archive, final evaluation vs every scripted style incl. held-out `possession`; promoted plays in `plays/promoted/` |
+| **S-M9** PPO league, QD archive, promotion | `done` (quick profile) | League history, Elo, payoff, archive, final evaluation vs every scripted style incl. held-out `possession`; promoted plays in `plays/generated_and_promoted/run_<N>/` (one folder per league run) |
 | **S-M10** GRF adapter, SoccerNet calibration | `not started` | Optional per spec; Q-036 |
 
 Runs so far use the `quick` training profile. The `spec` profile (model sizes and run

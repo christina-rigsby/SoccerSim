@@ -44,7 +44,7 @@ python scripts/selfplay.py fit-xt                     # xT recomputed from simul
 python scripts/selfplay.py train-critic               # critic + response model (M7)
 python scripts/selfplay.py pretrain-generator         # BC + mutation filtering (M8)
 python scripts/selfplay.py league                     # PPO in the league + QD archive (M9)
-python scripts/selfplay.py promote                    # archive elites -> plays/promoted/ for review
+python scripts/selfplay.py promote                    # archive elites -> plays/generated_and_promoted/run_<N>/ for review
 python scripts/selfplay.py viz                        # out/selfplay_report.html + highlight replays
 pytest                                                # fast suite;  pytest -m slow  runs the whole pipeline
 ```
@@ -60,7 +60,7 @@ best library score is under `ranking.yaml: generator.threshold` — it asks the 
 for k plays conditioned on the current state. Those plays pass the same validator,
 assignment and scoring as library plays, the critic adds its value estimate, and the
 argmax wins whichever source it came from (D-042). Generated plays that keep winning are
-filed in the quality-diversity archive, and the best are exported to `plays/promoted/`
+filed in the quality-diversity archive, and the best are exported to `plays/generated_and_promoted/run_<N>/`
 flagged for human review.
 
 ### Seeing what self-play is doing

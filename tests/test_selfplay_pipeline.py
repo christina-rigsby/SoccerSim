@@ -67,7 +67,7 @@ def test_full_pipeline_smoke(phase_a, tmp_path):
     lg.evaluate(n=1, workers=2)
     promo = promote_elites(models, root, tmp_path / "promoted", profile="smoke", workers=2, rollouts=1)
     for pid in promo["promoted_ids"]:
-        text = (tmp_path / "promoted" / f"{pid}.yaml").read_text()
+        text = (tmp_path / "promoted" / f"run_{promo['run']}" / f"{pid}.yaml").read_text()
         assert "pending_human_review" in text
     out = build_report(models, root, tmp_path / "report.html")
     assert "Self-Play Lab" in out.read_text()

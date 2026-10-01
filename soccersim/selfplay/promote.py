@@ -1,7 +1,10 @@
 """Promotion pipeline (spec §11): archive elites that beat the library median in their
-niche across all scripted opponents are exported to ``plays/promoted/<id>.yaml`` with
-provenance, flagged for human review. They are not loaded into the library until a
-person moves them (``load_library`` reads ``offensive/`` and ``defensive/`` only).
+niche across all scripted opponents are exported to
+``plays/generated_and_promoted/run_<N>/<id>.yaml`` with provenance, flagged for human review.
+``N`` numbers league runs: a league directory is given the next free run number the
+first time it promotes, and keeps it (re-running ``promote`` rewrites the same folder).
+They are not loaded into the library until a person moves them (``load_library`` reads
+``offensive/`` and ``defensive/`` only).
 """
 
 from __future__ import annotations
@@ -22,6 +25,25 @@ from .logging import load_table
 from .qd_archive import Archive
 
 POSSESSION = ("in_possession", "transition_attack", "set_piece")
+PROMOTED_DIR = PLAYS_DIR / "generated_and_promoted"
+
+
+def run_numbers(root: Path = PROMOTED_DIR) -> list[int]:
+    out = []
+    for d in root.glob("run_*"):
+        if d.is_dir() and d.name[4:].isdigit():
+            out.append(int(d.name[4:]))
+    return sorted(out)
+
+
+def promotion_run(league_dir: Path, root: Path = PROMOTED_DIR) -> int:
+    """This league's run number: stored in its state.json, assigned on first promotion."""
+    path = league_dir / "state.json"
+    state = json.loads(path.read_text()) if path.exists() else {}
+    if not state.get("promotion_run"):
+        state["promotion_run"] = (run_numbers(root) or [0])[-1] + 1
+        path.write_text(json.dumps(state, indent=1, default=str))
+    return int(state["promotion_run"])
 
 
 def library_niche_medians(root: str | Path, cache: Path | None = None) -> dict[str, Any]:
@@ -52,8 +74,11 @@ def promote_elites(models_dir: str | Path, data_root: str | Path | None = None, 
 
     league_dir = Path(models_dir) / "league"
     data_root = Path(data_root) if data_root else Path(models_dir).parent / "selfplay"
-    out = Path(out_dir) if out_dir else PLAYS_DIR / "promoted"
+    run = promotion_run(league_dir, Path(out_dir) if out_dir else PROMOTED_DIR)
+    out = (Path(out_dir) if out_dir else PROMOTED_DIR) / f"run_{run}"
     out.mkdir(parents=True, exist_ok=True)
+    for old in out.glob("*.yaml"):
+        old.unlink()  # re-promoting the same run replaces its folder
     tcfg = load_config("training")
     archive = Archive.load(league_dir / "archive.json", tcfg["qd"][f"min_evals_{profile or tcfg['profile']}"])
     styles = list(load_config("league")["scripted_styles"])
@@ -103,7 +128,7 @@ def promote_elites(models_dir: str | Path, data_root: str | Path | None = None, 
                 "archive_cell": dict(zip(("band", "lane", "tempo", "passes", "objective"), e["desc"], strict=True)),
                 "metrics": {"overall": archive.stats(c["elite"]), "per_opponent": per_opp},
                 "generating_checkpoint": str(league_dir / "main.pt"), "league_update": state.get("update"),
-                "training_profile": meta.get("profile"),
+                "training_profile": meta.get("profile"), "run": run,
             }
             parse_play(play)  # promoted plays pass the same validator
             path = out / f"{c['elite']}.yaml"
@@ -112,7 +137,8 @@ def promote_elites(models_dir: str | Path, data_root: str | Path | None = None, 
                             + yaml.safe_dump(play, sort_keys=False, width=110))
             entry["path"] = str(path)
         report.append(entry)
-    summary = {"elites": len(elites), "promoted": sum(r["promoted"] for r in report), "candidates": report}
+    summary = {"run": run, "dir": str(out), "elites": len(elites), "promoted": sum(r["promoted"] for r in report),
+               "candidates": report}
     (league_dir / "promotion.json").write_text(json.dumps(summary, indent=2))
     return {k: v for k, v in summary.items() if k != "candidates"} | {
         "promoted_ids": [r["id"] for r in report if r["promoted"]]}

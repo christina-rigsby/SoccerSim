@@ -233,3 +233,4 @@ provenance:
   generating_checkpoint: /home/user/SoccerSim/data/models/league/main.pt
   league_update: 6
   training_profile: quick
+  run: 2

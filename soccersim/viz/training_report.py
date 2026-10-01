@@ -16,7 +16,6 @@ from typing import Any
 
 import numpy as np
 
-from ..config import PLAYS_DIR
 from ..dashboard.xt import load_xt, placeholder_xt
 from ..dashboard.zones import zone_of
 from ..schema.vocab import BANDS, LANES
@@ -110,10 +109,15 @@ def collect(models_dir: str | Path, root: str | Path) -> dict[str, Any]:
         data["archive"] = None
     promo = _read(league / "promotion.json")
     data["promotion"] = promo
+    from ..selfplay.promote import PROMOTED_DIR, run_numbers
+
+    run = (promo or {}).get("run") or st.get("promotion_run") or (run_numbers() or [None])[-1]
     promoted = []
-    for p in sorted((PLAYS_DIR / "promoted").glob("*.yaml")):
-        promoted.append({"id": p.stem, "yaml": p.read_text()})
+    if run is not None:
+        for p in sorted((PROMOTED_DIR / f"run_{run}").glob("*.yaml")):
+            promoted.append({"id": p.stem, "yaml": p.read_text()})
     data["promoted"] = promoted
+    data["promotion_run"] = run
     ph = placeholder_xt().values
     fit = load_xt({**json.loads(json.dumps(_xt_cfg())), "source": "fitted"}).values
     data["xt"] = {"placeholder": np.round(ph, 4).tolist(), "fitted": np.round(fit, 4).tolist()}

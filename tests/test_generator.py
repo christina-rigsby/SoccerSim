@@ -169,3 +169,22 @@ def test_critic_forward_and_ppo_step():
     opt = torch.optim.Adam(gen.parameters(), lr=1e-3)
     stats = ppo_update(gen, ref, rolls, base, {"epochs": 2, "clip": 0.2, "kl_beta": 0.05}, opt, batch=3)
     assert stats["n"] == 6 and abs(stats["ratio"] - 1.0) < 0.5
+
+
+def test_promotion_run_numbers(tmp_path):
+    import json
+
+    from soccersim.selfplay.promote import promotion_run, run_numbers
+
+    root = tmp_path / "promoted"
+    (root / "run_1").mkdir(parents=True)
+    (root / "run_3").mkdir()
+    (root / "notes").mkdir()
+    league = tmp_path / "league"
+    league.mkdir()
+    (league / "state.json").write_text(json.dumps({"update": 6}))
+    assert run_numbers(root) == [1, 3]
+    assert promotion_run(league, root) == 4
+    (root / "run_4").mkdir()
+    assert promotion_run(league, root) == 4  # the same league keeps its run number
+    assert json.loads((league / "state.json").read_text())["update"] == 6
