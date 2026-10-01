@@ -89,3 +89,19 @@ def test_full_pipeline_smoke(phase_a, tmp_path):
     out = build_report(models, root, tmp_path / "report.html")
     html = out.read_text()
     assert "Self-Play Lab" in html and "How each run builds on the last" in html
+
+
+def test_parquet_log_resumes_without_overwriting(tmp_path):
+    from soccersim.selfplay.logging import ParquetLog, load_table
+
+    log = ParquetLog(tmp_path, "r")
+    log.add([{"episode_id": "e0", "t": 0.0, "team": 0}], {"episode_id": "e0"})
+    log.flush()
+    # A restarted process opens the same run and must append, not overwrite part 0.
+    log2 = ParquetLog(tmp_path, "r")
+    assert log2.part == 1
+    log2.add([{"episode_id": "e1", "t": 0.0, "team": 0}], {"episode_id": "e1"})
+    log2.flush()
+    eps = sorted(load_table(tmp_path, "episodes", ["episode_id"]).column("episode_id").to_pylist())
+    assert eps == ["e0", "e1"]
+    assert not list(tmp_path.rglob("*.tmp"))

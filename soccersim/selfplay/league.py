@@ -392,14 +392,19 @@ class League:
 def run_league(models_dir: str | Path, data_root: str | Path, updates: int | None = None, profile: str | None = None,
                workers: int = 4, start_mode: str = "auto", run_dir: str | Path | None = None,
                promoted_root: str | Path | None = None) -> dict[str, Any]:
-    """Create the next run (or resume ``run_dir``), train, check, evaluate and gate it."""
+    """Create the next run (or resume ``run_dir``), train, check, evaluate and gate it.
+
+    ``updates`` is the run's total; a resumed run only plays the updates it still lacks.
+    """
     lg = League(models_dir, data_root, profile, run_dir=run_dir, start_mode=start_mode, promoted_root=promoted_root)
     ri = lg.run_info
     print(f"  run {ri['run']}: starts from {ri['start_from']} ({ri['start_reason']}); "
           f"archive seeded from runs {ri.get('seeded_from_runs') or 'none'}", flush=True)
     n = updates or lg.tcfg["ppo"][lg.prof]["updates"]
     every = lg.lcfg["held_out_eval_every"]
-    for _ in range(n):
+    if lg.update:
+        print(f"  resuming run {lg.run} at update {lg.update} of {n}", flush=True)
+    for _ in range(max(0, n - lg.update)):
         rec = lg.run_update(workers)
         main = rec["ppo"]["main"]
         print(f"  update {rec['update']}: {rec['episodes']} games, main rollouts {main.get('n', 0)}, "

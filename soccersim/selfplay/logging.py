@@ -120,7 +120,9 @@ class ParquetLog:
         self.flush_every = flush_every
         self.rows: list[dict] = []
         self.eps: list[dict] = []
-        self.part = len(list(self.dir.glob("decisions-*.parquet")))
+        # Continue after any parts already here (a resumed run must not overwrite them).
+        parts = [int(f.stem.split("-")[1]) for f in self.dir.glob("*-[0-9][0-9][0-9][0-9].parquet")]
+        self.part = max(parts) + 1 if parts else 0
         self.n_rows = 0
 
     def add(self, rows: list[dict], ep: dict) -> None:
@@ -140,14 +142,23 @@ class ParquetLog:
     def flush(self) -> None:
         if not self.rows and not self.eps:
             return
+        # Written to a temporary name and renamed, decisions before episodes: an interrupted
+        # flush leaves no half-written file, and an episode only counts as logged once its
+        # decisions are on disk.
         if self.rows:
-            pq.write_table(pa.Table.from_pylist(self.rows, DECISION_SCHEMA),
-                           self.dir / f"decisions-{self.part:04d}.parquet")
+            _write_atomic(pa.Table.from_pylist(self.rows, DECISION_SCHEMA),
+                          self.dir / f"decisions-{self.part:04d}.parquet")
         if self.eps:
-            pq.write_table(pa.Table.from_pylist(self.eps, EPISODE_SCHEMA),
-                           self.dir / f"episodes-{self.part:04d}.parquet")
+            _write_atomic(pa.Table.from_pylist(self.eps, EPISODE_SCHEMA),
+                          self.dir / f"episodes-{self.part:04d}.parquet")
         self.part += 1
         self.rows, self.eps = [], []
+
+
+def _write_atomic(table: pa.Table, path: Path) -> None:
+    tmp = path.with_name(path.name + ".tmp")
+    pq.write_table(table, tmp)
+    tmp.replace(path)
 
 
 def load_table(root: str | Path, kind: str = "decisions", columns: list[str] | None = None) -> pa.Table:

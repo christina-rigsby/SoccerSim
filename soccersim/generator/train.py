@@ -307,6 +307,32 @@ def mutation_filter(lib: dict[str, Play], mcfg: dict, seed: int = 0, workers: in
             "survivors_from_prior": sum(1 for r in survivors if r["parent"] in extra_ids)}
 
 
+def _cached_mutation_filter(out: Path, lib: dict[str, Play], mcfg: dict, seed: int, workers: int,
+                            prior: list[Play]) -> dict[str, Any]:
+    import hashlib
+    import pickle
+
+    key = hashlib.sha1(json.dumps({
+        "mcfg": mcfg, "seed": seed, "library": sorted(play_to_dict(p)["id"] + str(p.version) for p in lib.values()),
+        "prior": sorted(json.dumps(play_to_dict(p), sort_keys=True, default=str) for p in prior),
+        "league": load_config("league"),
+    }, sort_keys=True, default=str).encode()).hexdigest()
+    cache = Path(out) / "mutation_filter_cache.pkl"
+    if cache.exists():
+        try:
+            data = pickle.loads(cache.read_bytes())
+            if data.get("key") == key:
+                print("  mutation filtering: reusing the cached result of an interrupted pretraining", flush=True)
+                return data["mf"]
+        except Exception:  # noqa: BLE001 - a corrupt cache is simply recomputed
+            pass
+    mf = mutation_filter(lib, mcfg, seed, workers, extra_parents=prior)
+    tmp = cache.with_suffix(".tmp")
+    tmp.write_bytes(pickle.dumps({"key": key, "mf": mf}))
+    tmp.replace(cache)
+    return mf
+
+
 # -- behaviour cloning ------------------------------------------------------------------------------
 
 
@@ -335,8 +361,9 @@ def pretrain_generator(root: str | Path, out_dir: str | Path, profile: str | Non
     print(f"  earlier promoted plays: {len(prior)} from runs "
           f"{sorted({p.provenance.get('run') for p in prior}) or 'none'}", flush=True)
 
-    # Option 1: they are mutation parents alongside the library.
-    mf = mutation_filter(lib, cfg["mutation"][prof], seed, workers, extra_parents=prior)
+    # Option 1: they are mutation parents alongside the library. The filter is the slow part
+    # of pretraining, so its result is cached and reused if pretraining is restarted.
+    mf = _cached_mutation_filter(out, lib, cfg["mutation"][prof], seed, workers, prior)
     print(f"  mutation filtering: {mf['evaluated']} plays evaluated, {len(mf['survivors'])} survivors "
           f"({mf['survivors_from_prior']} from earlier promoted plays)", flush=True)
     mx, mh, mt = [], [], []
