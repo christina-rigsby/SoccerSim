@@ -96,6 +96,27 @@ def apply_operator(d: dict, op: str, rng: np.random.Generator) -> bool:
     if op == "insert_step":
         if len(d["steps"]) >= 6:
             return False
+        if rng.random() < 0.5 and d["phase"] in ("in_possession", "transition_attack"):
+            # Insert a finishing step from a template: shoot when the chance is good,
+            # otherwise find the best teammate in the box.
+            i = int(rng.integers(1, len(d["steps"]) + 1))
+            xg = float(rng.choice([0.04, 0.06, 0.08, 0.1]))
+            finish = {
+                "id": f"finish{rng.integers(1000)}",
+                "choose": [
+                    {"when": {"xg": {"ref": "ball_holder", "gt": xg}},
+                     "actions": [{"actor": "ball_holder", "type": "shoot", "placement": "auto"}]},
+                    {"when": "always", "actions": [{"actor": "ball_holder", "type": "pass", "style": "ground",
+                                                    "to": {"best_teammate": {"score": "xt", "zone": "box"}}}]},
+                ],
+                "done_when": {"any": [{"event": "shot_taken"}, {"event": "pass_completed"}]},
+                "timeout_s": 2.5, "on_timeout": "abort",
+            }
+            for s in d["steps"]:
+                if s.get("next") == "end":
+                    s.pop("next")
+            d["steps"].insert(i, finish)
+            return True
         i = int(rng.integers(len(d["steps"])))
         new = copy.deepcopy(d["steps"][i])
         new["id"] = f"{new['id']}x{rng.integers(1000)}"

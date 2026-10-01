@@ -156,7 +156,6 @@ def build_highlights(models_dir: str | Path, out: str | Path, n_games: int = 12,
     from ..config import load_config
     from ..selfplay.runner import run_jobs
     from ..sim.scenarios import Scenario
-    from .replay_html import export_replay_html
 
     league_dir = Path(models_dir) / "league"
     ckpt = league_dir if (league_dir / "main.pt").exists() else Path(models_dir)
@@ -197,7 +196,6 @@ def build_highlights(models_dir: str | Path, out: str | Path, n_games: int = 12,
     out = Path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(render_replay_html(payload, "Self-play highlights", fragment))
-    _ = export_replay_html  # same viewer; payloads were already built in the workers
     return {"games": len(results), "kept": len(payload),
             "generated_calls": sum(sum(p["source"] != "library" for p in r["plays"] if p["team"] == 0)
                                    for r in agent),

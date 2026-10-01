@@ -57,6 +57,7 @@ section { display: grid; gap: 16px; }
 .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
 .chart text { fill: var(--ink-2); font-family: var(--body); font-size: 11px; }
 .chart .axis text { fill: var(--ink-3); font-variant-numeric: tabular-nums; }
+.chart text.cell { font-weight: 600; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
 .tablewrap { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: 13px; }
 th, td { padding: 5px 8px; border-bottom: 1px solid var(--rule); text-align: left; }
@@ -160,14 +161,15 @@ function niceTicks(lo, hi, n = 4) {
   if (lo === hi) { hi = lo + 1; }
   const span = hi - lo, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
   const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => s >= step0);
-  const out = []; for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-12; v += step) out.push(+v.toFixed(10));
+  const out = []; const start = Math.floor(lo / step + 1e-9) * step;
+  for (let v = start; v < hi + step - 1e-12; v += step) { out.push(+v.toFixed(10)); if (v >= hi - 1e-12) break; }
   return out;
 }
 
 function lineChart(host, series, opts = {}) {
   const pts = series.flatMap((s) => s.points);
   if (!pts.length) return empty(host, opts.empty || "No data yet.");
-  const W = 420, H = 200, L = 48, R = 14, T = 10, B = 26;
+  const W = 420, H = 214, L = 48, R = 14, T = 10, B = 40;
   const s = svg(host, W, H);
   const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
   let x0 = Math.min(...xs), x1 = Math.max(...xs); if (x0 === x1) x1 = x0 + 1;
@@ -176,8 +178,8 @@ function lineChart(host, series, opts = {}) {
   const X = (v) => L + (v - x0) / (x1 - x0) * (W - L - R), Y = (v) => T + (1 - (v - y0) / (y1 - y0 || 1)) * (H - T - B);
   const ax = el("g", { class: "axis" }, s);
   for (const v of yt) { el("line", { x1: L, x2: W - R, y1: Y(v), y2: Y(v), stroke: "var(--grid)", "stroke-width": 1 }, ax); const t = el("text", { x: L - 6, y: Y(v) + 4, "text-anchor": "end" }, ax); t.textContent = opts.yfmt ? opts.yfmt(v) : fmt(v, opts.yd ?? 3); }
-  for (const v of niceTicks(x0, x1, 5).filter((v) => Number.isInteger(v))) { const t = el("text", { x: X(v), y: H - 8, "text-anchor": "middle" }, ax); t.textContent = v; }
-  if (opts.xlabel) { const t = el("text", { x: W - R, y: H - 8, "text-anchor": "end" }, ax); t.textContent = opts.xlabel; }
+  for (const v of niceTicks(x0, x1, 5).filter((v) => Number.isInteger(v))) { const t = el("text", { x: X(v), y: H - 24, "text-anchor": "middle" }, ax); t.textContent = v; }
+  if (opts.xlabel) { const t = el("text", { x: (L + W - R) / 2, y: H - 4, "text-anchor": "middle" }, ax); t.textContent = opts.xlabel; }
   for (const se of series) {
     if (!se.points.length) continue;
     el("path", { d: se.points.map((p, i) => (i ? "L" : "M") + X(p[0]) + "," + Y(p[1])).join(""), fill: "none", stroke: se.color, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, s);
@@ -215,7 +217,7 @@ function hbars(host, items, opts = {}) {
 }
 
 function seqColor(t) { const stops = ["--seq-0", "--seq-1", "--seq-2", "--seq-3", "--seq-4"]; return `var(${stops[Math.max(0, Math.min(4, Math.round(t * 4)))]})`; }
-function textOn(t) { return t > 0.6 ? "#ffffff" : "var(--ink)"; }
+function textOn(t) { return "var(--ink)"; }
 
 function pitchZones(host, zones) {
   const bands = D.bands, lanes = D.lanes.slice().reverse(); // near_wing on top... reversed so near is top
@@ -231,12 +233,13 @@ function pitchZones(host, zones) {
     const r = el("rect", { x: X(x0) + 1, y: Y(y1) + 1, width: X(x1) - X(x0) - 2, height: Y(y0) - Y(y1) - 2, fill: v == null ? "transparent" : seqColor(v), rx: 2 }, s);
     if (z) {
       hover(r, `<b>${b.replace("_", " ")} · ${l.replace("_", " ")}</b><br>library gap: ${pct(v)}<br>${z.n.toLocaleString()} decisions`);
-      const t = el("text", { x: (X(x0) + X(x1)) / 2, y: (Y(y0) + Y(y1)) / 2 + 4, "text-anchor": "middle", style: `fill:${textOn(v)}` }, s); t.textContent = pct(v).replace(".0%", "%");
+      const t = el("text", { x: (X(x0) + X(x1)) / 2, y: (Y(y0) + Y(y1)) / 2 + 4, "text-anchor": "middle", class: "cell" }, s); t.textContent = pct(v).replace(".0%", "%");
     }
   }
   const lines = [[-17.5, -34, -17.5, 34], [0, -34, 0, 34], [17.5, -34, 17.5, 34]];
   for (const [a, b, c, d] of lines) el("line", { x1: X(a), y1: Y(b), x2: X(c), y2: Y(d), stroke: "var(--chalk)", "stroke-dasharray": "0" }, s);
   el("rect", { x: X(36), y: Y(20.16), width: X(52.5) - X(36), height: Y(-20.16) - Y(20.16), fill: "none", stroke: "var(--chalk)" }, s);
+  for (const l of D.lanes) { const t = el("text", { x: X(-52.5) + 4, y: (Y(ly[l][0]) + Y(ly[l][1])) / 2 + 4, class: "cell" }, s); t.textContent = l.replace("_", " "); t.setAttribute("font-size", "9"); }
   const lab = (x, txt, a) => { const t = el("text", { x, y: H - 4, "text-anchor": a }, s); t.textContent = txt; };
   lab(P, "own goal", "start"); lab(W - P, "attacking →", "end");
   const tn = el("text", { x: W / 2, y: H - 4, "text-anchor": "middle" }, s); tn.textContent = "ball side ↑";
@@ -256,7 +259,7 @@ function heatGrid(host, rows, cols, val, opts = {}) {
       const rect = el("rect", { x: L + j * cw + 1, y: T + i * ch + 1, width: cw - 2, height: ch - 2, rx: 2, fill, stroke: v == null ? "var(--grid)" : "none" }, s);
       if (v != null) {
         hover(rect, `<b>${r}</b> vs <b>${c}</b><br>${opts.tip ? opts.tip(r, c, v) : fmt(v)}`);
-        const tt = el("text", { x: L + j * cw + cw / 2, y: T + i * ch + ch / 2 + 4, "text-anchor": "middle", style: `fill:${opts.text ? opts.text(v) : "var(--ink)"}` }, s); tt.textContent = opts.fmt ? opts.fmt(v) : fmt(v, 2);
+        const tt = el("text", { x: L + j * cw + cw / 2, y: T + i * ch + ch / 2 + 4, "text-anchor": "middle", class: "cell" }, s); tt.textContent = opts.fmt ? opts.fmt(v) : fmt(v, 2);
       }
     });
   });

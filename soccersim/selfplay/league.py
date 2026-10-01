@@ -91,7 +91,8 @@ class League:
             return {"id": "library", "kind": "library", "temperature": 0.01}
         file = f"{pid}.pt" if pid in LEARNERS else f"{pid.replace('@', '_')}.pt"
         return {"id": pid, "kind": "agent", "checkpoint": str(self.dir), "generator_file": file,
-                "activation": "always", "k": 4, "critic": True, "temperature": 0.01, "gen_temperature": 1.0,
+                "activation": "always", "k": 4, "critic": True, "temperature": 0.01,
+                "gen_temperature": self.lcfg.get("train_gen_temperature", 1.2),
                 "learner": pid if pid in LEARNERS else None}
 
     def pool(self) -> list[str]:
@@ -229,7 +230,8 @@ class League:
                 if spec["kind"] == "agent":
                     spec = {**spec, "activation": activation, "gen_temperature": 0.7}
                 jobs = []
-                rng = np.random.default_rng(1234)
+                # Matched games: the same seeds for main and library, different seeds per style.
+                rng = np.random.default_rng(1234 + styles.index(style))
                 for k in range(n):
                     sc = sample_scenario(rng, SCENARIO_TYPES[:-2] + ("random_open_play",))
                     jobs.append({"episode_id": f"E-{who}-{style}-{k}", "seed": int(rng.integers(1 << 31)),
@@ -302,6 +304,6 @@ def run_league(models_dir: str | Path, data_root: str | Path, updates: int | Non
             print("  held-out check:", lg.held_out_check(workers=workers), flush=True)
     ho = lg.held_out_check(workers=workers)
     print("  held-out check:", ho, flush=True)
-    ev = lg.evaluate(n=max(4, lg.tcfg["ppo"][lg.prof]["episodes_per_update"] // 2), workers=workers)
+    ev = lg.evaluate(n=lg.lcfg.get("eval_games", 12), workers=workers)
     return {"updates": lg.update, "held_out": ho, "evaluation": ev, "archive": lg.archive.coverage(),
             "elo": lg.elo.ratings, "flags": lg.flags}

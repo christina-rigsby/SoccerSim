@@ -20,3 +20,5 @@ initial_elo: 1000
 held_out_eval_every: 20
 held_out_drop_flag: 0.25   # flag if held-out EPV drops by more than this fraction
 formations: ["4-3-3", "4-4-2", "3-5-2"]
+train_gen_temperature: 1.2   # generator sampling temperature for learners in league games (exploration)
+eval_games: 12               # games per (team, scripted style) in the final evaluation

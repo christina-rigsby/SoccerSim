@@ -19,6 +19,18 @@ from ..sim.env import EpisodeResult
 _TEMPLATE = Path(__file__).with_name("replay_template.html")
 
 
+SHORT_REASONS = {"ball role but we do not hold the ball": "ball not ours", "triggers": "triggers fail",
+                 "more role slots than players": "too many roles"}
+
+
+def _short(reason: str) -> str:
+    if reason.startswith("no eligible player for role"):
+        return "no player for " + reason.rsplit(" ", 1)[-1]
+    if reason.startswith("hard_constraints"):
+        return "hard constraint"
+    return SHORT_REASONS.get(reason, reason)
+
+
 def episode_payload(res: EpisodeResult | dict[str, Any], title: str = "", stride: int = 1) -> dict[str, Any]:
     r = res if isinstance(res, dict) else res.__dict__
     frames = r["frames"][::stride]
@@ -35,7 +47,7 @@ def episode_payload(res: EpisodeResult | dict[str, Any], title: str = "", stride
         decisions.append({
             "t": d["t"], "team": d["team"], "reason": d["reason"], "chosen": d.get("chosen"),
             "kept": d.get("kept_active"), "gen": d.get("generator_used"), "gap": d.get("library_gap"),
-            "c": [[c["play_id"], c["source"], c["feasible"], c["reason"], c["score"]] for c in cands],
+            "c": [[c["play_id"], c["source"], c["feasible"], _short(c["reason"]), c["score"]] for c in cands],
         })
     return {
         "title": title or f"seed {r['seed']} · {r['scenario'].get('type', '')}",

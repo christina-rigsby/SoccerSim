@@ -6,16 +6,57 @@ Milestones deliberately follow the design doc's build order (§6): the space lay
 "is this good for us right now" scoring function come before the ranking graph, and both come
 before the generative model. See D-008.
 
-**Last updated:** 2026-09-11 (M1a — play building)
+**Last updated:** 2026-10-01 (self-play spec M0–M9)
+
+## Self-play spec milestones (`docs/soccer_selfplay_spec.md`)
+
+The spec is implemented as a second stack beside the M1a play engine (D-043). Its
+milestone numbers are its own and are prefixed `S-` here to avoid clashing with the
+design-doc milestones below.
+
+| Milestone | State | Acceptance evidence |
+|---|---|---|
+| **S-M0** schema, configs, loader, validator | `done` | 12 starter plays validate; 11 invalid fixtures fail with clear errors (`tests/test_schema.py`); CI runs pytest + ruff |
+| **S-M1** simulator core | `done` | Per-model unit tests, deterministic replay from seed, ≥ 20× real time (~130× measured, 4 workers ~150×) (`tests/test_sim_core.py`) |
+| **S-M2** controllers + shape | `done` | One scenario test per action type (`tests/test_controllers.py`) |
+| **S-M3** Module 1 geometry + predicates | `done` | Every predicate unit-tested; symmetric pitch control = 0.5 (`tests/test_predicates.py`) |
+| **S-M4** play executor | `done` | Every starter play runs in a pinned scenario where its own triggers hold; mirror test (`tests/test_executor.py`) |
+| **S-M5** Module 2 + replay viewer | `done` | Full scripted match end to end; HTML replay with plays, roles, targets, decision inspector (`tests/test_ranking.py`) |
+| **S-M6** self-play runner, logging, league styles, sim xT | `done` | 203,307 decisions from 14,000 games; summary report; xT refit from 230k moves (`tests/test_selfplay_pipeline.py`) |
+| **S-M7** encoder, critic, response model | `done` | Critic beats the per-play mean on held-out games; ranking A/B with vs without critic in `data/models/critic_metrics.json` |
+| **S-M8** tokenizer, grammar generator, BC + mutation | `done` | 100 % validity by construction (target > 99 %); matched-scenario EPV comparison in `generator_metrics.json` |
+| **S-M9** PPO league, QD archive, promotion | `done` (quick profile) | League history, Elo, payoff, archive, final evaluation vs every scripted style incl. held-out `possession`; promoted plays in `plays/promoted/` |
+| **S-M10** GRF adapter, SoccerNet calibration | `not started` | Optional per spec; Q-036 |
+
+Runs so far use the `quick` training profile. The `spec` profile (model sizes and run
+lengths from the spec) is configured but has not been run.
+
+### Results of the 2026-10-01 quick run
+
+| Check | Result | Target met? |
+|---|---|---|
+| Phase A data | 203,307 decisions from 14,000 library self-play games (~150× real time on 4 cores) | yes |
+| Critic vs per-play mean (held-out MSE) | 0.000333 vs 0.000391 (−15 %); success accuracy 87 % | yes |
+| Ranking with critic vs without (60 matched games) | 0.00168 vs 0.00177 mean play reward | **no** — flat; the critic rarely changes the choice because few library plays are feasible at once |
+| Response model, opponent's next play | 69 % accuracy vs 28 % majority guess | — |
+| Generator validity | 100 % (grammar-constrained) | yes |
+| Generated vs library EPV, matched scenarios | −0.0030 vs −0.0041 mean play reward | yes (≥ 80 %) |
+| League (6 updates, 96 games) | main Elo 1028; archive 44 plays / 23 elite niches; 6 plays promoted for review | archive grows: yes |
+| Main agent vs scripted styles | better than the library vs `high_press`, level vs held-out `possession`, worse vs `mid_block` and `low_block_counter` | **no** — needs the `spec`-length league |
+| Held-out physics check | EPV dropped 41 % under held-out physics | **flagged** (possible sim overfitting) |
+| Shots | library self-play: 37 shots in ~6,650 sim-minutes; agent: 0 in 16 highlight games | see Q-035 |
+
+
+## Design-doc milestones
 
 | Milestone | State | Summary |
 |---|---|---|
 | **M0** — Space & feasibility foundation | `done` | Domain model, pitch-control / lane / xT layer, kinematic feasibility, debug renderer |
 | **M0.5** — Player roles & matching | `done` | Attributes, positional slots vs. play roles, roster loading, the two role hard-checks |
 | **M1a** — Play building (module 2, part 1) | `done` | Anchors, triggers, the play DAG, 7 authored plays, instantiation, executor |
-| **M1b** — Ranking graph & weight algebra | `not started` | **Being built elsewhere.** Graph schema, edge weights, assignment solve, scoring |
+| **M1b** — Ranking graph & weight algebra | `done` (spec stack) | Built as S-M5: EPV weight algebra (D-042), Hungarian assignment, scoring |
 | **M2** — Dashboard & opponent model (module 1) | partial | Spine, measurements, marking + pressing inference, our own book. Opponent *attributes* still uninferred |
-| **M3** — AI/ML play generator (module 3) | `blocked` | Blocked on M0+M1 validation with hand-authored plays, per D-008 |
+| **M3** — AI/ML play generator (module 3) | `done` (spec stack) | Built as S-M7–S-M9 after the hand-authored library ran end to end, honouring D-008 |
 | **X** — Cross-cutting | partial | Sim loop, tuning harness, test infrastructure |
 
 ---

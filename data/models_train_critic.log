@@ -1,0 +1,4 @@
+  critic epoch 1: test MSE 0.000362 vs per-play baseline 0.000391, success acc 0.855
+  critic epoch 2: test MSE 0.000353 vs per-play baseline 0.000391, success acc 0.869
+  critic epoch 3: test MSE 0.000337 vs per-play baseline 0.000391, success acc 0.866
+  critic epoch 4: test MSE 0.000328 vs per-play baseline 0.000391, success acc 0.874

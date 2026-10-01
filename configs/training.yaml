@@ -39,7 +39,7 @@ bc:
 
 mutation:
   smoke: {mutants_per_play: 1, rollouts: 2, keep_quantile: 0.5}
-  quick: {mutants_per_play: 6, rollouts: 6, keep_quantile: 0.5}
+  quick: {mutants_per_play: 10, rollouts: 6, keep_quantile: 0.5}
   spec: {mutants_per_play: 40, rollouts: 20, keep_quantile: 0.25}
 
 ppo:

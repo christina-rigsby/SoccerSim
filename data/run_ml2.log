@@ -1,0 +1,187 @@
+  BC examples from logs: 12000
+  mutation filtering: 88 plays evaluated, 36 survivors
+  BC epoch 1: loss 0.477, held-out token acc 0.997
+  BC epoch 2: loss 0.020, held-out token acc 0.996
+  BC epoch 3: loss 0.013, held-out token acc 0.997
+  BC epoch 4: loss 0.011, held-out token acc 0.997
+  BC epoch 5: loss 0.011, held-out token acc 0.997
+  BC epoch 6: loss 0.009, held-out token acc 0.997
+  validity: 100.000% over 240 samples
+  matched scenarios: generated -0.0030 vs library -0.0041 mean play reward -> meets the 80% target
+{
+  "bc_examples": 12000,
+  "mutation": {
+    "summary": {
+      "build_out_short_goal_kick": {
+        "parent_mean": -0.01680707701993649,
+        "mutants": 10,
+        "kept": 6,
+        "best_mutant_mean": -5.790751795990932e-06
+      },
+      "direct_counterattack": {
+        "parent_mean": -0.001440862455455302,
+        "mutants": 10,
+        "kept": 6,
+        "best_mutant_mean": 0.015170852625053207
+      },
+      "recycle_possession": {
+        "parent_mean": -0.0013918698190352383,
+        "mutants": 10,
+        "kept": 7,
+        "best_mutant_mean": -0.0007330882326283499
+      },
+      "switch_of_play": {
+        "parent_mean": -0.0060717880657504,
+        "mutants": 10,
+        "kept": 7,
+        "best_mutant_mean": -0.0007175681982275693
+      },
+      "third_man_combination": {
+        "parent_mean": -0.000731226776872274,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": -0.0001890719720851784
+      },
+      "wide_overlap_cross": {
+        "parent_mean": -0.00609569942738674,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.018502467984473494
+      }
+    },
+    "evaluated": 88
+  },
+  "survivors": 36,
+  "survivor_examples": 216,
+  "validity": {
+    "validity": 1.0,
+    "sampled": 240,
+    "mean_len": 100.87916666666666
+  },
+  "matched": {
+    "library_mean": -0.004085420382165605,
+    "generated_mean": -0.003030786324786325,
+    "library_plays": 157,
+    "generated_plays": 117,
+    "meets_target": true
+  },
+  "elapsed_s": 1880.5
+}
+  update 1: 16 games, main rollouts 40, mean generated-play reward -0.0074, generated share 0.51, validity 1.000, Elo main 958, archive {'cells': 10, 'elite_cells': 7, 'plays': 12}, 69.8s
+  update 2: 16 games, main rollouts 41, mean generated-play reward -0.0092, generated share 0.42, validity 1.000, Elo main 986, archive {'cells': 12, 'elite_cells': 11, 'plays': 16}, 70.6s
+  update 3: 16 games, main rollouts 35, mean generated-play reward -0.0098, generated share 0.35, validity 1.000, Elo main 1005, archive {'cells': 15, 'elite_cells': 14, 'plays': 19}, 111.6s
+  update 4: 16 games, main rollouts 26, mean generated-play reward -0.0070, generated share 0.42, validity 1.000, Elo main 1065, archive {'cells': 15, 'elite_cells': 14, 'plays': 21}, 49.4s
+  update 5: 16 games, main rollouts 62, mean generated-play reward -0.0013, generated share 0.52, validity 1.000, Elo main 1028, archive {'cells': 22, 'elite_cells': 18, 'plays': 31}, 84.2s
+  update 6: 16 games, main rollouts 36, mean generated-play reward -0.0041, generated share 0.42, validity 1.000, Elo main 1028, archive {'cells': 31, 'elite_cells': 23, 'plays': 44}, 129.7s
+  held-out check: {'train': 0.009841478260869568, 'held_out': 0.00576092857142857, 'relative_drop': 0.41462771966540435, 'flag': True, 'update': 6}
+{
+  "updates": 6,
+  "held_out": {
+    "train": 0.009841478260869568,
+    "held_out": 0.00576092857142857,
+    "relative_drop": 0.41462771966540435,
+    "flag": true,
+    "update": 6
+  },
+  "evaluation": {
+    "main": {
+      "high_press": {
+        "mean_play_reward": 8.08196721311474e-05,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 24,
+        "plays": 61,
+        "held_out": false
+      },
+      "mid_block": {
+        "mean_play_reward": -0.003437404255319149,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 44,
+        "plays": 94,
+        "held_out": false
+      },
+      "low_block_counter": {
+        "mean_play_reward": 0.00019253271028037413,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 38,
+        "plays": 107,
+        "held_out": false
+      },
+      "possession": {
+        "mean_play_reward": 0.0002881951219512192,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 29,
+        "plays": 82,
+        "held_out": true
+      }
+    },
+    "library": {
+      "high_press": {
+        "mean_play_reward": -0.0005116428571428567,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 0,
+        "plays": 56,
+        "held_out": false
+      },
+      "mid_block": {
+        "mean_play_reward": -0.001037601694915254,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 0,
+        "plays": 118,
+        "held_out": false
+      },
+      "low_block_counter": {
+        "mean_play_reward": 0.0015319195402298846,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 0,
+        "plays": 87,
+        "held_out": false
+      },
+      "possession": {
+        "mean_play_reward": 0.00037951724137931015,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 0,
+        "plays": 87,
+        "held_out": true
+      }
+    },
+    "beats_all_styles": false
+  },
+  "archive": {
+    "cells": 31,
+    "elite_cells": 23,
+    "plays": 44
+  },
+  "elo": {
+    "low_block_counter": 964.804410743698,
+    "main": 1028.0395358416783,
+    "mid_block": 1005.9399891941222,
+    "league_exploiter": 1011.1485627967219,
+    "main_exploiter": 979.4495205931166,
+    "high_press": 1010.0750385854399,
+    "main@5": 1028.2433082610098
+  },
+  "flags": [
+    "update 6: held-out EPV dropped 41% \u2014 possible sim overfitting"
+  ]
+}
+{
+  "elites": 23,
+  "promoted": 6,
+  "promoted_ids": [
+    "gen_5fa1f3645f",
+    "gen_a20edbb411",
+    "gen_e55b04e172",
+    "gen_cf5c9636cf",
+    "gen_692b502c31",
+    "gen_64c5493589"
+  ]
+}
+PIPELINE_DONE
