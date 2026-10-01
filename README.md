@@ -43,7 +43,7 @@ python scripts/selfplay.py report                     # play frequency, success 
 python scripts/selfplay.py fit-xt                     # xT recomputed from simulated events
 python scripts/selfplay.py train-critic               # critic + response model (M7)
 python scripts/selfplay.py pretrain-generator         # BC + mutation filtering (M8)
-python scripts/selfplay.py league                     # PPO in the league + QD archive (M9)
+python scripts/selfplay.py league                     # next league run (M9); continues from the last run when safe
 python scripts/selfplay.py promote                    # archive elites -> plays/generated_and_promoted/run_<N>/ for review
 python scripts/selfplay.py viz                        # out/selfplay_report.html + highlight replays
 pytest                                                # fast suite;  pytest -m slow  runs the whole pipeline
@@ -62,6 +62,16 @@ assignment and scoring as library plays, the critic adds its value estimate, and
 argmax wins whichever source it came from (D-042). Generated plays that keep winning are
 filed in the quality-diversity archive, and the best are exported to `plays/generated_and_promoted/run_<N>/`
 flagged for human review.
+
+### Runs build on each other
+
+Each league run lives in `data/models/runs/run_<N>/` and promotes plays into
+`plays/generated_and_promoted/run_<N>/`. Before a run, generator pretraining mutates and
+imitates every earlier run's promoted plays; the run's archive is seeded with them, so new
+plays must beat them in their niche. The run continues training the previous run's
+generator only if the opponent pool is unchanged and the previous run passed its
+per-style regression gate; otherwise it starts from the last good or the pretrained
+generator (D-044). `league --fresh` and `league --force-continue` override that choice.
 
 ### Seeing what self-play is doing
 

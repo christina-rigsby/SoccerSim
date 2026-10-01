@@ -37,6 +37,18 @@ All of `configs/sim.yaml` is initial guesses (spec §7.2). Interception sharpnes
 to make a defender in the lane intercept ~90 % of the time; nothing else has been fitted.
 *Blocks:* trusting absolute EPV values. *Resolves with:* M10 SoccerNet calibration.
 
+### Q-037 · Does feeding opponent style into the generator improve performance? · `open`
+The generator sees only the pitch state, so it learns one compromise strategy for every
+opponent (D-044). The response model already predicts the opponent's next play and could
+supply a style estimate as an extra input. Would conditioning the generator on it beat the
+unconditioned generator against every scripted style, including the held-out one?
+*Alternatives:* one generator per opponent style, switched by the observed style (less data
+per generator, and a wrong style estimate picks the wrong one).
+*Prerequisite:* scripted styles that actually differ — today a style only adds a 0.03–0.04
+bonus to a few library plays, and in run 1 three styles gave identical evaluation results.
+*Evidence to collect:* per-style regression-gate and evaluation results for conditioned vs
+unconditioned generators trained on the same opponent pool.
+
 ---
 
 ## Ranking system (design doc §4)

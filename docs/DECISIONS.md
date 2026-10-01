@@ -10,6 +10,44 @@ actually settled — always paired with an `OPEN_QUESTIONS.md` entry).
 
 ---
 
+## D-044 · League runs build on earlier runs, but only along a consistent opponent pool
+**Date:** 2026-10-01 · **Status:** `active` (see Q-037)
+
+Runs are numbered (`data/models/runs/run_<N>/`, promoted plays in
+`plays/generated_and_promoted/run_<N>/`). Each run:
+
+1. mutates earlier runs' promoted plays alongside the library plays in generator pretraining;
+2. imitates them (behaviour cloning) in the states where they were replayed;
+3. seeds its QD archive with them, so a new play only takes a niche by beating them there,
+   and never promotes a carried-in play again;
+4. continues training the previous run's generator **only if** the opponent pool (scripted
+   styles and their play weights, held-out styles, PFSP weighting, learner set, snapshot and
+   exploiter-reset cadence) is identical — checked by fingerprint — **and** the previous run
+   passed its regression gate. The gate replays fixed games against every scripted style,
+   including the held-out one, with the run's starting and final generators; the run fails
+   if the final one is worse than the start by more than `max(0.002, 25 % of |start|)`
+   mean play reward against any style. On failure the next run starts from the generator
+   the failed run started from (if that was itself a continuation), otherwise from the
+   newly pretrained generator. Payoff and Elo carry over; the previous run's final
+   generator joins the opponent pool. The PPO KL anchor is always the run's own pretrained
+   generator.
+
+**Rationale:** continuing training is only sound when consecutive runs optimise the same
+objective. Switching the opponent mix between runs could leave the generator in a basin fit
+to the old opponents; the fingerprint forbids it, and the per-style gate catches a run that
+got worse against any one style even with the same pool.
+
+**Alternatives considered viable:** one generator per opponent style, each continuing only
+from itself and selected by the opponent model at match time (less data per generator,
+exposed to style misclassification); a single generator conditioned on the opponent's
+estimated style (Q-037).
+
+**Backtrack trigger:** the gate fails repeatedly against the same style while passing the
+others — the single generator cannot serve every style, and Q-037's conditioned or
+per-style generators become necessary.
+
+---
+
 ## D-043 · The self-play spec is built as a second stack beside the M1a play engine
 **Date:** 2026-10-01 · **Status:** `active`
 
