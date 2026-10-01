@@ -36,34 +36,53 @@ from ..schema import load_library
 from ..sim.env import held_out_sim
 from ..sim.scenarios import SCENARIO_TYPES, sample_scenario
 from .pfsp import pfsp_weights
-from .qd_archive import Archive, descriptor
+from .qd_archive import Archive, descriptor, seed_archive
 from .runner import run_jobs
+from .runs import (
+    LEARNERS,
+    PROMOTED_DIR,
+    latest_run_dir,
+    next_run_number,
+    plan_start,
+    pool_definition,
+    pool_fingerprint,
+    prior_promoted,
+    read_state,
+    runs_root,
+)
 
-LEARNERS = ("main", "main_exploiter", "league_exploiter")
 BAND_SCENARIOS = {"own_third": "mid_progression", "mid_own": "mid_progression", "mid_opp": "random_open_play",
                   "final_third": "final_third_attack"}
 
 
 class League:
+    """One league run. ``run_dir=None`` creates the next run (``data/models/runs/run_<N>/``);
+    passing an existing run directory resumes it."""
+
+    RUN_KEYS = ("run", "promotion_run", "pool", "pool_fingerprint", "continued_from", "start_from", "start_reason",
+                "seeded_from_runs", "gate")
+
     def __init__(self, models_dir: str | Path, data_root: str | Path, profile: str | None = None,
-                 seed: int = 0) -> None:
+                 seed: int = 0, run_dir: str | Path | None = None, start_mode: str = "auto",
+                 promoted_root: str | Path | None = None) -> None:
         self.models = Path(models_dir)
-        self.dir = self.models / "league"
         self.root = Path(data_root)
         self.tcfg = load_config("training")
         self.prof = profile or self.tcfg["profile"]
         self.lcfg = load_config("league")
         self.rng = np.random.default_rng(seed)
         self.lib = load_library()
-        self.dir.mkdir(parents=True, exist_ok=True)
-        for f in ("critic.pt", "response.pt"):
-            if (self.models / f).exists() and not (self.dir / f).exists():
-                shutil.copy(self.models / f, self.dir / f)
-        for name in ("main.pt", "ref.pt", "main_exploiter.pt", "league_exploiter.pt"):
-            if not (self.dir / name).exists():
-                shutil.copy(self.models / "generator.pt", self.dir / name)
+        self.promoted_root = Path(promoted_root) if promoted_root else PROMOTED_DIR
+        min_evals = self.tcfg["qd"][f"min_evals_{self.prof}"]
+        if run_dir is None:
+            n = next_run_number(self.models, self.promoted_root)
+            self.dir = runs_root(self.models) / f"run_{n}"
+            self._create(n, start_mode, min_evals)
+        else:
+            self.dir = Path(run_dir)
         self.state_path = self.dir / "state.json"
         st = json.loads(self.state_path.read_text()) if self.state_path.exists() else {}
+        self.run_info = {k: st.get(k) for k in self.RUN_KEYS}
         self.update = st.get("update", 0)
         self.snapshots: list[str] = st.get("snapshots", [])
         self.elo = Elo(self.lcfg["elo_k"], self.lcfg["initial_elo"])
@@ -72,8 +91,6 @@ class League:
         self.history: list[dict] = st.get("history", [])
         self.flags: list[str] = st.get("flags", [])
         self.final_eval: dict = st.get("final_eval", {})
-        self.promotion_run = st.get("promotion_run")  # set by promote.py; kept across saves
-        min_evals = self.tcfg["qd"][f"min_evals_{self.prof}"]
         self.archive = Archive.load(self.dir / "archive.json", min_evals)
         self.styles = [s for s in self.lcfg["scripted_styles"] if s not in self.lcfg["held_out_styles"]]
         self.gens = {n: load_generator(self.dir / f"{n}.pt") for n in LEARNERS}
@@ -82,6 +99,46 @@ class League:
         lr = self.tcfg["ppo"][self.prof]["lr"]
         self.opts = {n: torch.optim.Adam(self.gens[n].parameters(), lr=lr) for n in LEARNERS}
         self.gen_ident = play_ids(self.lib).index("generated")
+
+    @property
+    def run(self) -> int | None:
+        return self.run_info.get("run")
+
+    def _create(self, n: int, start_mode: str, min_evals: int) -> None:
+        """Set up run ``n``: starting generator (option 4 guardrails), KL anchor, seeded archive."""
+        plan = plan_start(self.models, self.lcfg, start_mode)
+        prev_dir = latest_run_dir(self.models)
+        self.dir.mkdir(parents=True, exist_ok=False)
+        for f in ("critic.pt", "response.pt"):
+            if (self.models / f).exists():
+                shutil.copy(self.models / f, self.dir / f)
+        # The KL anchor and the exploiters' reset point are this run's pretrained generator.
+        phase_b = self.models / "generator.pt"
+        for name in ("ref.pt", "main_exploiter.pt", "league_exploiter.pt"):
+            shutil.copy(phase_b, self.dir / name)
+        shutil.copy(plan["start_from"], self.dir / "main.pt")
+        shutil.copy(plan["start_from"], self.dir / "start.pt")
+        state: dict[str, Any] = {
+            "run": n, "promotion_run": n, "pool": pool_definition(self.lcfg),
+            "pool_fingerprint": pool_fingerprint(self.lcfg), "continued_from": plan["continued_from"],
+            "start_from": plan["start_from"], "start_reason": plan["reason"], "update": 0,
+        }
+        if plan["continued_from"] is not None and prev_dir is not None:
+            # Carry the opponent statistics so PFSP keeps focusing on what the last run struggled
+            # with, and keep the previous run's final generator in the pool so it is not forgotten.
+            prev = read_state(prev_dir)
+            state["payoff"] = prev.get("payoff", {})
+            state["elo"] = dict(prev.get("elo", {}))
+            snap = f"run{prev.get('run')}@final"
+            shutil.copy(prev_dir / "main.pt", self.dir / f"{snap.replace('@', '_')}.pt")
+            state["snapshots"] = [snap]
+            state["elo"][snap] = state["elo"].get("main", self.lcfg["initial_elo"])
+        prior = prior_promoted(before_run=n, root=self.promoted_root)
+        archive = Archive(min_evals)
+        seed_archive(archive, prior)
+        archive.save(self.dir / "archive.json")
+        state["seeded_from_runs"] = sorted({p.provenance.get("run") for p in prior if p.provenance})
+        (self.dir / "state.json").write_text(json.dumps(state, indent=1, default=str))
 
     # -- specs -------------------------------------------------------------------------------
 
@@ -280,18 +337,66 @@ class League:
         self.save()
         return out
 
+    def regression_gate(self, workers: int = 4) -> dict[str, Any]:
+        """Option 4 guardrail: the run's final generator vs the generator it started from.
+
+        Same fixed games against every scripted style (held-out one included). If the final
+        generator is meaningfully worse against any style, the gate fails and the next run
+        will not continue from this run's generator (:func:`.runs.plan_start`).
+        """
+        n = int(self.lcfg.get("gate_games", 8))
+        tol_abs = float(self.lcfg.get("gate_tolerance_abs", 0.002))
+        tol_rel = float(self.lcfg.get("gate_tolerance_rel", 0.25))
+        styles = list(self.lcfg["scripted_styles"])
+        out: dict[str, Any] = {"styles": {}, "games_per_style": n}
+        for style in styles:
+            rng = np.random.default_rng(4242 + styles.index(style))
+            base = []
+            for k in range(n):
+                sc = sample_scenario(rng, SCENARIO_TYPES[:-2] + ("random_open_play",))
+                base.append({"seed": int(rng.integers(1 << 31)), "scenario": sc.to_dict(),
+                             "away": self.spec(style), "randomise": False, "k": k})
+            means = {}
+            for who, file in (("start", "start.pt"), ("final", "main.pt")):
+                spec = {**self.spec("main"), "id": f"gate_{who}", "generator_file": file, "activation": "on_gap",
+                        "gen_temperature": 0.7}
+                jobs = [{**{x: y for x, y in b.items() if x != "k"}, "episode_id": f"G-{who}-{style}-{b['k']}",
+                         "home": spec} for b in base]
+                res: list[dict] = []
+                run_jobs(jobs, None, workers=workers, on_result=res.append, progress_every=0)
+                rew = [r["reward"] for x in res for r in x["rows"] if r["team"] == 0]
+                means[who] = float(np.mean(rew)) if rew else 0.0
+            allowed = max(tol_abs, tol_rel * abs(means["start"]))
+            ok = means["final"] >= means["start"] - allowed
+            out["styles"][style] = {"start": means["start"], "final": means["final"],
+                                    "diff": means["final"] - means["start"], "allowed_drop": allowed, "ok": bool(ok),
+                                    "held_out": style in self.lcfg["held_out_styles"]}
+        out["passed"] = all(v["ok"] for v in out["styles"].values())
+        out["failed_styles"] = [k for k, v in out["styles"].items() if not v["ok"]]
+        self.run_info["gate"] = out
+        if not out["passed"]:
+            self.flags.append(f"run {self.run}: regression gate failed against {', '.join(out['failed_styles'])}; "
+                              "the next run will not continue from this generator")
+        self.save()
+        return out
+
     def save(self) -> None:
         self.archive.save(self.dir / "archive.json")
         self.state_path.write_text(json.dumps({
             "update": self.update, "snapshots": self.snapshots, "elo": self.elo.ratings,
             "payoff": self.payoff.to_json(), "history": self.history, "flags": self.flags,
-            "final_eval": self.final_eval, "promotion_run": self.promotion_run,
+            "final_eval": self.final_eval, **self.run_info,
         }, indent=1, default=str))
 
 
 def run_league(models_dir: str | Path, data_root: str | Path, updates: int | None = None, profile: str | None = None,
-               workers: int = 4) -> dict[str, Any]:
-    lg = League(models_dir, data_root, profile)
+               workers: int = 4, start_mode: str = "auto", run_dir: str | Path | None = None,
+               promoted_root: str | Path | None = None) -> dict[str, Any]:
+    """Create the next run (or resume ``run_dir``), train, check, evaluate and gate it."""
+    lg = League(models_dir, data_root, profile, run_dir=run_dir, start_mode=start_mode, promoted_root=promoted_root)
+    ri = lg.run_info
+    print(f"  run {ri['run']}: starts from {ri['start_from']} ({ri['start_reason']}); "
+          f"archive seeded from runs {ri.get('seeded_from_runs') or 'none'}", flush=True)
     n = updates or lg.tcfg["ppo"][lg.prof]["updates"]
     every = lg.lcfg["held_out_eval_every"]
     for _ in range(n):
@@ -306,5 +411,9 @@ def run_league(models_dir: str | Path, data_root: str | Path, updates: int | Non
     ho = lg.held_out_check(workers=workers)
     print("  held-out check:", ho, flush=True)
     ev = lg.evaluate(n=lg.lcfg.get("eval_games", 12), workers=workers)
-    return {"updates": lg.update, "held_out": ho, "evaluation": ev, "archive": lg.archive.coverage(),
-            "elo": lg.elo.ratings, "flags": lg.flags}
+    gate = lg.regression_gate(workers=workers)
+    print(f"  regression gate: {'passed' if gate['passed'] else 'FAILED vs ' + ', '.join(gate['failed_styles'])}",
+          flush=True)
+    return {"run": lg.run, "dir": str(lg.dir), "continued_from": ri["continued_from"],
+            "start_reason": ri["start_reason"], "updates": lg.update, "held_out": ho, "evaluation": ev,
+            "gate": gate, "archive": lg.archive.coverage(), "elo": lg.elo.ratings, "flags": lg.flags}

@@ -167,6 +167,8 @@ def mutate(play: Play, rng: np.random.Generator, n_ops: int = 2) -> Play | None:
     d["id"] = f"{play.id}__m{digest}"
     d["source"] = "generated"
     d["provenance"] = {"parent": play.id, "operators": ops}
+    if play.provenance and play.provenance.get("run") is not None:
+        d["provenance"]["parent_run"] = play.provenance["run"]  # a mutant of an earlier run's promoted play
     d["cooldown_s"] = 0.0
     try:
         return parse_play(d)

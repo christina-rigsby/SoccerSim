@@ -5,8 +5,8 @@
     python scripts/selfplay.py fit-xt                                    # sim-derived xT
     python scripts/selfplay.py train-critic                              # M7 critic + response model
     python scripts/selfplay.py pretrain-generator                        # M8 BC + mutation filtering
-    python scripts/selfplay.py league --updates 6                        # M9 PPO in the league + QD archive
-    python scripts/selfplay.py promote                                   # export archive elites for review
+    python scripts/selfplay.py league --updates 6                        # M9: next run (continues when safe)
+    python scripts/selfplay.py promote                                   # latest run's elites -> run_<N>/
     python scripts/selfplay.py viz                                       # HTML report + replays
 
 Defaults read ``configs/training.yaml`` (profile ``quick`` or ``spec``).
@@ -67,14 +67,17 @@ def cmd_pretrain(a):
 def cmd_league(a):
     from soccersim.selfplay.league import run_league
 
-    print(json.dumps(run_league(a.models, a.root, updates=a.updates, profile=a.profile, workers=a.workers),
-                     indent=2, default=str))
+    mode = "fresh" if a.fresh else "force" if a.force_continue else "auto"
+    run_dir = Path(a.models) / "runs" / f"run_{a.resume}" if a.resume else None
+    print(json.dumps(run_league(a.models, a.root, updates=a.updates, profile=a.profile, workers=a.workers,
+                                start_mode=mode, run_dir=run_dir), indent=2, default=str))
 
 
 def cmd_promote(a):
     from soccersim.selfplay.promote import promote_elites
 
-    print(json.dumps(promote_elites(a.models), indent=2))
+    run_dir = Path(a.models) / "runs" / f"run_{a.run}" if a.run else None
+    print(json.dumps(promote_elites(a.models, a.root, profile=a.profile, workers=a.workers, run_dir=run_dir), indent=2))
 
 
 def cmd_viz(a):
@@ -105,10 +108,16 @@ def main() -> None:
         s = sub.add_parser(name)
         s.add_argument("--max-rows", type=int, default=None)
         s.set_defaults(fn=fn)
-    s = sub.add_parser("league")
+    s = sub.add_parser("league", help="train the next league run (continues from the previous one when safe)")
     s.add_argument("--updates", type=int, default=None)
+    s.add_argument("--fresh", action="store_true", help="start from the pretrained generator, not the previous run")
+    s.add_argument("--force-continue", action="store_true",
+                   help="continue from the previous run even if the opponent pool changed or its gate failed")
+    s.add_argument("--resume", type=int, default=None, help="resume an existing run number instead of a new one")
     s.set_defaults(fn=cmd_league)
-    sub.add_parser("promote").set_defaults(fn=cmd_promote)
+    s = sub.add_parser("promote", help="export the latest run's archive elites for review")
+    s.add_argument("--run", type=int, default=None, help="run number (default: latest)")
+    s.set_defaults(fn=cmd_promote)
     s = sub.add_parser("viz")
     s.add_argument("--fragment", action="store_true")
     s.set_defaults(fn=cmd_viz)

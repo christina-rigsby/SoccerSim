@@ -208,7 +208,7 @@ provenance:
         n: 4
         library_median: -0.0004490000137593597
         beats: true
-  generating_checkpoint: /home/user/SoccerSim/data/models/league/main.pt
+  generating_checkpoint: data/models/runs/run_2/main.pt
   league_update: 6
   training_profile: quick
   run: 2

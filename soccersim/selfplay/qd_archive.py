@@ -99,3 +99,33 @@ class Archive:
         a = cls(min_evals or data["min_evals"])
         a.plays = data["plays"]
         return a
+
+
+def seed_archive(archive: Archive, plays) -> int:
+    """Option 3: seed a new run's archive with earlier runs' promoted plays.
+
+    Each keeps the evaluations recorded in its provenance (mean and count per opponent), so a
+    new play only takes over a niche by beating it there. Seeded plays are marked with
+    ``prior_run`` and are never promoted again.
+    """
+    n = 0
+    for play in plays:
+        prov = play.provenance or {}
+        cell = prov.get("archive_cell")
+        if not cell:
+            continue
+        desc = [cell["band"], cell["lane"], cell["tempo"], int(cell["passes"]), cell["objective"]]
+        d = play.model_dump(mode="json", exclude_none=True)
+        per_opp = (prov.get("metrics") or {}).get("per_opponent") or {}
+        evals = []
+        for opp, m in per_opp.items():
+            if m.get("mean_reward") is None:
+                continue
+            evals += [[float(m["mean_reward"]), opp, f"run{prov.get('run')}"]] * int(max(1, m.get("n", 1)))
+        if not evals:
+            mean = float((prov.get("metrics") or {}).get("overall", {}).get("mean", 0.0))
+            evals = [[mean, "unknown", f"run{prov.get('run')}"]] * archive.min_evals
+        archive.plays[play.id] = {"play": d, "cell": cell_key(desc), "desc": desc, "evals": evals,
+                                  "prior_run": prov.get("run")}
+        n += 1
+    return n

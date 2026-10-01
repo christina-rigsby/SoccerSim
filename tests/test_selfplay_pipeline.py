@@ -61,13 +61,31 @@ def test_full_pipeline_smoke(phase_a, tmp_path):
     assert "mse" in crit["critic"] and (models / "critic.pt").exists()
     gen = pretrain_generator(root, models, profile="smoke", workers=2)
     assert gen["validity"]["validity"] >= 0.99
-    lg = League(models, tmp_path / "league_data", profile="smoke")
+    promoted = tmp_path / "promoted"
+    lg = League(models, tmp_path / "league_data", profile="smoke", promoted_root=promoted)
+    assert lg.run == 1 and lg.run_info["continued_from"] is None
     rec = lg.run_update(workers=2)
     assert rec["update"] == 1 and rec["validity"] >= 0.99
     lg.evaluate(n=1, workers=2)
-    promo = promote_elites(models, root, tmp_path / "promoted", profile="smoke", workers=2, rollouts=1)
+    lg.lcfg.update(gate_games=1, gate_tolerance_abs=10.0)   # smoke scale: let the gate pass
+    assert lg.regression_gate(workers=2)["passed"]
+    promo = promote_elites(models, root, promoted, profile="smoke", workers=2, rollouts=1)
+    assert promo["run"] == 1
     for pid in promo["promoted_ids"]:
-        text = (tmp_path / "promoted" / f"run_{promo['run']}" / f"{pid}.yaml").read_text()
+        text = (promoted / "run_1" / f"{pid}.yaml").read_text()
         assert "pending_human_review" in text
+
+    # Run 2: earlier promoted plays are mutated and imitated (options 1-2), seed the archive
+    # (option 3), and the generator continues from run 1 because the pool is unchanged and
+    # run 1 passed its gate (option 4).
+    gen2 = pretrain_generator(root, models, profile="smoke", workers=2, promoted_root=promoted)
+    assert gen2["prior_promoted"]["plays"] == len(promo["promoted_ids"])
+    lg2 = League(models, tmp_path / "league_data", profile="smoke", promoted_root=promoted)
+    assert lg2.run == 2 and lg2.run_info["continued_from"] == 1
+    assert "run1@final" in lg2.snapshots
+    if promo["promoted_ids"]:
+        assert lg2.run_info["seeded_from_runs"] == [1]
+        assert all(lg2.archive.plays[p]["prior_run"] == 1 for p in promo["promoted_ids"])
     out = build_report(models, root, tmp_path / "report.html")
-    assert "Self-Play Lab" in out.read_text()
+    html = out.read_text()
+    assert "Self-Play Lab" in html and "How each run builds on the last" in html

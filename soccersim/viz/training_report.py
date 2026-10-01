@@ -66,10 +66,33 @@ def gap_analysis(root: str | Path, cache: Path | None = None, max_rows: int = 12
     return out
 
 
+def runs_summary(models_dir: str | Path) -> list[dict[str, Any]]:
+    """One row per league run: where it started, whether it passed its gate, what it promoted."""
+    from ..selfplay.runs import PROMOTED_DIR, read_state, run_dirs
+
+    rows = []
+    for n, d in run_dirs(models_dir).items():
+        st = read_state(d)
+        gate = st.get("gate") or {}
+        fe = st.get("final_eval") or {}
+        rows.append({
+            "run": n, "continued_from": st.get("continued_from"), "start_reason": st.get("start_reason"),
+            "pool_fingerprint": st.get("pool_fingerprint"), "updates": st.get("update", 0),
+            "seeded_from_runs": st.get("seeded_from_runs") or [],
+            "gate": None if not gate else {"passed": gate.get("passed"), "failed": gate.get("failed_styles", []),
+                                           "styles": gate.get("styles", {})},
+            "promoted": len(list((PROMOTED_DIR / f"run_{n}").glob("*.yaml"))),
+            "beats_all_styles": fe.get("beats_all_styles"),
+        })
+    return rows
+
+
 def collect(models_dir: str | Path, root: str | Path) -> dict[str, Any]:
+    from ..selfplay.runs import latest_run_dir
+
     models = Path(models_dir)
-    league = models / "league"
-    data: dict[str, Any] = {}
+    league = latest_run_dir(models) or models / "league"
+    data: dict[str, Any] = {"runs": runs_summary(models)}
     from ..eval.reports import summarize
 
     try:
@@ -159,9 +182,10 @@ def build_highlights(models_dir: str | Path, out: str | Path, n_games: int = 12,
     baseline game, as an interactive replay page."""
     from ..config import load_config
     from ..selfplay.runner import run_jobs
+    from ..selfplay.runs import latest_run_dir
     from ..sim.scenarios import Scenario
 
-    league_dir = Path(models_dir) / "league"
+    league_dir = latest_run_dir(models_dir) or Path(models_dir) / "league"
     ckpt = league_dir if (league_dir / "main.pt").exists() else Path(models_dir)
     gfile = "main.pt" if ckpt == league_dir else "generator.pt"
     styles = list(load_config("league")["scripted_styles"])

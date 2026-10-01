@@ -1,8 +1,10 @@
 """Promotion pipeline (spec §11): archive elites that beat the library median in their
 niche across all scripted opponents are exported to
 ``plays/generated_and_promoted/run_<N>/<id>.yaml`` with provenance, flagged for human review.
-``N`` numbers league runs: a league directory is given the next free run number the
-first time it promotes, and keeps it (re-running ``promote`` rewrites the same folder).
+``N`` is the league run's number (``data/models/runs/run_<N>/``); re-running ``promote``
+for the same run rewrites its folder. Plays carried in from earlier runs (archive seeds)
+are never promoted again, and every promoted play records its closest earlier promoted
+play so its lineage can be traced.
 They are not loaded into the library until a person moves them (``load_library`` reads
 ``offensive/`` and ``defensive/`` only).
 """
@@ -12,38 +14,56 @@ from __future__ import annotations
 import json
 import multiprocessing as mp
 from collections import defaultdict
+from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 import yaml
 
-from ..config import PLAYS_DIR, load_config
+from ..config import REPO_ROOT, load_config
 from ..dashboard.zones import zone_of
 from ..schema.validate import parse_play
 from .logging import load_table
 from .qd_archive import Archive
+from .runs import PROMOTED_DIR, latest_run_dir, prior_promoted, promoted_run_numbers
 
 POSSESSION = ("in_possession", "transition_attack", "set_piece")
-PROMOTED_DIR = PLAYS_DIR / "generated_and_promoted"
+LINEAGE_MIN_SIMILARITY = 0.6
 
 
 def run_numbers(root: Path = PROMOTED_DIR) -> list[int]:
-    out = []
-    for d in root.glob("run_*"):
-        if d.is_dir() and d.name[4:].isdigit():
-            out.append(int(d.name[4:]))
-    return sorted(out)
+    return promoted_run_numbers(root)
 
 
 def promotion_run(league_dir: Path, root: Path = PROMOTED_DIR) -> int:
-    """This league's run number: stored in its state.json, assigned on first promotion."""
+    """The run number of ``league_dir`` (assigned and stored if a legacy directory lacks one)."""
     path = league_dir / "state.json"
     state = json.loads(path.read_text()) if path.exists() else {}
-    if not state.get("promotion_run"):
-        state["promotion_run"] = (run_numbers(root) or [0])[-1] + 1
+    run = state.get("run") or state.get("promotion_run")
+    if not run:
+        run = (promoted_run_numbers(root) or [0])[-1] + 1
+        state["run"] = state["promotion_run"] = run
         path.write_text(json.dumps(state, indent=1, default=str))
-    return int(state["promotion_run"])
+    return int(run)
+
+
+def _rel(path: Path) -> str:
+    """Repo-relative path when inside the repo, so provenance survives a checkout elsewhere."""
+    try:
+        return str(Path(path).resolve().relative_to(REPO_ROOT))
+    except ValueError:
+        return str(path)
+
+
+def closest_prior(play_tokens: list[int], prior: list[tuple[int, str, list[int]]]) -> dict[str, Any] | None:
+    """The most similar earlier promoted play (token-sequence similarity), if similar enough."""
+    best = None
+    for run, pid, toks in prior:
+        r = SequenceMatcher(None, play_tokens, toks, autojunk=False).ratio()
+        if best is None or r > best["similarity"]:
+            best = {"run": run, "id": pid, "similarity": round(r, 3)}
+    return best if best and best["similarity"] >= LINEAGE_MIN_SIMILARITY else None
 
 
 def library_niche_medians(root: str | Path, cache: Path | None = None) -> dict[str, Any]:
@@ -68,11 +88,14 @@ def library_niche_medians(root: str | Path, cache: Path | None = None) -> dict[s
 
 
 def promote_elites(models_dir: str | Path, data_root: str | Path | None = None, out_dir: str | Path | None = None,
-                   profile: str | None = None,
-                   workers: int = 4, rollouts: int = 4) -> dict[str, Any]:
+                   profile: str | None = None, workers: int = 4, rollouts: int = 4,
+                   run_dir: str | Path | None = None) -> dict[str, Any]:
+    from ..generator.tokenizer import TokenizeError, tokenize_play
     from ..generator.train import _eval_generated_job
 
-    league_dir = Path(models_dir) / "league"
+    league_dir = Path(run_dir) if run_dir else latest_run_dir(models_dir)
+    if league_dir is None:
+        raise FileNotFoundError(f"no league runs under {Path(models_dir) / 'runs'}; run the league first")
     data_root = Path(data_root) if data_root else Path(models_dir).parent / "selfplay"
     run = promotion_run(league_dir, Path(out_dir) if out_dir else PROMOTED_DIR)
     out = (Path(out_dir) if out_dir else PROMOTED_DIR) / f"run_{run}"
@@ -87,8 +110,19 @@ def promote_elites(models_dir: str | Path, data_root: str | Path | None = None, 
         else {}
     state = json.loads((league_dir / "state.json").read_text()) if (league_dir / "state.json").exists() else {}
 
+    prior_tokens = []
+    for p in prior_promoted(before_run=run, root=Path(out_dir) if out_dir else PROMOTED_DIR):
+        try:
+            prior_tokens.append((p.provenance["run"], p.id, tokenize_play(p)))
+        except TokenizeError:
+            continue
+
     cells = archive.cells()
-    elites = [(k, c) for k, c in cells.items() if c["elite"]]
+    all_elites = [(k, c) for k, c in cells.items() if c["elite"]]
+    # Elites carried in from earlier runs keep their niche but are not promoted again.
+    kept = [{"id": c["elite"], "cell": k, "from_run": archive.plays[c["elite"]].get("prior_run")}
+            for k, c in all_elites if archive.plays[c["elite"]].get("prior_run") is not None]
+    elites = [(k, c) for k, c in all_elites if archive.plays[c["elite"]].get("prior_run") is None]
     # Make sure every elite has evaluations against every scripted style (held-out one included).
     jobs = []
     for _, c in elites:
@@ -127,9 +161,16 @@ def promote_elites(models_dir: str | Path, data_root: str | Path | None = None, 
                 "status": "pending_human_review",
                 "archive_cell": dict(zip(("band", "lane", "tempo", "passes", "objective"), e["desc"], strict=True)),
                 "metrics": {"overall": archive.stats(c["elite"]), "per_opponent": per_opp},
-                "generating_checkpoint": str(league_dir / "main.pt"), "league_update": state.get("update"),
+                "generating_checkpoint": _rel(league_dir / "main.pt"), "league_update": state.get("update"),
                 "training_profile": meta.get("profile"), "run": run,
+                "continued_from_run": state.get("continued_from"),
             }
+            try:
+                lineage = closest_prior(tokenize_play(parse_play(play)), prior_tokens)
+            except TokenizeError:
+                lineage = None
+            play["provenance"]["closest_earlier_promoted"] = lineage
+            entry["closest_earlier_promoted"] = lineage
             parse_play(play)  # promoted plays pass the same validator
             path = out / f"{c['elite']}.yaml"
             path.write_text("# Generated by Module 3 and promoted from the QD archive. PENDING HUMAN REVIEW:\n"
@@ -138,7 +179,7 @@ def promote_elites(models_dir: str | Path, data_root: str | Path | None = None, 
             entry["path"] = str(path)
         report.append(entry)
     summary = {"run": run, "dir": str(out), "elites": len(elites), "promoted": sum(r["promoted"] for r in report),
-               "candidates": report}
+               "kept_from_earlier_runs": kept, "candidates": report}
     (league_dir / "promotion.json").write_text(json.dumps(summary, indent=2))
     return {k: v for k, v in summary.items() if k != "candidates"} | {
         "promoted_ids": [r["id"] for r in report if r["promoted"]]}

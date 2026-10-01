@@ -194,10 +194,13 @@ def _meta(out: Path) -> dict:
 
 
 def _eval_play_job(job: dict) -> dict:
+    """Forced rollouts of one play in scenarios matching it; returns rewards and start states."""
     lib = load_library()
     play = parse_play(job["play"])
-    parent = job["parent"]
-    types, attacking = PLAY_SCENARIOS[parent]
+    if "scenario_types" in job:
+        types, attacking = tuple(job["scenario_types"]), int(job.get("attacking", 0))
+    else:
+        types, attacking = PLAY_SCENARIOS[job["parent"]]
     rewards, states = [], []
     for seed in job["seeds"]:
         sc = Scenario(type=types[seed % len(types)], attacking_team=attacking)
@@ -210,7 +213,7 @@ def _eval_play_job(job: dict) -> dict:
             states.append((rec["state"], np.asarray(run.result.caps, dtype=np.float32).tolist(), rec["side"]))
         if len(rewards) >= job["rollouts"]:
             break
-    return {"id": play.id, "parent": parent, "rewards": rewards, "states": states}
+    return {"id": play.id, "parent": job["parent"], "rewards": rewards, "states": states}
 
 
 def _eval_generated_job(job: dict) -> dict:
@@ -233,14 +236,32 @@ def _eval_generated_job(job: dict) -> dict:
     return {"id": play.id, "rewards": rewards}
 
 
-def mutation_filter(lib: dict[str, Play], mcfg: dict, seed: int = 0, workers: int = 4) -> dict[str, Any]:
-    """Mutate possession library plays, evaluate in matched scenarios, keep the top quantile."""
+def _parent_scenarios(play: Play) -> dict[str, Any]:
+    """Scenario types matching a mutation parent: library plays by id, promoted plays by start band."""
+    if play.id in PLAY_SCENARIOS:
+        return {}
+    from ..selfplay.league import BAND_SCENARIOS
+
+    band = ((play.provenance or {}).get("archive_cell") or {}).get("band", "mid_opp")
+    return {"scenario_types": [BAND_SCENARIOS.get(band, "random_open_play")], "attacking": 0}
+
+
+def mutation_filter(lib: dict[str, Play], mcfg: dict, seed: int = 0, workers: int = 4,
+                    extra_parents: list[Play] | None = None) -> dict[str, Any]:
+    """Mutate possession plays, evaluate in matched scenarios, keep the top quantile.
+
+    Parents are the library's possession plays plus ``extra_parents`` — earlier runs'
+    promoted plays (option 1), so a run can refine and adapt them.
+    """
     rng = np.random.default_rng(seed)
     parents = [p for p in lib.values() if p.phase in PHASES and p.id in PLAY_SCENARIOS]
+    parents += [p for p in (extra_parents or []) if p.phase in PHASES]
     jobs = []
     seeds = list(range(1000, 1000 + mcfg["rollouts"] * 4))
     for parent in parents:
-        jobs.append({"play": play_to_dict(parent), "parent": parent.id, "seeds": seeds, "rollouts": mcfg["rollouts"]})
+        where = _parent_scenarios(parent)
+        jobs.append({"play": play_to_dict(parent), "parent": parent.id, "seeds": seeds, "rollouts": mcfg["rollouts"],
+                     **where})
         made = 0
         for _ in range(mcfg["mutants_per_play"] * 4):
             m = mutate(parent, rng)
@@ -250,7 +271,8 @@ def mutation_filter(lib: dict[str, Play], mcfg: dict, seed: int = 0, workers: in
                 tokenize_play(m)
             except TokenizeError:
                 continue
-            jobs.append({"play": play_to_dict(m), "parent": parent.id, "seeds": seeds, "rollouts": mcfg["rollouts"]})
+            jobs.append({"play": play_to_dict(m), "parent": parent.id, "seeds": seeds, "rollouts": mcfg["rollouts"],
+                         **where})
             made += 1
             if made >= mcfg["mutants_per_play"]:
                 break
@@ -278,14 +300,19 @@ def mutation_filter(lib: dict[str, Play], mcfg: dict, seed: int = 0, workers: in
                            "kept": len(keep), "best_mutant_mean": max(r["mean"] for r in muts)}
     by_id = {j["play"]["id"]: j["play"] for j in jobs}
     plays = {r["id"]: parse_play(by_id[r["id"]]) for r in survivors}
-    return {"survivors": survivors, "plays": plays, "summary": summary, "evaluated": len(results)}
+    extra_ids = {p.id for p in extra_parents or []}
+    prior_evals = [r for r in results if r["id"] in extra_ids]
+    return {"survivors": survivors, "plays": plays, "summary": summary, "evaluated": len(results),
+            "prior_parents": prior_evals,
+            "survivors_from_prior": sum(1 for r in survivors if r["parent"] in extra_ids)}
 
 
 # -- behaviour cloning ------------------------------------------------------------------------------
 
 
 def pretrain_generator(root: str | Path, out_dir: str | Path, profile: str | None = None, workers: int = 4,
-                       max_rows: int | None = None, seed: int = 0) -> dict[str, Any]:
+                       max_rows: int | None = None, seed: int = 0,
+                       promoted_root: str | Path | None = None) -> dict[str, Any]:
     cfg, prof = _profile(profile)
     torch.manual_seed(seed)
     out = Path(out_dir)
@@ -300,16 +327,40 @@ def pretrain_generator(root: str | Path, out_dir: str | Path, profile: str | Non
     bc = ds.subset(idx[:cap] if cap else idx)
     print(f"  BC examples from logs: {len(bc)}", flush=True)
 
-    mf = mutation_filter(lib, cfg["mutation"][prof], seed, workers)
-    print(f"  mutation filtering: {mf['evaluated']} plays evaluated, {len(mf['survivors'])} survivors", flush=True)
+    # Earlier runs' promoted plays (all runs that exist before the next league run).
+    from ..selfplay.runs import PROMOTED_DIR, next_run_number, prior_promoted
+
+    proot = Path(promoted_root) if promoted_root else PROMOTED_DIR
+    prior = prior_promoted(before_run=next_run_number(out, proot), root=proot)
+    print(f"  earlier promoted plays: {len(prior)} from runs "
+          f"{sorted({p.provenance.get('run') for p in prior}) or 'none'}", flush=True)
+
+    # Option 1: they are mutation parents alongside the library.
+    mf = mutation_filter(lib, cfg["mutation"][prof], seed, workers, extra_parents=prior)
+    print(f"  mutation filtering: {mf['evaluated']} plays evaluated, {len(mf['survivors'])} survivors "
+          f"({mf['survivors_from_prior']} from earlier promoted plays)", flush=True)
     mx, mh, mt = [], [], []
-    for r in mf["survivors"]:
-        toks = tokenize_play(mf["plays"][r["id"]])
-        for st, caps, side in r["states"]:
+
+    def add_examples(states, toks):
+        for st, caps, side in states:
             f, h = state_features(st, np.asarray(caps, dtype=np.float32), float(side or 1.0))
             mx.append(f)
             mh.append(h)
             mt.append(toks)
+
+    for r in mf["survivors"]:
+        add_examples(r["states"], tokenize_play(mf["plays"][r["id"]]))
+    # Option 2: imitate the earlier promoted plays themselves, in the matched states they were replayed in.
+    prior_by_id = {p.id: p for p in prior}
+    prior_examples = 0
+    for r in mf["prior_parents"]:
+        try:
+            toks = tokenize_play(prior_by_id[r["id"]])
+        except TokenizeError:
+            continue
+        before = len(mt)
+        add_examples(r["states"], toks)
+        prior_examples += len(mt) - before
 
     gc = cfg["generator"][prof]
     enc = cfg["encoder"][prof]
@@ -361,7 +412,10 @@ def pretrain_generator(root: str | Path, out_dir: str | Path, profile: str | Non
     print(f"  matched scenarios: generated {matched['generated_mean']:.4f} vs library {matched['library_mean']:.4f} "
           f"mean play reward -> {'meets' if matched['meets_target'] else 'below'} the 80% target", flush=True)
     result = {"bc_examples": len(bc), "mutation": {k: v for k, v in mf.items() if k in ("summary", "evaluated")},
-              "survivors": len(mf["survivors"]), "survivor_examples": len(extra_t), "history": hist,
+              "survivors": len(mf["survivors"]), "survivor_examples": len(extra_t),
+              "prior_promoted": {"plays": len(prior), "runs": sorted({p.provenance.get("run") for p in prior}),
+                                 "imitation_examples": prior_examples,
+                                 "mutant_survivors": mf["survivors_from_prior"]}, "history": hist,
               "validity": validity, "matched": matched, "elapsed_s": round(time.time() - t0, 1)}
     (out / "generator_metrics.json").write_text(json.dumps(result, indent=2, default=str))
     meta = _meta(out)

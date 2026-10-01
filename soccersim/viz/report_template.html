@@ -134,6 +134,12 @@ a { color: var(--s1); }
     <div class="panel"><h3>Promoted plays, pending review</h3><div class="note" id="promotedWhere"></div><div id="promoted"></div></div>
   </section>
 
+  <section id="runs">
+    <h2><span class="stage">Runs</span>How each run builds on the last</h2>
+    <p>Every run mutates and imitates the plays earlier runs promoted, and seeds its archive with them, so a new play has to beat them in their niche. A run continues training the previous run's generator only if the opponent pool is unchanged and the previous run passed its regression gate: its final generator was not worse than its starting one against any scripted style.</p>
+    <div class="panel"><div class="tablewrap" id="runTable"></div></div>
+  </section>
+
   <section id="eval">
     <h2><span class="stage">Eval</span>Main agent vs the library, against every scripted style</h2>
     <p>Mean reward per play when each team plays the scripted styles. The <em>possession</em> style was never used in training.</p>
@@ -361,5 +367,12 @@ if (fe && fe.main) {
   hbars($("evalBars"), styles.map((s) => ({ label: s + (fe.main[s].held_out ? " (held out)" : ""), values: [fe.library[s].mean_play_reward, fe.main[s].mean_play_reward], tip: `generated plays called: ${fe.main[s].generated_plays} · shots ${fe.library[s].shots} → ${fe.main[s].shots}` })), { colors: ["var(--s1)", "var(--s2)"], names: ["library", "main agent"], xfmt: (v) => fmt(v, 4), left: 170 });
   $("evalNote").textContent = fe.beats_all_styles ? "The main agent matches or beats the library against every style, including the held-out one." : "The main agent does not yet beat the library against every style; see the bars above.";
 } else empty($("evalBars"), "Evaluation not run yet.");
+const runs = D.runs || [];
+$("runTable").innerHTML = runs.length ? `<table><thead><tr><th>Run</th><th>Started from</th><th>Archive seeded from</th><th>Regression gate</th><th class="n">Promoted</th></tr></thead><tbody>${runs.map((r) => {
+  const start = r.continued_from != null ? `run ${r.continued_from}'s generator` : "pretrained generator";
+  const gate = !r.gate ? `<span class="pill">not run</span>` : r.gate.passed ? `<span class="pill good">passed</span>` : `<span class="pill bad">failed: ${r.gate.failed.join(", ")}</span>`;
+  const why = r.start_reason ? `<div class="note">${r.start_reason.replace(/[&<>]/g, "")}</div>` : "";
+  return `<tr><td>run ${r.run}</td><td>${start}${why}</td><td>${r.seeded_from_runs.length ? "runs " + r.seeded_from_runs.join(", ") : "–"}</td><td>${gate}</td><td class="n">${r.promoted}</td></tr>`;
+}).join("")}</tbody></table>` : `<div class="empty">No league runs yet.</div>`;
 $("replayLink").innerHTML = D.replays ? `<p><a href="selfplay_replays.html">Open the highlight replays</a>: watch the agent call generated plays when the library has a gap, next to a library-only baseline game.</p>` : "";
 </script>
