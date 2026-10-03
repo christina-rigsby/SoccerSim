@@ -1,3 +1,9 @@
 == run3_pretrain: start 17:42:11
   BC examples from logs: 12000
   earlier promoted plays: 11 from runs [1, 2]
+  mutation filtering: 209 plays evaluated, 109 survivors (73 from earlier promoted plays)
+== run3_pretrain: start 00:07:49
+  BC examples from logs: 12000
+  earlier promoted plays: 11 from runs [1, 2]
+  mutation filtering: reusing the cached result of an interrupted pretraining
+  mutation filtering: 209 plays evaluated, 109 survivors (73 from earlier promoted plays)
