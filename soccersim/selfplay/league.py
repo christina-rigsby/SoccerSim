@@ -140,7 +140,8 @@ class League:
             shutil.copy(prev_dir / "main.pt", self.dir / f"{snap.replace('@', '_')}.pt")
             state["snapshots"] = [snap]
             state["elo"][snap] = state["elo"].get("main", self.lcfg["initial_elo"])
-        prior = prior_promoted(before_run=n, root=self.promoted_root)
+        # Promoted plays adopted into the library compete as library plays, not archive seeds.
+        prior = [p for p in prior_promoted(before_run=n, root=self.promoted_root) if p.id not in self.lib]
         archive = Archive(min_evals)
         # Earlier evaluations only count if they were earned against this same opponent pool.
         fp = pool_fingerprint(self.lcfg)

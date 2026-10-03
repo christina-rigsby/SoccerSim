@@ -21,7 +21,7 @@ from soccersim.sim.play_scenarios import run_play
 from soccersim.sim.restarts import execute_restart
 from soccersim.sim.scenarios import Scenario
 
-LIB = load_library()
+LIB = load_library(promoted_runs=())  # hand-written plays: each has a pinned scenario
 PINNED = json.loads((Path(__file__).parent / "fixtures" / "play_scenarios.json").read_text())
 CTX = Context()
 
@@ -56,6 +56,10 @@ def test_starter_play_runs_to_an_end_reason(play_id):
 def _possession_state(play):
     env = MatchEnv()
     typ = "build_up" if play.phase == "set_piece" else "final_third_attack"
+    if "ball_beyond_line" in json.dumps(play.triggers):
+        # Build-up plays only start before a line is broken; in a final-third state their
+        # success already holds and they would end before issuing any directive.
+        typ = "mid_progression"
     env.reset(11, Scenario(type=typ, randomise_capabilities=False))
     st = env.state
     if st.restart is not None:

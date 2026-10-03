@@ -276,8 +276,10 @@ def mutation_filter(lib: dict[str, Play], mcfg: dict, seed: int = 0, workers: in
     promoted plays (option 1), so a run can refine and adapt them.
     """
     rng = np.random.default_rng(seed)
-    parents = [p for p in lib.values() if p.phase in PHASES and p.id in PLAY_SCENARIOS]
-    parents += [p for p in (extra_parents or []) if p.phase in PHASES]
+    parents = [p for p in lib.values() if p.phase in PHASES
+               and (p.id in PLAY_SCENARIOS or ((p.provenance or {}).get("archive_cell")))]
+    # Earlier promoted plays already adopted into the library are parents once, as library plays.
+    parents += [p for p in (extra_parents or []) if p.phase in PHASES and p.id not in lib]
     jobs = []
     seeds = list(range(1000, 1000 + mcfg["rollouts"] * 4))
     for parent in parents:
@@ -323,7 +325,7 @@ def mutation_filter(lib: dict[str, Play], mcfg: dict, seed: int = 0, workers: in
     by_id = {j["play"]["id"]: j["play"] for j in jobs}
     plays = {r["id"]: parse_play(by_id[r["id"]]) for r in survivors}
     extra_ids = {p.id for p in extra_parents or []}
-    prior_evals = [r for r in results if r["id"] in extra_ids]
+    prior_evals = [r for r in results if r["id"] in extra_ids]  # adopted or not, the parent's own rollouts
     return {"survivors": survivors, "plays": plays, "summary": summary, "evaluated": len(results),
             "prior_parents": prior_evals,
             "survivors_from_prior": sum(1 for r in survivors if r["parent"] in extra_ids)}

@@ -73,6 +73,11 @@ generator only if the opponent pool is unchanged and the previous run passed its
 per-style regression gate; otherwise it starts from the last good or the pretrained
 generator (D-044). `league --fresh` and `league --force-continue` override that choice.
 
+The play library is the hand-written plays in `plays/offensive/` and `plays/defensive/`
+(including six build-up plays for our own half) plus the promoted plays of the runs listed
+in `configs/library.yaml`, read in place from `plays/generated_and_promoted/run_<N>/` and
+each restricted to the niche it was promoted in (D-046).
+
 The opponent pool is versioned and frozen (pool v2, D-045): seven scripted styles
 (`high_press`, `mid_block`, `low_block_counter`, `possession`, `direct`, `wing_play`,
 `chaotic`) that differ in which plays they prefer or avoid and how predictable they are,

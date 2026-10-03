@@ -80,7 +80,19 @@ def pool_definition(league_cfg: dict) -> dict[str, Any]:
     for k in ("pool_version", "formations", "randomise_eval_formations"):
         if k in league_cfg:
             out[k] = league_cfg[k]
+    if league_cfg.get("pool_version", 1) >= 2:
+        # Scripted styles choose from the library, so its exact content is part of the pool.
+        out["library"] = library_fingerprint()
     return out
+
+
+def library_fingerprint(library: dict[str, Play] | None = None) -> str:
+    from ..schema import load_library
+    from ..schema.loader import play_to_dict
+
+    lib = library if library is not None else load_library()
+    blob = json.dumps({pid: play_to_dict(p) for pid, p in sorted(lib.items())}, sort_keys=True, default=str)
+    return hashlib.sha1(blob.encode()).hexdigest()[:12]
 
 
 def pool_fingerprint(league_cfg: dict) -> str:

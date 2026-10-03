@@ -348,3 +348,42 @@ def test_base_models_must_match_the_opponent_pool(tmp_path):
     meta["generator_pool_fingerprint"] = pool_fingerprint(lc)
     (tmp_path / "meta.json").write_text(json.dumps(meta))
     check_base_models(tmp_path, lc)
+
+
+def test_promoted_plays_join_the_library_in_place(tmp_path):
+    import shutil
+
+    from soccersim.config import PLAYS_DIR
+    from soccersim.selfplay.runs import library_fingerprint
+
+    hand = load_library(promoted_runs=())
+    assert all(not (p.provenance or {}).get("adopted_into_library") for p in hand.values())
+    # A copy of the plays tree: promoted plays are read from generated_and_promoted/run_N/.
+    shutil.copytree(PLAYS_DIR, tmp_path / "plays")
+    root = tmp_path / "plays"
+    assert set(load_library(root)) == set(hand)  # an explicit root loads no promoted runs by default
+    runs = sorted(int(d.name[4:]) for d in (root / "generated_and_promoted").glob("run_*") if d.is_dir())
+    if not runs:
+        pytest.skip("no promoted plays in this checkout")
+    lib = load_library(root, promoted_runs=runs[:1])
+    adopted = [p for p in lib.values() if (p.provenance or {}).get("adopted_into_library")]
+    assert adopted and all(p.source == "library" and p.provenance["run"] == runs[0] for p in adopted)
+    assert set(hand) < set(lib)
+    assert library_fingerprint(lib) != library_fingerprint(hand)
+    # The files themselves never move.
+    assert list((root / "generated_and_promoted" / f"run_{runs[0]}").glob("*.yaml"))
+
+
+def test_gap_categories():
+    from soccersim.viz.training_report import gap_category
+
+    fb = {"recycle_possession"}
+    rec = {"play_id": "recycle_possession", "source": "library", "feasible": True, "score": 0.01}
+    good = {"play_id": "switch_of_play", "source": "library", "feasible": True, "score": 0.05}
+    weak = {**good, "score": 0.01}
+    off = {**good, "feasible": False, "score": None}
+    gen = {"play_id": "gen_x", "source": "generated", "feasible": True, "score": 0.09}
+    assert gap_category([rec, good], fb, 0.03) == "real_play"
+    assert gap_category([rec, weak], fb, 0.03) == "weak_fit"
+    assert gap_category([rec, off, gen], fb, 0.03) == "only_circulation"  # generated plays do not count
+    assert gap_category([{**rec, "feasible": False}], fb, 0.03) == "nothing_fits"

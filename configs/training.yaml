@@ -24,7 +24,7 @@ generator:
 
 critic:
   smoke: {d_model: 32, layers: 1, heads: 2, epochs: 1, lr: 0.002, batch: 64, max_rows: 2000}
-  quick: {d_model: 64, layers: 2, heads: 4, epochs: 8, lr: 0.002, batch: 128, max_rows: 40000}
+  quick: {d_model: 64, layers: 2, heads: 4, epochs: 8, lr: 0.002, batch: 128, max_rows: null}  # all Phase A decisions (D-046)
   spec: {d_model: 128, layers: 3, heads: 4, epochs: 40, lr: 0.001, batch: 256, max_rows: null}
 
 response:

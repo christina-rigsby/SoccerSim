@@ -16,7 +16,7 @@ OUT = Path(__file__).resolve().parent.parent / "tests" / "fixtures" / "play_scen
 
 
 def main() -> int:
-    lib = load_library()
+    lib = load_library(promoted_runs=())  # hand-written plays; promoted plays are not pinned
     pinned, missing = {}, []
     for pid in sorted(lib):
         run = find_play_scenario(lib, pid)

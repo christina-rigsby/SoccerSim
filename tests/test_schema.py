@@ -19,9 +19,15 @@ STARTERS = {
 }
 
 
+BUILD_UP = {
+    "cb_carry_into_midfield", "fullback_outlet_bounce", "long_ball_to_target", "pivot_drop_back_three",
+    "switch_through_keeper", "winger_checks_short",
+}
+
+
 def test_all_starter_plays_validate():
-    lib = load_library()
-    assert set(lib) == STARTERS
+    lib = load_library(promoted_runs=())  # the hand-written plays in plays/offensive and plays/defensive
+    assert set(lib) == STARTERS | BUILD_UP
     assert sum(p.fallback for p in lib.values()) == 1
     assert sum(p.phase in ("out_of_possession", "transition_defense") for p in lib.values()) == 4
 

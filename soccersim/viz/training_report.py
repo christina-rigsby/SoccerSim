@@ -16,6 +16,7 @@ from typing import Any
 
 import numpy as np
 
+from ..config import load_config
 from ..dashboard.xt import load_xt, placeholder_xt
 from ..dashboard.zones import zone_of
 from ..schema.vocab import BANDS, LANES
@@ -28,39 +29,99 @@ def _read(path: Path) -> Any:
     return json.loads(path.read_text()) if path.exists() else None
 
 
+GAP_CATEGORIES = ("real_play", "weak_fit", "only_circulation", "nothing_fits")
+GAP_CACHE_VERSION = 2
+
+
+def gap_category(cands: list[dict], fallback_ids: set[str], threshold: float) -> str:
+    """Why a possession decision did or did not have a real library option.
+
+    ``real_play``: a non-fallback library play fits and scores at least ``threshold``;
+    ``weak_fit``: one fits but scores below it; ``only_circulation``: only a fallback
+    (recycle) play fits; ``nothing_fits``: not even that. The last three are library gaps.
+    """
+    lib = [c for c in cands if c.get("source") == "library" and c["feasible"]]
+    real = [c for c in lib if c["play_id"] not in fallback_ids]
+    if real:
+        best = max(c["score"] if c["score"] is not None else float("-inf") for c in real)
+        return "real_play" if best >= threshold else "weak_fit"
+    return "only_circulation" if lib else "nothing_fits"
+
+
+def _log_signature(root: str | Path) -> list:
+    """Which decision logs a cached analysis was computed from (path, size)."""
+    return [[str(f), f.stat().st_size] for f in sorted(Path(root).resolve().rglob("decisions-*.parquet"))]
+
+
 def gap_analysis(root: str | Path, cache: Path | None = None, max_rows: int = 120000) -> dict[str, Any]:
-    """Where and how often no non-fallback library play is feasible (in possession)."""
+    """Where, how often and why the library leaves a gap when we have the ball.
+
+    Counted per decision (as Module 2 sees it, re-deciding every play end and possession
+    change) and per possession (the best moment a possession ever had), overall and by
+    pitch band, so long spells of circulation do not dominate the picture.
+    """
     if cache is not None and cache.exists():
-        return json.loads(cache.read_text())
+        cached = json.loads(cache.read_text())
+        if cached.get("version") == GAP_CACHE_VERSION and cached.get("logs") == _log_signature(root):
+            return cached
+    from ..schema import load_library
     from ..selfplay.logging import load_table
 
-    t = load_table(root, "decisions", ["state", "side", "candidates", "library_gap", "phase", "chosen",
-                                       "chosen_source", "reward"])
+    fallback_ids = {pid for pid, p in load_library().items() if p.fallback}
+    threshold = float(load_config("ranking")["generator"]["threshold"])
+    t = load_table(root, "decisions", ["episode_id", "t", "team", "reason", "state", "side", "candidates",
+                                       "library_gap", "phase"])
     rows = t.slice(0, min(max_rows, t.num_rows)).to_pylist()
+    rows.sort(key=lambda r: (r["episode_id"], r["t"] or 0.0))
     zone_n: Counter = Counter()
     zone_gap: Counter = Counter()
     feas: dict[str, Counter] = defaultdict(Counter)
     reasons: dict[str, Counter] = defaultdict(Counter)
+    per_decision: Counter = Counter()
+    by_band: dict[str, Counter] = defaultdict(Counter)
+    possessions: list[list[str]] = []
+    cur_key = None
     for r in rows:
         if r["phase"] not in POSSESSION or not r["state"]:
+            cur_key = None
             continue
         st = json.loads(r["state"])
         if not st:
             continue
+        cands = json.loads(r["candidates"]) if r["candidates"] else []
+        cat = gap_category(cands, fallback_ids, threshold)
         z = zone_of(np.asarray(st["ball"], dtype=float), float(r["side"] or 1.0))
         zone_n[z] += 1
         zone_gap[z] += bool(r["library_gap"])
-        for c in json.loads(r["candidates"]):
+        per_decision[cat] += 1
+        by_band[z.split(".")[0]][cat] += 1
+        key = (r["episode_id"], r["team"])
+        if key != cur_key or r["reason"] in ("possession_change", "restart"):
+            possessions.append([])
+            cur_key = key
+        possessions[-1].append(cat)
+        for c in cands:
             if c["source"] != "library":
                 continue
             feas[c["play_id"]]["n"] += 1
             feas[c["play_id"]]["ok"] += c["feasible"]
             reasons[c["play_id"]][c["reason"] or "feasible"] += 1
+    per_possession = Counter(min(p, key=GAP_CATEGORIES.index) for p in possessions)
+
+    def shares(c: Counter) -> dict[str, float]:
+        n = max(sum(c.values()), 1)
+        return {k: c[k] / n for k in GAP_CATEGORIES}
+
     zones = {z: {"n": zone_n[z], "gap_rate": zone_gap[z] / zone_n[z]} for z in zone_n}
     plays = {p: {"n": c["n"], "feasible_rate": c["ok"] / max(c["n"], 1),
                  "top_reasons": dict(reasons[p].most_common(4))} for p, c in feas.items()}
-    out = {"rows": len(rows), "zones": zones, "plays": plays,
-           "overall_gap_rate": sum(zone_gap.values()) / max(sum(zone_n.values()), 1)}
+    n_dec = sum(per_decision.values())
+    out = {"version": GAP_CACHE_VERSION, "logs": _log_signature(root), "rows": len(rows), "zones": zones,
+           "plays": plays, "overall_gap_rate": sum(zone_gap.values()) / max(sum(zone_n.values()), 1),
+           "threshold": threshold, "decisions": n_dec, "possessions": len(possessions),
+           "decisions_per_possession": n_dec / max(len(possessions), 1),
+           "per_decision": shares(per_decision), "per_possession": shares(per_possession),
+           "by_band": {b: {"n": sum(c.values()), **shares(c)} for b, c in by_band.items()}}
     if cache is not None:
         cache.write_text(json.dumps(out))
     return out

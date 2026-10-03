@@ -10,6 +10,48 @@ actually settled — always paired with an `OPEN_QUESTIONS.md` entry).
 
 ---
 
+## D-046 · A larger library: six build-up plays, and promoted plays adopted in place
+**Date:** 2026-10-03 · **Status:** `active` (part of opponent pool v2, D-045)
+
+Most possession decisions had no option but recycling (82 % per decision, 55 % of
+possessions never got past it; 95 % in our own third). The library grows two ways:
+
+- **Six hand-written build-up plays** in `plays/offensive/`: `cb_carry_into_midfield`,
+  `fullback_outlet_bounce`, `long_ball_to_target`, `pivot_drop_back_three`,
+  `switch_through_keeper`, `winger_checks_short`. Each starts only before the relevant
+  opposition line is broken (a trigger), and succeeds only once a named receiver has the
+  ball beyond it, so a play cannot "succeed" on the state it started in.
+- **Promoted plays join the library without moving.** `configs/library.yaml` lists the
+  runs whose `plays/generated_and_promoted/run_<N>/` plays are loaded as library plays
+  (`source: library`, provenance kept, marked `adopted_into_library`). `plays/offensive/`
+  and `plays/defensive/` hold hand-written plays only. On adoption, two things are added
+  in memory (files unchanged):
+  - **its niche as a trigger** (`ball_in_zone` of the archive cell's start band and lane):
+    a promoted play has almost no triggers of its own and was only shown to beat the
+    library there. Without it, promoted plays were feasible in 94 % of decisions anywhere
+    on the pitch and won 70 % of selections with negative reward;
+  - **a cooldown of at least 8 s** (`adopted_min_cooldown_s`): the generator never sets
+    one, and without it two promoted plays were re-run back to back (5.8 decisions per
+    possession, 75 % of selections).
+
+The library is part of the opponent pool (scripted styles choose from it), so its content
+is in the pool fingerprint. Plays promoted by later runs join the library only at the next
+deliberate pool version, never mid-lineage. A 400-game preview with all of this: decisions
+where only recycling fits fell from 82 % to 21 %, possessions that never get past
+recycling from 55 % to 8 %, and recycle's share of choices from 88 % to 40 %. Most of the
+remaining gaps are "weak fit": a real play fits but scores under the generator's 0.03
+threshold.
+
+The quick-profile critic now trains on every Phase A decision (it was capped at 40,000 of
+~200,000).
+
+**Rationale:** the critic can only improve choices when there is a choice; more decisions
+with real options, and more of them, give it varied outcomes to learn from.
+
+**Alternatives considered viable:** copying promoted plays into `plays/offensive/` after
+review (rejected by the user: that folder is for hand-written plays); adopting promoted
+plays without a niche restriction (measured: they crowd out everything else).
+
 ## D-045 · Opponent pool v2: seven styles, two held out, formations never tied to a style
 **Date:** 2026-10-01 · **Status:** `active`
 
