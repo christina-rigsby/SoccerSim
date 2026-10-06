@@ -11,3 +11,8 @@
   BC epoch 2: loss 0.041, held-out token acc 0.997
   BC epoch 3: loss 0.025, held-out token acc 0.997
   BC epoch 4: loss 0.020, held-out token acc 0.997
+== run3_pretrain: start 20:38:34
+  BC examples from logs: 12000
+  earlier promoted plays: 11 from runs [1, 2]
+  mutation filtering: reusing the cached result of an interrupted pretraining
+  mutation filtering: 209 plays evaluated, 109 survivors (73 from earlier promoted plays)
