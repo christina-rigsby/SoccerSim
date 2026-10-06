@@ -10,3 +10,4 @@
   BC epoch 1: loss 0.520, held-out token acc 0.996
   BC epoch 2: loss 0.041, held-out token acc 0.997
   BC epoch 3: loss 0.025, held-out token acc 0.997
+  BC epoch 4: loss 0.020, held-out token acc 0.997
