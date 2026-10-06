@@ -16,7 +16,14 @@ from soccersim.sim.env import MatchEnv
 from soccersim.sim.play_scenarios import run_play
 from soccersim.sim.scenarios import Scenario
 
-LIB = load_library()
+# Controller tests need a stable opponent: pin the other team to the 12 starter plays
+# (spec §6) so adding library plays does not change what these tests measure.
+STARTER_PLAYS = (
+    "wide_overlap_cross", "third_man_combination", "switch_of_play", "through_ball_behind_high_line",
+    "one_two_wall_pass", "build_out_short_goal_kick", "direct_counterattack", "recycle_possession",
+    "high_press_sideline_trap", "mid_block_compact", "low_block_box_protection", "counterpress_five_seconds",
+)
+LIB = {k: v for k, v in load_library(promoted_runs=()).items() if k in STARTER_PLAYS}
 
 
 def make_play(actions, roles, phase="in_possession", done="always_never", steps_extra=None, max_s=6.0):

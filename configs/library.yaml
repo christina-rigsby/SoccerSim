@@ -1,0 +1,17 @@
+# The play library (spec §4): every Module 2 team chooses from these plays.
+#
+# Hand-written plays live in plays/offensive/ and plays/defensive/. Promoted plays stay in
+# plays/generated_and_promoted/run_<N>/ (they are never copied or moved); the runs listed
+# here are read from there and join the library as pre-defined plays (D-046).
+#
+# The library is part of the opponent pool (scripted styles choose from it), so changing
+# this list or any library play is a pool change: bump pool_version in league.yaml,
+# regenerate data and retrain (data/pipeline.sh). Plays promoted by later runs therefore
+# join the library only at the next deliberate pool version, never mid-lineage.
+promoted_runs: [1, 2]   # run 3 was skipped (pool v1 ends with run 2)
+
+# Adopted promoted plays are narrowed to the archive niche they were promoted in, and get
+# at least this cooldown: the generator never sets one, and hand-written attacking plays
+# use 8-15 s. Without it one promoted play can be re-run back to back for a whole
+# possession.
+adopted_min_cooldown_s: 8.0

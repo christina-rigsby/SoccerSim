@@ -10,6 +10,90 @@ actually settled — always paired with an `OPEN_QUESTIONS.md` entry).
 
 ---
 
+## D-046 · A larger library: six build-up plays, and promoted plays adopted in place
+**Date:** 2026-10-03 · **Status:** `active` (part of opponent pool v2, D-045)
+
+Most possession decisions had no option but recycling (82 % per decision, 55 % of
+possessions never got past it; 95 % in our own third). The library grows two ways:
+
+- **Six hand-written build-up plays** in `plays/offensive/`: `cb_carry_into_midfield`,
+  `fullback_outlet_bounce`, `long_ball_to_target`, `pivot_drop_back_three`,
+  `switch_through_keeper`, `winger_checks_short`. Each starts only before the relevant
+  opposition line is broken (a trigger), and succeeds only once a named receiver has the
+  ball beyond it, so a play cannot "succeed" on the state it started in.
+- **Promoted plays join the library without moving.** `configs/library.yaml` lists the
+  runs whose `plays/generated_and_promoted/run_<N>/` plays are loaded as library plays
+  (`source: library`, provenance kept, marked `adopted_into_library`). `plays/offensive/`
+  and `plays/defensive/` hold hand-written plays only. On adoption, two things are added
+  in memory (files unchanged):
+  - **its niche as a trigger** (`ball_in_zone` of the archive cell's start band and lane):
+    a promoted play has almost no triggers of its own and was only shown to beat the
+    library there. Without it, promoted plays were feasible in 94 % of decisions anywhere
+    on the pitch and won 70 % of selections with negative reward;
+  - **a cooldown of at least 8 s** (`adopted_min_cooldown_s`): the generator never sets
+    one, and without it two promoted plays were re-run back to back (5.8 decisions per
+    possession, 75 % of selections).
+
+The library is part of the opponent pool (scripted styles choose from it), so its content
+is in the pool fingerprint. Plays promoted by later runs join the library only at the next
+deliberate pool version, never mid-lineage. A 400-game preview with all of this: decisions
+where only recycling fits fell from 82 % to 21 %, possessions that never get past
+recycling from 55 % to 8 %, and recycle's share of choices from 88 % to 40 %. Most of the
+remaining gaps are "weak fit": a real play fits but scores under the generator's 0.03
+threshold.
+
+The quick-profile critic now trains on every Phase A decision (it was capped at 40,000 of
+~200,000).
+
+Run 3 (pool v1) was skipped, so the library adopts the promoted plays of runs 1 and 2.
+
+**Rationale:** the critic can only improve choices when there is a choice; more decisions
+with real options, and more of them, give it varied outcomes to learn from.
+
+**Alternatives considered viable:** copying promoted plays into `plays/offensive/` after
+review (rejected by the user: that folder is for hand-written plays); adopting promoted
+plays without a niche restriction (measured: they crowd out everything else).
+
+## D-045 · Opponent pool v2: seven styles, two held out, formations never tied to a style
+**Date:** 2026-10-01 · **Status:** `active`
+
+The scripted opponent pool is versioned (`pool_version` in `configs/league.yaml`) and frozen
+at v2. Changing anything in `runs.pool_definition` is a version bump and starts a new run
+lineage (D-044), so runs only ever continue along one pool.
+
+- **Seven styles:** `high_press`, `mid_block`, `low_block_counter`, `possession`, `direct`,
+  `wing_play`, `chaotic`. Each is defined by play preferences only: score bonuses for the
+  library plays it likes and negative bonuses for the ones it avoids, plus a selection
+  temperature (`chaotic` has no preferences and a higher temperature, so it is unpredictable).
+- **No formation per style.** Every style, and every forced play evaluation (archive
+  refinement, archive seeds, promotion), draws its formation at random from `formations`.
+  A style can only be recognised from what it does, not from its shape.
+- **Two held-out styles, `possession` and `wing_play`,** used only for evaluation and the
+  regression gate. They are also kept out of Phase A self-play data, so the critic, response
+  model and behaviour cloning never see them (in pool v1, `possession` was in Phase A data
+  and only kept out of league training). Promotion still needs the library's median reward
+  against them; that comes from separate held-out reference games
+  (`data/heldout_reference_pool_v2/`) that no training step reads.
+- **Base models are tied to a pool.** `meta.json` records the pool fingerprint the critic
+  and generator were trained for; a league run refuses to start on models trained for a
+  different pool. Pool v1 models are kept in `data/models/pool_v1/`, and runs 1–3 keep
+  their own copies.
+- **Carried-in plays are re-judged.** Promoted plays from runs on a different pool still
+  seed the archive (D-044, option 3) but without their old evaluations, which were earned
+  against different opponents; the run re-evaluates them against its training styles first.
+- **The reward does not change with the pool** (same xT surface, same reward config), so
+  scores across pools stay comparable.
+
+**Rationale:** the v1 styles differed only by a small bonus on one to three plays, so
+"beats every style" said little. More distinct styles widen what the generator must cope
+with, and two held-out styles make the generalisation check less dependent on one opponent.
+Fixing formations per style was rejected: the generator could learn to key on formation, a
+shortcut that fails as soon as a real team plays a style in a different shape.
+
+**Alternatives considered viable:** a learned or randomly perturbed style each game
+(domain randomisation over preferences) instead of seven fixed styles; rotating which
+styles are held out across lineages.
+
 ## D-044 · League runs build on earlier runs, but only along a consistent opponent pool
 **Date:** 2026-10-01 · **Status:** `active` (see Q-037)
 

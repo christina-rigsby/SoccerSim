@@ -26,7 +26,7 @@ from ..dashboard.zones import zone_of
 from ..schema.validate import parse_play
 from .logging import load_table
 from .qd_archive import Archive
-from .runs import PROMOTED_DIR, latest_run_dir, prior_promoted, promoted_run_numbers
+from .runs import PROMOTED_DIR, data_paths, latest_run_dir, prior_promoted, promoted_run_numbers
 
 POSSESSION = ("in_possession", "transition_attack", "set_piece")
 LINEAGE_MIN_SIMILARITY = 0.6
@@ -96,7 +96,8 @@ def promote_elites(models_dir: str | Path, data_root: str | Path | None = None, 
     league_dir = Path(run_dir) if run_dir else latest_run_dir(models_dir)
     if league_dir is None:
         raise FileNotFoundError(f"no league runs under {Path(models_dir) / 'runs'}; run the league first")
-    data_root = Path(data_root) if data_root else Path(models_dir).parent / "selfplay"
+    lcfg = load_config("league")
+    data_root = Path(data_root) if data_root else data_paths(lcfg)["selfplay"]
     run = promotion_run(league_dir, Path(out_dir) if out_dir else PROMOTED_DIR)
     out = (Path(out_dir) if out_dir else PROMOTED_DIR) / f"run_{run}"
     out.mkdir(parents=True, exist_ok=True)
@@ -104,8 +105,17 @@ def promote_elites(models_dir: str | Path, data_root: str | Path | None = None, 
         old.unlink()  # re-promoting the same run replaces its folder
     tcfg = load_config("training")
     archive = Archive.load(league_dir / "archive.json", tcfg["qd"][f"min_evals_{profile or tcfg['profile']}"])
-    styles = list(load_config("league")["scripted_styles"])
+    styles = list(lcfg["scripted_styles"])
     medians = library_niche_medians(data_root, league_dir / "library_niche.json")
+    # Held-out styles are not in the training data; their library medians come from the
+    # separate held-out reference games (D-045).
+    held = set(lcfg["held_out_styles"])
+    ref_root = data_paths(lcfg)["heldout_reference"]
+    heldout_medians = "training data (no held-out reference games)"
+    if ref_root is not None and any(ref_root.rglob("decisions-*.parquet")):
+        ref = library_niche_medians(ref_root, league_dir / "library_niche_heldout.json")
+        medians.update({k: v for k, v in ref.items() if k.rsplit("|", 1)[-1] in held})
+        heldout_medians = str(ref_root)
     meta = json.loads((Path(models_dir) / "meta.json").read_text()) if (Path(models_dir) / "meta.json").exists() \
         else {}
     state = json.loads((league_dir / "state.json").read_text()) if (league_dir / "state.json").exists() else {}
@@ -179,7 +189,7 @@ def promote_elites(models_dir: str | Path, data_root: str | Path | None = None, 
             entry["path"] = str(path)
         report.append(entry)
     summary = {"run": run, "dir": str(out), "elites": len(elites), "promoted": sum(r["promoted"] for r in report),
-               "kept_from_earlier_runs": kept, "candidates": report}
+               "kept_from_earlier_runs": kept, "heldout_medians_from": heldout_medians, "candidates": report}
     (league_dir / "promotion.json").write_text(json.dumps(summary, indent=2))
     return {k: v for k, v in summary.items() if k != "candidates"} | {
         "promoted_ids": [r["id"] for r in report if r["promoted"]]}

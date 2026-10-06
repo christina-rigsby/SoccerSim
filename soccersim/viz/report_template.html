@@ -67,6 +67,8 @@ details { border-top: 1px solid var(--rule); padding-top: 6px; }
 summary { cursor: pointer; font-size: 13px; color: var(--ink-2); }
 summary:focus-visible, a:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
 pre { font-family: var(--mono); font-size: 12px; overflow: auto; max-height: 320px; background: var(--bg); padding: 10px; border-radius: 6px; margin: 6px 0 0; }
+.stack { display: flex; height: 12px; border-radius: 3px; overflow: hidden; min-width: 120px; background: var(--rule); }
+.stack i { display: block; height: 100%; }
 .pill { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink-2); }
 .pill.good { color: var(--good); border-color: currentColor; }
 .pill.bad { color: var(--bad); border-color: currentColor; }
@@ -87,7 +89,10 @@ a { color: var(--s1); }
 
   <section id="gaps">
     <h2><span class="stage">A</span>Where the play library runs out</h2>
-    <p>For every decision our team made with the ball, Module 2 checked all hand-written plays against their triggers, hard constraints and role requirements. When none fits except the always-available recycle play, that is a <em>library gap</em>, and it is when the generator is consulted.</p>
+    <p>For every decision our team made with the ball, Module 2 checked every library play against its triggers, hard constraints and role requirements. When no play except the always-available recycle play fits, or the best one scores under the generator threshold, that is a <em>library gap</em>, and it is when the generator is consulted.</p>
+    <div class="panel"><h3>Why there is a gap</h3><div class="note" id="gapNote"></div>
+      <div class="legend"><span><i style="background:var(--s3)"></i>Real play: a play fits and scores well</span><span><i style="background:var(--s1)"></i>Weak fit: a play fits but scores under the threshold</span><span><i style="background:var(--s2)"></i>Only circulation: nothing but recycle fits</span><span><i style="background:var(--bad)"></i>Nothing fits</span></div>
+      <div class="tablewrap" id="gapSplit"></div></div>
     <div class="grid2">
       <div class="panel"><h3>Library-gap rate by pitch zone</h3><div class="note">Attacking left to right; "near" is the ball side. Darker means the library more often had nothing to offer.</div><div class="chart" id="gapPitch"></div></div>
       <div class="panel"><h3>How often each play is feasible when we have the ball</h3><div class="note">Share of possession decisions where the play passed every check.</div><div class="chart" id="feasBars"></div></div>
@@ -142,7 +147,7 @@ a { color: var(--s1); }
 
   <section id="eval">
     <h2><span class="stage">Eval</span>Main agent vs the library, against every scripted style</h2>
-    <p>Mean reward per play when each team plays the scripted styles. The <em>possession</em> style was never used in training.</p>
+    <p>Mean reward per play when each team plays the scripted styles. <span id="heldOutNote"></span></p>
     <div class="panel"><div class="legend"><span><i style="background:var(--s1)"></i>Library only</span><span><i style="background:var(--s2)"></i>Main agent (generator on library gaps)</span></div><div class="chart" id="evalBars"></div><div id="evalNote" class="note"></div></div>
     <div id="replayLink"></div>
   </section>
@@ -227,12 +232,12 @@ function textOn(t) { return "var(--ink)"; }
 
 function pitchZones(host, zones) {
   const bands = D.bands, lanes = D.lanes.slice().reverse(); // near_wing on top... reversed so near is top
-  const W = 460, H = 300, P = 8;
+  const W = 520, H = 300, P = 8, L = 92; // L: gutter for the lane labels, outside the pitch
   const s = svg(host, W, H);
-  el("rect", { x: P, y: P, width: W - 2 * P, height: H - 2 * P - 18, fill: "var(--turf)", rx: 4 }, s);
+  el("rect", { x: L, y: P, width: W - L - P, height: H - 2 * P - 18, fill: "var(--turf)", rx: 4 }, s);
   const bx = { own_third: [-52.5, -17.5], mid_own: [-17.5, 0], mid_opp: [0, 17.5], final_third: [17.5, 52.5] };
   const ly = { near_wing: [20.16, 34], near_halfspace: [9.16, 20.16], center: [-9.16, 9.16], far_halfspace: [-20.16, -9.16], far_wing: [-34, -20.16] };
-  const X = (x) => P + (x + 52.5) / 105 * (W - 2 * P), Y = (y) => P + (34 - y) / 68 * (H - 2 * P - 18);
+  const X = (x) => L + (x + 52.5) / 105 * (W - L - P), Y = (y) => P + (34 - y) / 68 * (H - 2 * P - 18);
   for (const b of bands) for (const l of D.lanes) {
     const z = zones[`${b}.${l}`]; const [x0, x1] = bx[b], [y0, y1] = ly[l];
     const v = z ? z.gap_rate : null;
@@ -245,10 +250,10 @@ function pitchZones(host, zones) {
   const lines = [[-17.5, -34, -17.5, 34], [0, -34, 0, 34], [17.5, -34, 17.5, 34]];
   for (const [a, b, c, d] of lines) el("line", { x1: X(a), y1: Y(b), x2: X(c), y2: Y(d), stroke: "var(--chalk)", "stroke-dasharray": "0" }, s);
   el("rect", { x: X(36), y: Y(20.16), width: X(52.5) - X(36), height: Y(-20.16) - Y(20.16), fill: "none", stroke: "var(--chalk)" }, s);
-  for (const l of D.lanes) { const t = el("text", { x: X(-52.5) + 4, y: (Y(ly[l][0]) + Y(ly[l][1])) / 2 + 4, class: "cell" }, s); t.textContent = l.replace("_", " "); t.setAttribute("font-size", "9"); }
+  for (const l of D.lanes) { const t = el("text", { x: L - 6, y: (Y(ly[l][0]) + Y(ly[l][1])) / 2 + 4, "text-anchor": "end", fill: "var(--ink-3)", "font-size": "11" }, s); t.textContent = l.replace("_", " "); }
   const lab = (x, txt, a) => { const t = el("text", { x, y: H - 4, "text-anchor": a }, s); t.textContent = txt; };
-  lab(P, "own goal", "start"); lab(W - P, "attacking →", "end");
-  const tn = el("text", { x: W / 2, y: H - 4, "text-anchor": "middle" }, s); tn.textContent = "ball side ↑";
+  lab(L, "own goal", "start"); lab(W - P, "attacking →", "end");
+  const tn = el("text", { x: (L + W) / 2, y: H - 4, "text-anchor": "middle" }, s); tn.textContent = "near = ball side";
 }
 
 function heatGrid(host, rows, cols, val, opts = {}) {
@@ -291,7 +296,7 @@ function xtMap(host, a, b) {
 const pa = D.phase_a, gaps = D.gaps, cr = D.critic, gen = D.generator, lg = D.league || {}, hist = (lg.history || []).filter((h) => h.ppo);
 const tiles = [
   ["Decisions logged", pa ? pa.decisions.toLocaleString() : "–", pa ? `${pa.episodes.toLocaleString()} library self-play games` : "Phase A not run"],
-  ["Library gap rate", gaps ? pct(gaps.overall_gap_rate) : "–", "possession decisions with no fitting play"],
+  ["Library gap rate", gaps ? pct(gaps.overall_gap_rate) : "–", gaps && gaps.per_possession ? `of decisions · ${pct(gaps.per_possession.only_circulation + gaps.per_possession.nothing_fits)} of possessions never get past recycling` : "possession decisions with no fitting play"],
   ["Critic vs per-play mean", cr ? `${(100 * (1 - cr.critic.mse / cr.critic.baseline_mse)).toFixed(1)}%` : "–", cr ? "lower held-out error" : "not trained"],
   ["Generator validity", gen ? pct(gen.validity.validity) : "–", gen ? `${gen.validity.sampled} grammar-constrained samples` : "not trained"],
   ["League updates", lg.update ?? "–", hist.length ? `${hist.reduce((a, h) => a + h.episodes, 0)} league games` : "not run"],
@@ -299,11 +304,24 @@ const tiles = [
 ];
 $("tiles").innerHTML = tiles.map(([l, v, s]) => `<div class="tile"><div class="label">${l}</div><div class="value">${v}</div><div class="sub">${s}</div></div>`).join("");
 
+if (gaps && gaps.per_decision) {
+  const CATS = [["real_play", "var(--s3)", "real play"], ["weak_fit", "var(--s1)", "weak fit"], ["only_circulation", "var(--s2)", "only circulation"], ["nothing_fits", "var(--bad)", "nothing fits"]];
+  const BAND_NAMES = { own_third: "Own third", mid_own: "Middle, own half", mid_opp: "Middle, opponent half", final_third: "Final third" };
+  const row = (label, sh, n, unit) => `<tr><td>${label}</td><td><div class="stack" role="img" aria-label="${CATS.map(([k, , name]) => `${name} ${pct(sh[k])}`).join(", ")}">${CATS.map(([k, c, name]) => `<i style="width:${(100 * sh[k]).toFixed(2)}%;background:${c}" title="${name}: ${pct(sh[k])}"></i>`).join("")}</div></td>${CATS.map(([k]) => `<td class="n">${pct(sh[k])}</td>`).join("")}<td class="n">${n.toLocaleString()} ${unit}</td></tr>`;
+  const bands = ["own_third", "mid_own", "mid_opp", "final_third"].filter((b) => gaps.by_band[b]);
+  $("gapSplit").innerHTML = `<table><thead><tr><th>Counted</th><th>Breakdown</th>${CATS.map(([, , name]) => `<th class="n">${name}</th>`).join("")}<th class="n">Count</th></tr></thead><tbody>
+    ${row("Per decision", gaps.per_decision, gaps.decisions, "decisions")}
+    ${row("Per possession (best moment)", gaps.per_possession, gaps.possessions, "possessions")}
+    <tr><th colspan="7">By pitch band, per decision</th></tr>
+    ${bands.map((b) => row(BAND_NAMES[b], gaps.by_band[b], gaps.by_band[b].n, "decisions")).join("")}
+  </tbody></table>`;
+  $("gapNote").textContent = `A team re-decides at every play end and possession change, ${gaps.decisions_per_possession.toFixed(1)} times per possession on average, so long spells of recycling count many times per decision. The per-possession row asks instead: what was the best option this possession ever had? Generator threshold: ${gaps.threshold}.`;
+} else if (gaps) { empty($("gapSplit"), "Rebuild the report to see the breakdown."); }
 if (gaps) {
   pitchZones($("gapPitch"), gaps.zones);
   const fp = Object.entries(gaps.plays).sort((a, b) => b[1].feasible_rate - a[1].feasible_rate);
   hbars($("feasBars"), fp.map(([k, v]) => ({ label: k, values: [v.feasible_rate], tip: "most common blocker: " + Object.entries(v.top_reasons).filter(([r]) => r !== "feasible")[0]?.[0] })), { colors: ["var(--s1)"], names: ["feasible"], xfmt: pct });
-} else { empty($("gapPitch"), "Run Phase A first."); empty($("feasBars"), "Run Phase A first."); }
+} else { empty($("gapPitch"), "Run Phase A first."); empty($("feasBars"), "Run Phase A first."); empty($("gapSplit"), "Run Phase A first."); }
 
 if (pa) {
   hbars($("usageBars"), pa.plays.slice(0, 12).map((p) => ({ label: p.play, values: [p.share, p.success_rate], tip: `${p.n.toLocaleString()} times · mean reward ${fmt(p.mean_reward, 4)}` })), { colors: ["var(--s1)", "var(--s3)"], names: ["share", "success"], xfmt: pct, max: 1, labelLast: false });
@@ -368,11 +386,17 @@ if (fe && fe.main) {
   $("evalNote").textContent = fe.beats_all_styles ? "The main agent matches or beats the library against every style, including the held-out one." : "The main agent does not yet beat the library against every style; see the bars above.";
 } else empty($("evalBars"), "Evaluation not run yet.");
 const runs = D.runs || [];
-$("runTable").innerHTML = runs.length ? `<table><thead><tr><th>Run</th><th>Started from</th><th>Archive seeded from</th><th>Regression gate</th><th class="n">Promoted</th></tr></thead><tbody>${runs.map((r) => {
+$("runTable").innerHTML = runs.length ? `<table><thead><tr><th>Run</th><th>Opponent pool</th><th>Started from</th><th>Archive seeded from</th><th>Regression gate</th><th class="n">Promoted</th></tr></thead><tbody>${runs.map((r) => {
   const start = r.continued_from != null ? `run ${r.continued_from}'s generator` : "pretrained generator";
   const gate = !r.gate ? `<span class="pill">not run</span>` : r.gate.passed ? `<span class="pill good">passed</span>` : `<span class="pill bad">failed: ${r.gate.failed.join(", ")}</span>`;
   const why = r.start_reason ? `<div class="note">${r.start_reason.replace(/[&<>]/g, "")}</div>` : "";
-  return `<tr><td>run ${r.run}</td><td>${start}${why}</td><td>${r.seeded_from_runs.length ? "runs " + r.seeded_from_runs.join(", ") : "–"}</td><td>${gate}</td><td class="n">${r.promoted}</td></tr>`;
+  const pool = `v${r.pool_version}<div class="note">held out: ${(r.held_out_styles || []).join(", ") || "–"}</div>`;
+  return `<tr><td>run ${r.run}</td><td>${pool}</td><td>${start}${why}</td><td>${r.seeded_from_runs.length ? "runs " + r.seeded_from_runs.join(", ") : "–"}</td><td>${gate}</td><td class="n">${r.promoted}</td></tr>`;
 }).join("")}</tbody></table>` : `<div class="empty">No league runs yet.</div>`;
+{
+  const last = runs.length ? runs[runs.length - 1] : null;
+  const held = last && last.held_out_styles && last.held_out_styles.length ? last.held_out_styles : null;
+  $("heldOutNote").innerHTML = held ? `Held-out styles, never used in training: ${held.map((h) => `<em>${h}</em>`).join(", ")}.` : "";
+}
 $("replayLink").innerHTML = D.replays ? `<p><a href="selfplay_replays.html">Open the highlight replays</a>: watch the agent call generated plays when the library has a gap, next to a library-only baseline game.</p>` : "";
 </script>

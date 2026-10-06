@@ -21,3 +21,12 @@ move a play into `plays/offensive/` only after checking it.
 
 `python scripts/selfplay.py league` trains the next run; `python scripts/selfplay.py
 promote` writes its folder (re-running promote for the same run rewrites that folder).
+
+## Used as library plays
+
+The runs listed in `configs/library.yaml` (`promoted_runs`) are loaded straight from these
+folders into the play library, alongside the hand-written plays in `plays/offensive/` and
+`plays/defensive/`. Nothing is copied or moved. When loaded, each play is restricted to the
+archive niche it was promoted in (its start band and lane) and gets a cooldown of at least
+8 s; the files here are not changed (D-046). Adding a run to that list changes the opponent
+pool, so it starts a new run lineage.

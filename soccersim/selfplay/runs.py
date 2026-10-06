@@ -64,8 +64,12 @@ def read_state(run_dir: Path) -> dict[str, Any]:
 
 
 def pool_definition(league_cfg: dict) -> dict[str, Any]:
-    """What a run trains against. Two runs may share a generator only if this is identical."""
-    return {
+    """What a run trains against. Two runs may share a generator only if this is identical.
+
+    Keys absent from an older config are left out rather than defaulted, so a pool recorded
+    before they existed still compares equal to itself.
+    """
+    out = {
         "scripted_styles": league_cfg["scripted_styles"],
         "held_out_styles": sorted(league_cfg["held_out_styles"]),
         "pfsp_weighting": league_cfg["pfsp_weighting"],
@@ -73,11 +77,62 @@ def pool_definition(league_cfg: dict) -> dict[str, Any]:
         "snapshot_every": league_cfg["snapshot_every"],
         "main_exploiter_reset_every": league_cfg["main_exploiter_reset_every"],
     }
+    for k in ("pool_version", "formations", "randomise_eval_formations"):
+        if k in league_cfg:
+            out[k] = league_cfg[k]
+    if league_cfg.get("pool_version", 1) >= 2:
+        # Scripted styles choose from the library, so its exact content is part of the pool.
+        out["library"] = library_fingerprint()
+    return out
+
+
+def library_fingerprint(library: dict[str, Play] | None = None) -> str:
+    from ..schema import load_library
+    from ..schema.loader import play_to_dict
+
+    lib = library if library is not None else load_library()
+    blob = json.dumps({pid: play_to_dict(p) for pid, p in sorted(lib.items())}, sort_keys=True, default=str)
+    return hashlib.sha1(blob.encode()).hexdigest()[:12]
 
 
 def pool_fingerprint(league_cfg: dict) -> str:
     blob = json.dumps(pool_definition(league_cfg), sort_keys=True).encode()
     return hashlib.sha1(blob).hexdigest()[:12]
+
+
+def pool_label(league_cfg: dict) -> str:
+    return f"v{league_cfg.get('pool_version', 1)} ({pool_fingerprint(league_cfg)})"
+
+
+def data_paths(league_cfg: dict | None = None) -> dict[str, Path]:
+    """This pool's self-play data root and held-out reference root (repo-relative in config)."""
+    from ..config import REPO_ROOT, load_config
+
+    cfg = (league_cfg or load_config("league")).get("data") or {}
+    sp = REPO_ROOT / cfg.get("selfplay", "data/selfplay")
+    ref = cfg.get("heldout_reference")
+    return {"selfplay": sp, "heldout_reference": REPO_ROOT / ref if ref else None}
+
+
+def check_base_models(models_dir: str | Path, league_cfg: dict) -> None:
+    """Refuse to start a run on a critic / generator trained for a different opponent pool.
+
+    ``meta.json`` records the pool fingerprint when they were trained; models from before
+    that was recorded are accepted (they can only belong to pool v1).
+    """
+    meta_path = Path(models_dir) / "meta.json"
+    meta = json.loads(meta_path.read_text()) if meta_path.exists() else {}
+    cur = pool_fingerprint(league_cfg)
+    for what in ("critic", "generator"):
+        fp = meta.get(f"{what}_pool_fingerprint")
+        if fp is None:
+            if league_cfg.get("pool_version", 1) > 1:
+                raise RuntimeError(f"the {what} in {models_dir} predates pool versioning; retrain it for pool "
+                                   f"{pool_label(league_cfg)} (train-critic / pretrain-generator) first")
+            continue
+        if fp != cur:
+            raise RuntimeError(f"the {what} in {models_dir} was trained for opponent pool {fp}, not the current "
+                               f"pool {pool_label(league_cfg)}; regenerate Phase A data and retrain first")
 
 
 def pool_differences(a: dict[str, Any], b: dict[str, Any]) -> list[str]:

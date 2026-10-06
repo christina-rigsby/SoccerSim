@@ -1,16 +1,58 @@
 # League configuration (spec §11 Phase C).
 
+# Opponent pool v2 (D-045). Frozen: a run only continues from the previous run's generator
+# when everything that defines the pool (runs.pool_definition) is identical, so any change
+# here is a deliberate version bump that starts a new run lineage. Bump pool_version with it.
+pool_version: 2
+
+# Scripted styles are library-only teams. They differ by play preferences, not formation:
+# every style draws its formation at random from `formations` each game, so the generator
+# cannot learn to read a style off the shape of the team (D-045).
+#   favour:      score bonus (EPV units) per library play; negative values make a style avoid it.
+#   temperature: softmax temperature over play scores; higher = less predictable.
 scripted_styles:
   high_press:
-    favour: {high_press_sideline_trap: 0.04, counterpress_five_seconds: 0.04}
+    favour: {high_press_sideline_trap: 0.06, counterpress_five_seconds: 0.06, direct_counterattack: 0.03,
+             low_block_box_protection: -0.04, recycle_possession: -0.03}
+    temperature: 0.01
   mid_block:
-    favour: {mid_block_compact: 0.04}
+    favour: {mid_block_compact: 0.06, recycle_possession: 0.03, switch_of_play: 0.02,
+             high_press_sideline_trap: -0.04, through_ball_behind_high_line: -0.02}
+    temperature: 0.01
   low_block_counter:
-    favour: {low_block_box_protection: 0.04, direct_counterattack: 0.04}
+    favour: {low_block_box_protection: 0.06, direct_counterattack: 0.06,
+             recycle_possession: -0.04, high_press_sideline_trap: -0.04, build_out_short_goal_kick: -0.03}
+    temperature: 0.01
   possession:
-    favour: {third_man_combination: 0.03, switch_of_play: 0.03, recycle_possession: 0.03}
+    favour: {third_man_combination: 0.04, switch_of_play: 0.04, recycle_possession: 0.04,
+             build_out_short_goal_kick: 0.04, counterpress_five_seconds: 0.03,
+             direct_counterattack: -0.04, through_ball_behind_high_line: -0.03}
+    temperature: 0.01
+  direct:
+    favour: {through_ball_behind_high_line: 0.06, direct_counterattack: 0.05, wide_overlap_cross: 0.02,
+             mid_block_compact: 0.02, recycle_possession: -0.05, build_out_short_goal_kick: -0.04,
+             one_two_wall_pass: -0.02}
+    temperature: 0.01
+  wing_play:
+    favour: {wide_overlap_cross: 0.06, switch_of_play: 0.05, counterpress_five_seconds: 0.02,
+             one_two_wall_pass: -0.03, third_man_combination: -0.03}
+    temperature: 0.01
+  chaotic:
+    favour: {}
+    temperature: 0.03
 
-held_out_styles: [possession]
+# Never trained against (not in Phase A data, not in the league pool); evaluation only.
+held_out_styles: [possession, wing_play]
+
+# Forced play evaluations (archive refinement, archive seeds, promotion) draw both
+# formations at random too, instead of the scenario default 4-3-3 v 4-3-3.
+randomise_eval_formations: true
+
+# Where this pool's data lives. Held-out reference games (library v held-out styles) are kept
+# apart from training data and used only for promotion's library medians.
+data:
+  selfplay: data/selfplay_pool_v2
+  heldout_reference: data/heldout_reference_pool_v2
 
 snapshot_every: 5          # updates between frozen snapshots of the main agent
 main_exploiter_reset_every: 20

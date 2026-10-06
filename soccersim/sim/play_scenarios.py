@@ -28,6 +28,12 @@ PLAY_SCENARIOS: dict[str, tuple[tuple[str, ...], int]] = {
     "build_out_short_goal_kick": (("build_up",), 0),
     "direct_counterattack": (("transition_win",), 0),
     "recycle_possession": (("mid_progression", "random_open_play"), 0),
+    "cb_carry_into_midfield": (("mid_progression", "build_up", "random_open_play"), 0),
+    "fullback_outlet_bounce": (("build_up", "mid_progression", "random_open_play"), 0),
+    "long_ball_to_target": (("build_up", "mid_progression", "transition_win"), 0),
+    "pivot_drop_back_three": (("build_up", "mid_progression"), 0),
+    "switch_through_keeper": (("build_up", "mid_progression"), 0),
+    "winger_checks_short": (("mid_progression", "build_up", "random_open_play"), 0),
     "high_press_sideline_trap": (("build_up", "mid_progression", "random_open_play"), 1),
     "mid_block_compact": (("mid_progression", "random_open_play"), 1),
     "low_block_box_protection": (("final_third_attack", "random_open_play"), 1),
@@ -55,12 +61,12 @@ def run_play(library: dict[str, Play], play_id: str, seed: int, scenario: Scenar
     env.reset(seed, scenario)
     forced = ForcedPolicy(library, play_id, extra=extra, ignore_triggers=ignore_triggers,
                           rng=np.random.default_rng(seed))
-    style = None
+    style, temperature = None, None
     if opponent_style:
-        from ..selfplay.policies import style_bonus
+        from ..selfplay.policies import style_bonus, style_temperature
 
-        style = style_bonus(opponent_style)
-    other = RankingPolicy(library, rng=np.random.default_rng(seed + 1), style=style)
+        style, temperature = style_bonus(opponent_style), style_temperature(opponent_style)
+    other = RankingPolicy(library, rng=np.random.default_rng(seed + 1), style=style, temperature=temperature)
     res = env.run(forced, other, max_time_s=max_time_s, stop_on_turnover=False, stop_on_goal=True)
     return PlayRun(seed, scenario, res)
 
