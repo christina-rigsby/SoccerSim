@@ -239,7 +239,8 @@ def build_report(models_dir: str | Path, root: str | Path, out: str | Path, frag
 
 
 def build_training_replays(root: str | Path, out: str | Path, run_id: str = "phase_a",
-                           heading: str = "Training games (Phase A self-play)", fragment: bool = False) -> Path:
+                           heading: str = "Training games (Phase A self-play)", fragment: bool = False,
+                           stride: int = 1, gif_dir: str | Path | None = None, n_gifs: int = 6) -> Path:
     """Replays of the training games whose full tracking was saved (every Nth Phase A game).
 
     These are the games the critic and the generator learned from, as they were played —
@@ -268,6 +269,24 @@ def build_training_replays(root: str | Path, out: str | Path, run_id: str = "pha
                        f"({sc.get('away_formation', '?')}) · {sc.get('type', '').replace('_', ' ')} · "
                        f"ended: {str(ep.get('end', '')).replace('_', ' ')}")
         episodes.append(ep)
+    if gif_dir is not None:
+        # A few games as GIFs with an index, so they can be watched straight from the repo.
+        from .replay import save_gif
+
+        gd = Path(gif_dir)
+        (gd / "gifs").mkdir(parents=True, exist_ok=True)
+        picks = episodes[:: max(1, len(episodes) // n_gifs)][:n_gifs]
+        lines = [f"# {heading}", "", f"{len(episodes)} training games had their full tracking saved; {len(picks)} are "
+                 "shown here as GIFs (blue = home, red = away; labels are each team's role bindings for the play it "
+                 "is running, dashed lines where players are heading). `training_games.html` has all of them with the "
+                 "decision inspector; download it and open it in a browser.", ""]
+        for k, ep in enumerate(picks):
+            name = f"game_{k + 1}.gif"
+            save_gif(ep["frames"], gd / "gifs" / name, step=3, fps=8)
+            lines += [f"## {ep['title']}", "", f"![{ep['title']}](gifs/{name})", ""]
+        (gd / "README.md").write_text("\n".join(lines))
+    for ep in episodes:
+        ep["frames"] = ep["frames"][::stride]
     out = Path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(render_replay_html(episodes, heading, fragment))

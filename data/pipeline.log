@@ -17,3 +17,52 @@
   mutation filtering: reusing the cached result of an interrupted pretraining
   mutation filtering: 209 plays evaluated, 109 survivors (73 from earlier promoted plays)
   BC epoch 1: loss 0.520, held-out token acc 0.996
+== skipped run 3 at 22:38:39; pool v2 merged by hand
+== run3_pretrain: already done
+== run3_league: already done
+== run3_promote: already done
+== run3_report: already done
+== run3_commit: already done
+== v2_merge: already done
+== v2_keep_v1: start 22:38:39
+== v2_keep_v1: done 22:38:39
+== v2_phase_a: start 22:38:39
+  200/13500 episodes, 2368 decisions, 25s wall, 177x real time
+  400/13500 episodes, 4797 decisions, 53s wall, 170x real time
+  600/13500 episodes, 7299 decisions, 80s wall, 174x real time
+  800/13500 episodes, 9670 decisions, 103s wall, 179x real time
+  1000/13500 episodes, 12092 decisions, 134s wall, 172x real time
+  1200/13500 episodes, 14444 decisions, 166s wall, 167x real time
+  1400/13500 episodes, 17018 decisions, 199s wall, 163x real time
+  1600/13500 episodes, 19428 decisions, 230s wall, 162x real time
+  1800/13500 episodes, 21740 decisions, 260s wall, 161x real time
+  2000/13500 episodes, 24124 decisions, 292s wall, 159x real time
+  2200/13500 episodes, 26569 decisions, 325s wall, 158x real time
+  2400/13500 episodes, 28927 decisions, 357s wall, 157x real time
+  2600/13500 episodes, 31344 decisions, 386s wall, 158x real time
+  2800/13500 episodes, 33710 decisions, 410s wall, 160x real time
+  3000/13500 episodes, 36284 decisions, 435s wall, 162x real time
+  3200/13500 episodes, 38647 decisions, 459s wall, 163x real time
+  3400/13500 episodes, 41090 decisions, 503s wall, 159x real time
+  3600/13500 episodes, 43409 decisions, 566s wall, 149x real time
+  3800/13500 episodes, 45837 decisions, 611s wall, 146x real time
+  4000/13500 episodes, 48399 decisions, 635s wall, 148x real time
+  4200/13500 episodes, 50813 decisions, 658s wall, 150x real time
+  4400/13500 episodes, 53289 decisions, 683s wall, 151x real time
+  4600/13500 episodes, 55705 decisions, 706s wall, 153x real time
+  4800/13500 episodes, 58147 decisions, 730s wall, 154x real time
+  5000/13500 episodes, 60565 decisions, 753s wall, 156x real time
+  5200/13500 episodes, 63086 decisions, 777s wall, 157x real time
+  5400/13500 episodes, 65459 decisions, 800s wall, 158x real time
+  5600/13500 episodes, 67892 decisions, 825s wall, 159x real time
+  5800/13500 episodes, 70353 decisions, 851s wall, 160x real time
+  6000/13500 episodes, 72746 decisions, 894s wall, 158x real time
+  6200/13500 episodes, 75075 decisions, 942s wall, 154x real time
+  6400/13500 episodes, 77559 decisions, 994s wall, 151x real time
+  6600/13500 episodes, 79966 decisions, 1031s wall, 150x real time
+  6800/13500 episodes, 82314 decisions, 1062s wall, 150x real time
+  7000/13500 episodes, 84842 decisions, 1097s wall, 150x real time
+  7200/13500 episodes, 87207 decisions, 1135s wall, 149x real time
+  7400/13500 episodes, 89560 decisions, 1181s wall, 147x real time
+  7600/13500 episodes, 92030 decisions, 1235s wall, 145x real time
+  7800/13500 episodes, 94481 decisions, 1275s wall, 144x real time

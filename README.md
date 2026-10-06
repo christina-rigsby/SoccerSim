@@ -88,6 +88,9 @@ and generator, and starting a new run lineage; `data/pipeline.sh` does all of it
 
 ### Seeing what self-play is doing
 
+Committed, viewable on GitHub: [`reports/`](reports/README.md) (play and counter-play clips,
+training games, generated plays that worked, per-run Self-Play Lab reports). Scratch output in `out/`:
+
 - `out/selfplay_report.html` — where the library runs out on the pitch, play usage, critic
   and generator training curves, league reward / Elo / PFSP / payoff matrix, archive
   coverage, promoted plays, and agent-vs-library evaluation per scripted style.

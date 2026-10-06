@@ -105,3 +105,38 @@ def test_parquet_log_resumes_without_overwriting(tmp_path):
     eps = sorted(load_table(tmp_path, "episodes", ["episode_id"]).column("episode_id").to_pylist())
     assert eps == ["e0", "e1"]
     assert not list(tmp_path.rglob("*.tmp"))
+
+
+def test_successful_generated_plays_are_clipped():
+    import yaml
+
+    from soccersim.config import PLAYS_DIR
+    from soccersim.schema import load_library, parse_play
+    from soccersim.selfplay.worker import SUCCESS_MIN_REWARD, generated_success_clips
+    from soccersim.sim.play_scenarios import run_play
+    from soccersim.sim.scenarios import Scenario
+
+    files = sorted((PLAYS_DIR / "generated_and_promoted").glob("run_*/*.yaml"))
+    if not files:
+        pytest.skip("no promoted plays in this checkout")
+    data = yaml.safe_load(files[0].read_text())
+    data["source"] = "generated"
+    play = parse_play(data)
+    lib = load_library(promoted_runs=())
+    run = None
+    for seed in range(40):
+        r = run_play(lib, play.id, seed, Scenario(type="final_third_attack"), extra=play, max_time_s=15)
+        if r.forced_record(play.id) is not None:
+            run = r
+            break
+    assert run is not None
+    rec = run.forced_record(play.id)
+    job = {"episode_id": "t", "home": {"id": "main"}, "away": {"id": "high_press"}}
+    rec["reward"] = 0.0
+    rec["end_reason"] = "abort"
+    assert generated_success_clips(run.result, job) == []
+    rec["reward"] = SUCCESS_MIN_REWARD * 2
+    (clip,) = generated_success_clips(run.result, job)
+    assert clip["play_id"] == play.id and clip["player"] == "main" and clip["opponent"] == "high_press"
+    assert clip["play_yaml"] and clip["replay"]["frames"]
+    assert all(rec["t_start"] - 1.01 <= f["t"] <= rec["t_end"] + 2.01 for f in clip["replay"]["frames"])

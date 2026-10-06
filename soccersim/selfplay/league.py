@@ -171,7 +171,25 @@ class League:
         sc = sample_scenario(self.rng, SCENARIO_TYPES[:-2] + ("random_open_play",), tuple(self.lcfg["formations"]))
         home, away = (a, b) if self.rng.random() < 0.5 else (b, a)
         return {"episode_id": f"L{self.update:03d}-{tag}-{k:03d}", "seed": int(self.rng.integers(1 << 31)),
-                "scenario": sc.to_dict(), "home": self.spec(home), "away": self.spec(away), "randomise": True}
+                "scenario": sc.to_dict(), "home": self.spec(home), "away": self.spec(away), "randomise": True,
+                "save_generated_successes": True}
+
+    def save_success_clips(self, res: dict, stage: str) -> int:
+        """Keep the clips of generated plays that succeeded (``<run>/generated_successes/``)."""
+        import gzip
+
+        clips = res.get("success_clips") or []
+        if not clips:
+            return 0
+        d = self.dir / "generated_successes"
+        d.mkdir(exist_ok=True)
+        with open(d / "index.jsonl", "a") as idx:
+            for c in clips:
+                name = f"{c['episode_id']}-{c['play_id']}-{int(c['t_start'] * 10):04d}.json.gz"
+                (d / name).write_bytes(gzip.compress(json.dumps(c, default=str).encode()))
+                meta = {k: v for k, v in c.items() if k not in ("replay", "play_yaml")}
+                idx.write(json.dumps({**meta, "file": name, "stage": stage, "update": self.update}, default=str) + "\n")
+        return len(clips)
 
     # -- one update ---------------------------------------------------------------------------
 
@@ -198,6 +216,7 @@ class League:
         main_choices = {"generated": 0, "total": 0}
 
         def on_result(res: dict) -> None:
+            self.save_success_clips(res, "league")
             ep = res["episode"]
             ids = (ep["home"], ep["away"])
             for team in (0, 1):
@@ -332,9 +351,12 @@ class League:
                 for k in range(n):
                     sc = sample_scenario(rng, SCENARIO_TYPES[:-2] + ("random_open_play",))
                     jobs.append({"episode_id": f"E-{who}-{style}-{k}", "seed": int(rng.integers(1 << 31)),
-                                 "scenario": sc.to_dict(), "home": spec, "away": self.spec(style), "randomise": True})
+                                 "scenario": sc.to_dict(), "home": spec, "away": self.spec(style), "randomise": True,
+                                 "save_generated_successes": who == "main"})
                 res = []
                 run_jobs(jobs, None, workers=workers, on_result=res.append, progress_every=0)
+                for x in res:
+                    self.save_success_clips(x, "evaluation")
                 rew = [r["reward"] for x in res for r in x["rows"] if r["team"] == 0]
                 gd = [x["episode"]["goals_home"] - x["episode"]["goals_away"] for x in res]
                 gen = sum(r["chosen_source"] != "library" for x in res for r in x["rows"] if r["team"] == 0)

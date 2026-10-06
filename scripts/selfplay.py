@@ -9,6 +9,7 @@
     python scripts/selfplay.py league --updates 6                        # M9: next run (continues when safe)
     python scripts/selfplay.py promote                                   # latest run's elites -> run_<N>/
     python scripts/selfplay.py viz                                       # HTML report + replays
+    python scripts/selfplay.py examples                                  # play / counter-play GIFs
 
 Defaults read ``configs/training.yaml`` (profile ``quick`` or ``spec``). The self-play data
 root defaults to the current opponent pool's (``configs/league.yaml: data``).
@@ -112,6 +113,12 @@ def cmd_promote(a):
     print(json.dumps(promote_elites(a.models, a.root, profile=a.profile, workers=a.workers, run_dir=run_dir), indent=2))
 
 
+def cmd_examples(a):
+    from soccersim.viz.play_examples import build_play_examples
+
+    print(json.dumps(build_play_examples(ROOT / "reports" / "play_examples", a.plays or None), indent=2))
+
+
 def cmd_viz(a):
     from soccersim.viz.training_report import build_report
 
@@ -158,6 +165,9 @@ def main() -> None:
     s = sub.add_parser("promote", help="export the latest run's archive elites for review")
     s.add_argument("--run", type=int, default=None, help="run number (default: latest)")
     s.set_defaults(fn=cmd_promote)
+    s = sub.add_parser("examples", help="GIF clips of plays and the opponent's counter-plays (reports/)")
+    s.add_argument("--plays", nargs="*", default=None)
+    s.set_defaults(fn=cmd_examples)
     s = sub.add_parser("viz")
     s.add_argument("--fragment", action="store_true")
     s.set_defaults(fn=cmd_viz)
