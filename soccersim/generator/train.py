@@ -426,7 +426,22 @@ def pretrain_generator(root: str | Path, out_dir: str | Path, profile: str | Non
     extra_t = mt
     rng = np.random.default_rng(seed)
     hist = []
-    for ep in range(bcc["epochs"]):
+    # Behaviour cloning takes the better part of an hour: checkpoint every epoch so an
+    # interrupted pretraining resumes where it stopped.
+    ckpt_path = out / "bc_checkpoint.pt"
+    ckpt_key = json.dumps({"bc": len(bc), "extra": len(extra_t), "cfg": bcc, "seed": seed,
+                           "lib": sorted(lib)}, sort_keys=True, default=str)
+    start_ep = 0
+    if ckpt_path.exists():
+        ck = torch.load(ckpt_path, weights_only=False)
+        if ck.get("key") == ckpt_key:
+            gen.load_state_dict(ck["gen"])
+            opt.load_state_dict(ck["opt"])
+            rng.bit_generator.state = ck["rng"]
+            torch.set_rng_state(ck["torch_rng"])
+            hist, start_ep = ck["hist"], ck["epoch"]
+            print(f"  BC: resuming after epoch {start_ep} from an interrupted pretraining", flush=True)
+    for ep in range(start_ep, bcc["epochs"]):
         gen.train()
         n_extra = min(len(extra_t) * 3, len(train) // 3)
         ex_idx = rng.integers(0, len(extra_t), n_extra) if len(extra_t) else np.zeros(0, int)
@@ -454,9 +469,14 @@ def pretrain_generator(root: str | Path, out_dir: str | Path, profile: str | Non
         m = {"epoch": ep + 1, "train_loss": tot / max(cnt, 1), **_bc_eval(gen, test)}
         hist.append(m)
         print(f"  BC epoch {ep + 1}: loss {m['train_loss']:.3f}, held-out token acc {m['token_acc']:.3f}", flush=True)
+        tmp = ckpt_path.with_suffix(".tmp")
+        torch.save({"key": ckpt_key, "epoch": ep + 1, "gen": gen.state_dict(), "opt": opt.state_dict(),
+                    "rng": rng.bit_generator.state, "torch_rng": torch.get_rng_state(), "hist": hist}, tmp)
+        tmp.replace(ckpt_path)
     gen.eval()
     save_model(gen, out / "generator.pt")
     save_model(gen, out / "generator_ref.pt")        # frozen Phase B reference for the PPO KL term
+    ckpt_path.unlink(missing_ok=True)
     validity = generator_validity(gen, test, n_states=60, per_state=4, seed=seed)
     print(f"  validity: {validity['validity']:.3%} over {validity['sampled']} samples", flush=True)
     matched = compare_generated_vs_library(out, n_episodes={"smoke": 2, "quick": 24}.get(prof, 120), workers=workers)
