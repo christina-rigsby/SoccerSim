@@ -175,6 +175,42 @@ def build_report(models_dir: str | Path, root: str | Path, out: str | Path, frag
     return out
 
 
+def build_training_replays(root: str | Path, out: str | Path, run_id: str = "phase_a",
+                           heading: str = "Training games (Phase A self-play)", fragment: bool = False) -> Path:
+    """Replays of the training games whose full tracking was saved (every Nth Phase A game).
+
+    These are the games the critic and the generator learned from, as they were played —
+    not new games — each titled with its teams, formations, scenario and how it ended.
+    """
+    import gzip
+
+    from ..selfplay.logging import load_table
+    from .replay_html import render_replay_html
+
+    run_root = Path(root) / f"run={run_id}"
+    files = sorted((run_root / "tracking").glob("*.json.gz"))
+    if not files:
+        raise FileNotFoundError(f"no saved tracking under {run_root / 'tracking'}")
+    meta = {r["episode_id"]: r for r in load_table(run_root, "episodes", ["episode_id", "home", "away"]).to_pylist()}
+    names = {"library": "library team"}
+    episodes = []
+    for f in files:
+        ep = json.loads(gzip.decompress(f.read_bytes()))
+        eid = f.name.removesuffix(".json.gz")
+        m = meta.get(eid, {})
+        sc = ep.get("scenario", {})
+        home, away = names.get(m.get("home"), m.get("home", "home")), names.get(m.get("away"), m.get("away", "away"))
+        n = int(eid.rsplit("-", 1)[-1])
+        ep["title"] = (f"Game {n:,} · {home} ({sc.get('home_formation', '?')}) v {away} "
+                       f"({sc.get('away_formation', '?')}) · {sc.get('type', '').replace('_', ' ')} · "
+                       f"ended: {str(ep.get('end', '')).replace('_', ' ')}")
+        episodes.append(ep)
+    out = Path(out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(render_replay_html(episodes, heading, fragment))
+    return out
+
+
 def build_highlights(models_dir: str | Path, out: str | Path, n_games: int = 12, keep: int = 4,
                      workers: int = 4, fragment: bool = False, seed: int = 7) -> dict[str, Any]:
     """Play the trained agent (generator on the library-gap trigger) against scripted styles
