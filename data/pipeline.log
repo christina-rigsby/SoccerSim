@@ -66,3 +66,91 @@
   7400/13500 episodes, 89560 decisions, 1181s wall, 147x real time
   7600/13500 episodes, 92030 decisions, 1235s wall, 145x real time
   7800/13500 episodes, 94481 decisions, 1275s wall, 144x real time
+  8000/13500 episodes, 96873 decisions, 1301s wall, 145x real time
+  8200/13500 episodes, 99169 decisions, 1324s wall, 146x real time
+  8400/13500 episodes, 101569 decisions, 1347s wall, 147x real time
+  8600/13500 episodes, 104013 decisions, 1371s wall, 147x real time
+  8800/13500 episodes, 106354 decisions, 1396s wall, 148x real time
+  9000/13500 episodes, 108766 decisions, 1420s wall, 149x real time
+  9200/13500 episodes, 111102 decisions, 1443s wall, 150x real time
+  9400/13500 episodes, 113508 decisions, 1468s wall, 151x real time
+  9600/13500 episodes, 115775 decisions, 1491s wall, 151x real time
+  9800/13500 episodes, 118221 decisions, 1516s wall, 152x real time
+  10000/13500 episodes, 120565 decisions, 1541s wall, 153x real time
+  10200/13500 episodes, 123011 decisions, 1565s wall, 153x real time
+  10400/13500 episodes, 125438 decisions, 1590s wall, 154x real time
+  10600/13500 episodes, 127831 decisions, 1614s wall, 154x real time
+  10800/13500 episodes, 130112 decisions, 1636s wall, 155x real time
+  11000/13500 episodes, 132458 decisions, 1660s wall, 156x real time
+  11200/13500 episodes, 134895 decisions, 1684s wall, 156x real time
+  11400/13500 episodes, 137391 decisions, 1710s wall, 157x real time
+  11600/13500 episodes, 139884 decisions, 1734s wall, 157x real time
+  11800/13500 episodes, 142343 decisions, 1759s wall, 158x real time
+  12000/13500 episodes, 144705 decisions, 1783s wall, 158x real time
+  12200/13500 episodes, 147066 decisions, 1805s wall, 159x real time
+  12400/13500 episodes, 149409 decisions, 1830s wall, 159x real time
+  12600/13500 episodes, 151833 decisions, 1854s wall, 160x real time
+  12800/13500 episodes, 154172 decisions, 1877s wall, 160x real time
+  13000/13500 episodes, 156501 decisions, 1899s wall, 161x real time
+  13200/13500 episodes, 158880 decisions, 1922s wall, 161x real time
+  13400/13500 episodes, 161251 decisions, 1945s wall, 161x real time
+{
+  "run_id": "phase_a",
+  "episodes": 13500,
+  "decisions": 162428,
+  "wall_s": 1956.2098422050476,
+  "dir": "/home/user/SoccerSim/data/selfplay_pool_v2/run=phase_a/date=2026-10-06"
+}
+== v2_phase_a: done 23:11:19
+== v2_heldout_ref: start 23:11:19
+  200/1500 episodes, 2610 decisions, 29s wall, 168x real time
+  400/1500 episodes, 5311 decisions, 57s wall, 172x real time
+  600/1500 episodes, 7829 decisions, 83s wall, 178x real time
+  800/1500 episodes, 10343 decisions, 109s wall, 179x real time
+  1000/1500 episodes, 12809 decisions, 134s wall, 183x real time
+  1200/1500 episodes, 15360 decisions, 159s wall, 184x real time
+  1400/1500 episodes, 17798 decisions, 185s wall, 184x real time
+{
+  "run_id": "heldout_ref",
+  "episodes": 1500,
+  "decisions": 19096,
+  "wall_s": 198.29834818840027,
+  "dir": "/home/user/SoccerSim/data/heldout_reference_pool_v2/run=heldout_ref/date=2026-10-06"
+}
+== v2_heldout_ref: done 23:14:38
+== v2_stats: start 23:14:38
+13500 episodes · 162428 decisions · 5272 sim-minutes · 1155 shots · 30 goals
+library gaps: 140577 · generator consulted: 0 · generated plays chosen: 0
+
+play                                    n  share  success   reward
+recycle_possession                  43753  26.9%    79.6%  -0.0039
+mid_block_compact                   26945  16.6%     7.4%   0.0151
+low_block_box_protection            13735   8.5%    43.6%   0.0216
+counterpress_five_seconds            7213   4.4%     0.1%   0.0054
+fullback_outlet_bounce               6544   4.0%    55.4%  -0.0056
+long_ball_to_target                  6093   3.8%    27.7%  -0.0103
+switch_of_play                       5133   3.2%    24.7%  -0.0072
+winger_checks_short                  4807   3.0%    41.4%  -0.0064
+high_press_sideline_trap             4119   2.5%    30.1%   0.0100
+cb_carry_into_midfield               4074   2.5%    72.0%  -0.0009
+gen_7ae398e5e4                       3963   2.4%    27.8%  -0.0017
+one_two_wall_pass                    3699   2.3%    21.1%  -0.0022
+gen_cf5c9636cf                       3329   2.0%    99.4%  -0.0000
+direct_counterattack                 3296   2.0%    21.0%   0.0015
+gen_263419283b                       2809   1.7%     0.0%   0.0004
+gen_7ed866b92a                       2805   1.7%     0.0%   0.0029
+build_out_short_goal_kick            2734   1.7%    60.4%  -0.0094
+wide_overlap_cross                   2556   1.6%     0.4%  -0.0061
+gen_dcd5c3003a                       2443   1.5%     0.0%  -0.0009
+third_man_combination                2310   1.4%     3.9%  -0.0064
+pivot_drop_back_three                1787   1.1%    26.1%  -0.0076
+gen_e55b04e172                       1747   1.1%     3.1%  -0.0075
+gen_67c4d0530b                       1612   1.0%     0.0%  -0.0066
+gen_5fa1f3645f                       1371   0.8%    57.1%  -0.0082
+through_ball_behind_high_line        1051   0.6%     0.0%  -0.0039
+gen_64c5493589                        988   0.6%     0.0%   0.0028
+switch_through_keeper                 797   0.5%    48.3%  -0.0013
+gen_a20edbb411                        392   0.2%    21.7%  -0.0309
+gen_692b502c31                        323   0.2%     0.0%  -0.0038
+== v2_stats: done 23:14:40
+== v2_critic: start 23:14:40
