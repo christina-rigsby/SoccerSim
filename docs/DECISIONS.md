@@ -45,6 +45,8 @@ threshold.
 The quick-profile critic now trains on every Phase A decision (it was capped at 40,000 of
 ~200,000).
 
+Run 3 (pool v1) was skipped, so the library adopts the promoted plays of runs 1 and 2.
+
 **Rationale:** the critic can only improve choices when there is a choice; more decisions
 with real options, and more of them, give it varied outcomes to learn from.
 

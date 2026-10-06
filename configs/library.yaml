@@ -8,7 +8,7 @@
 # this list or any library play is a pool change: bump pool_version in league.yaml,
 # regenerate data and retrain (data/pipeline.sh). Plays promoted by later runs therefore
 # join the library only at the next deliberate pool version, never mid-lineage.
-promoted_runs: [1, 2, 3]
+promoted_runs: [1, 2]   # run 3 was skipped (pool v1 ends with run 2)
 
 # Adopted promoted plays are narrowed to the archive niche they were promoted in, and get
 # at least this cooldown: the generator never sets one, and hand-written attacking plays
