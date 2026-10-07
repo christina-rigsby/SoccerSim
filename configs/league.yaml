@@ -64,6 +64,7 @@ held_out_drop_flag: 0.25   # flag if held-out EPV drops by more than this fracti
 formations: ["4-3-3", "4-4-2", "3-5-2"]
 train_gen_temperature: 1.2   # generator sampling temperature for learners in league games (exploration)
 eval_games: 12               # games per (team, scripted style) in the final evaluation
+validation_games_per_pair: 8 # round-robin after training: every pair of teams, held-out styles included
 
 # Run-to-run continuation (D-044). A run continues from the previous run's generator only
 # if the opponent pool above is unchanged and the previous run passed this gate: its final

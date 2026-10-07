@@ -53,6 +53,53 @@ def _log_signature(root: str | Path) -> list:
     return [[str(f), f.stat().st_size] for f in sorted(Path(root).resolve().rglob("decisions-*.parquet"))]
 
 
+def league_analysis(root: str | Path, cache: Path | None = None) -> dict[str, Any] | None:
+    """Reward distributions per update, start zone x opponent, and the Phase A payoff (cached)."""
+    from ..eval import league_analysis as la
+
+    sig = _log_signature(root)
+    if cache is not None and cache.exists():
+        cached = json.loads(cache.read_text())
+        if cached.get("logs") == sig:
+            return cached
+    try:
+        dists = la.reward_distributions(root)
+        out = {"logs": sig, "distributions": [
+            {"update": u["update"], **{who: {kind: {"values": v, **la.summarize_distribution(v)}
+                                             for kind, v in u[who].items()} for who in la.LEARNERS}}
+            for u in dists],
+            "zones": la.zone_opponent_table(root) if dists else None}
+        try:
+            out["phase_a_payoff"] = la.phase_a_payoff(root)
+        except FileNotFoundError:
+            out["phase_a_payoff"] = None
+    except FileNotFoundError:
+        return None
+    if cache is not None and cache.parent.exists():
+        cache.write_text(json.dumps(out))
+    return out
+
+
+def _mutation_rollouts(gen: dict | None) -> list[dict[str, Any]] | None:
+    """Per mutation parent: every rollout reward of the parent and of all its mutants."""
+    from ..eval.league_analysis import summarize_distribution
+
+    ro = ((gen or {}).get("mutation") or {}).get("rollouts")
+    if not ro:
+        return None
+    by: dict[str, dict[str, list[float]]] = defaultdict(lambda: {"parent": [], "mutants": [], "kept": []})
+    for r in ro:
+        b = by[r["parent"]]
+        if r["kind"] == "parent":
+            b["parent"] += r["rewards"]
+        else:
+            b["mutants"] += r["rewards"]
+            if r.get("kept"):
+                b["kept"] += r["rewards"]
+    return [{"parent": k, **{kind: {"values": [round(x, 5) for x in v], **summarize_distribution(v)}
+                             for kind, v in b.items()}} for k, b in sorted(by.items())]
+
+
 def gap_analysis(root: str | Path, cache: Path | None = None, max_rows: int = 120000) -> dict[str, Any]:
     """Where, how often and why the library leaves a gap when we have the ball.
 
@@ -170,7 +217,9 @@ def collect(models_dir: str | Path, root: str | Path) -> dict[str, Any]:
     data["generator"] = _read(models / "generator_metrics.json")
     st = _read(league / "state.json") or {}
     data["league"] = {k: st.get(k) for k in ("update", "history", "elo", "payoff", "flags", "final_eval",
-                                             "snapshots")}
+                                             "snapshots", "validation")}
+    data["analysis"] = league_analysis(root, league / "analysis.json")
+    data["mutation_rollouts"] = _mutation_rollouts(data["generator"])
     arch = _read(league / "archive.json")
     if arch:
         from ..selfplay.qd_archive import Archive

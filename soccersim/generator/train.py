@@ -326,8 +326,13 @@ def mutation_filter(lib: dict[str, Play], mcfg: dict, seed: int = 0, workers: in
     plays = {r["id"]: parse_play(by_id[r["id"]]) for r in survivors}
     extra_ids = {p.id for p in extra_parents or []}
     prior_evals = [r for r in results if r["id"] in extra_ids]  # adopted or not, the parent's own rollouts
+    # Every rollout reward, parents and mutants alike, so the report can show distributions
+    # rather than only means.
+    rollouts = [{"id": r["id"], "parent": r["parent"], "kind": "parent" if r["id"] == r["parent"] else "mutant",
+                 "rewards": [float(x) for x in r["rewards"]], "kept": any(k["id"] == r["id"] for k in survivors)}
+                for r in results]
     return {"survivors": survivors, "plays": plays, "summary": summary, "evaluated": len(results),
-            "prior_parents": prior_evals,
+            "rollouts": rollouts, "prior_parents": prior_evals,
             "survivors_from_prior": sum(1 for r in survivors if r["parent"] in extra_ids)}
 
 
@@ -482,7 +487,8 @@ def pretrain_generator(root: str | Path, out_dir: str | Path, profile: str | Non
     matched = compare_generated_vs_library(out, n_episodes={"smoke": 2, "quick": 24}.get(prof, 120), workers=workers)
     print(f"  matched scenarios: generated {matched['generated_mean']:.4f} vs library {matched['library_mean']:.4f} "
           f"mean play reward -> {'meets' if matched['meets_target'] else 'below'} the 80% target", flush=True)
-    result = {"bc_examples": len(bc), "mutation": {k: v for k, v in mf.items() if k in ("summary", "evaluated")},
+    keep = ("summary", "evaluated", "rollouts")
+    result = {"bc_examples": len(bc), "mutation": {k: v for k, v in mf.items() if k in keep},
               "survivors": len(mf["survivors"]), "survivor_examples": len(extra_t),
               "prior_promoted": {"plays": len(prior), "runs": sorted({p.provenance.get("run") for p in prior}),
                                  "imitation_examples": prior_examples,

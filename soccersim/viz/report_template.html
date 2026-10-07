@@ -67,6 +67,9 @@ details { border-top: 1px solid var(--rule); padding-top: 6px; }
 summary { cursor: pointer; font-size: 13px; color: var(--ink-2); }
 summary:focus-visible, a:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
 pre { font-family: var(--mono); font-size: 12px; overflow: auto; max-height: 320px; background: var(--bg); padding: 10px; border-radius: 6px; margin: 6px 0 0; }
+.panel-stack { display: grid; gap: 16px; }
+.controls { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--ink-2); }
+.controls select { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 3px 8px; }
 .stack { display: flex; height: 12px; border-radius: 3px; overflow: hidden; min-width: 120px; background: var(--rule); }
 .stack i { display: block; height: 100%; }
 .pill { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink-2); }
@@ -115,6 +118,7 @@ a { color: var(--s1); }
       <div class="panel"><h3>Behaviour cloning</h3><div class="legend"><span><i style="background:var(--s1)"></i>Held-out token accuracy</span></div><div class="chart" id="bcCurve"></div><div id="validity"></div></div>
     </div>
     <div class="panel"><h3>Mutation filtering: parent play vs its best mutant</h3><div class="note">Each library play was mutated (offsets, action swaps, targets, steps, pass styles, roles) and replayed in matching scenarios. Survivors joined the imitation data.</div><div class="legend"><span><i style="background:var(--s1)"></i>Parent</span><span><i style="background:var(--s2)"></i>Best mutant</span></div><div class="chart" id="mutDots"></div></div>
+    <div class="panel"><h3>Mutation filtering: every rollout reward, parent vs its mutants</h3><div class="note">Each play was replayed 6 times (forced, in situations that suit it). One row per parent: its own 6 rewards next to all rewards of its mutants. Averages hide that most rollouts are close to zero and a few are large losses or gains.</div><div class="legend"><span><i style="background:var(--s1)"></i>Parent</span><span><i style="background:var(--s2)"></i>All its mutants</span><span>box: middle half · whiskers: 5th–95th percentile · line: median · ◇ mean</span></div><div class="chart" id="mutDist"></div><div class="note" id="mutDistNote"></div></div>
   </section>
 
   <section id="league">
@@ -126,7 +130,21 @@ a { color: var(--s1); }
       <div class="panel"><h3>Share of the main agent's plays that were generated</h3><div class="chart" id="shareCurve"></div></div>
       <div class="panel"><h3>Opponent sampling weights (latest update)</h3><div class="chart" id="pfspBars"></div></div>
     </div>
-    <div class="panel"><h3>Payoff matrix</h3><div class="note">Row player's score against the column player (win 1, draw 0.5, loss 0). Blue favours the row, red the column.</div><div class="chart" id="payoff"></div></div>
+    <div class="panel"><h3>Every reward, per update</h3><div class="note">Each dot is one play a learning agent called in a league game during that update (possession plays only), with its reward in EPV units. Compare the shape, not only the mean: if the generator learns when its plays work, the generated distribution should shift right or grow a right tail over the updates.</div>
+      <div class="controls"><label for="distWho">Agent</label> <select id="distWho"><option value="main">Main agent</option><option value="main_exploiter">Main exploiter</option><option value="league_exploiter">League exploiter</option><option value="all">All three</option></select></div>
+      <div class="legend"><span><i style="background:var(--s2)"></i>Generated plays</span><span><i style="background:var(--s1)"></i>Library plays</span><span>box: middle half · whiskers: 5th–95th percentile · line: median · ◇ mean · dots: every play</span></div><div class="chart" id="rewardDist"></div><div class="note" id="rewardDistNote"></div></div>
+    <div class="panel"><h3>Elo of every participant at the end of the run</h3><div class="note">Scripted styles and frozen snapshots of the main agent are rated too; the line chart above follows only the three learning agents.</div><div class="chart" id="eloAll"></div></div>
+  </section>
+
+  <section id="payoffs">
+    <h2><span class="stage">Who beats whom</span>Payoff in training and in validation</h2>
+    <p>Each cell is the row team's score against the column team: win 1, draw 0.5, loss 0, averaged over their games. A game is won on goals, or, with no goals, by the team whose plays earned more total reward (within 0.005 is a draw). Blue favours the row team, red the column team; grey is close to even; empty means the two never played.</p>
+    <div class="grid2">
+      <div class="panel"><h3>Phase A training data</h3><div class="note">The library team and the training styles, all against each other. Held-out styles never appear in training data.</div><div class="chart" id="payoffA"></div></div>
+      <div class="panel"><h3>League training</h3><div class="note">Only pairings the league schedules: learners against their sampled opponents. Styles do not train, so they only meet learners here.</div><div class="chart" id="payoff"></div></div>
+    </div>
+    <div class="panel"><h3>Validation round-robin after training</h3><div class="note" id="valNote"></div><div class="chart" id="payoffV"></div></div>
+    <div class="panel"><h3>Validation: mean reward per play</h3><div class="note">Row team's average play reward against the column team, in thousandths of EPV (2.5 = 0.0025). Blue above +0.002, red below −0.002.</div><div class="chart" id="valReward"></div></div>
   </section>
 
   <section id="archive">
@@ -137,6 +155,11 @@ a { color: var(--s1); }
       <div class="panel"><h3>Top elites</h3><div class="tablewrap" id="eliteTable"></div></div>
     </div>
     <div class="panel"><h3>Promoted plays, pending review</h3><div class="note" id="promotedWhere"></div><div id="promoted"></div></div>
+    <div class="panel-stack">
+      <div class="panel"><h3>Main agent: decisions by start zone and opponent</h3><div class="note">How often the main agent was deciding with the ball in each zone against each opponent during the league. The agent does not choose the zone; it chooses a play in it.</div><div class="chart" id="zoneCount"></div></div>
+      <div class="panel"><h3>Main agent: mean play reward by start zone and opponent</h3><div class="note">EPV units; cells with fewer than 5 plays are left blank. Hover for generated vs library.</div><div class="chart" id="zoneReward"></div></div>
+    </div>
+    <div class="note" id="zoneNote"></div>
   </section>
 
   <section id="runs">
@@ -276,6 +299,47 @@ function heatGrid(host, rows, cols, val, opts = {}) {
   });
 }
 
+
+function distRows(host, rows, opts = {}) {
+  // rows: [{label, series: [{name, color, stats: {values, n, mean, p5, q1, median, q3, p95, share_positive, share_negative}}]}]
+  const all = rows.flatMap((r) => r.series.flatMap((se) => (se.stats && se.stats.values) || []));
+  if (!all.length) return empty(host, opts.empty || "No data yet.");
+  const sorted = all.slice().sort((a, b) => a - b), q = (f) => sorted[Math.min(sorted.length - 1, Math.floor(f * sorted.length))];
+  let lo = Math.min(q(0.01), 0), hi = Math.max(q(0.99), 0); if (lo === hi) { lo -= 0.01; hi += 0.01; }
+  const ticks = niceTicks(lo, hi, 5); lo = ticks[0]; hi = ticks[ticks.length - 1];
+  const ns = Math.max(...rows.map((r) => r.series.length)), band = 22, rowH = ns * band + 10;
+  const W = 640, L = opts.left || 120, R = 16, T = 6, B = 34, H = T + rows.length * rowH + B;
+  const s = svg(host, W, H);
+  const X = (v) => L + (Math.max(lo, Math.min(hi, v)) - lo) / (hi - lo) * (W - L - R);
+  const ax = el("g", { class: "axis" }, s);
+  for (const v of ticks) {
+    el("line", { x1: X(v), x2: X(v), y1: T, y2: H - B, stroke: v === 0 ? "var(--ink-3)" : "var(--grid)", "stroke-width": v === 0 ? 1.2 : 1 }, ax);
+    const t = el("text", { x: X(v), y: H - B + 16, "text-anchor": "middle" }, ax); t.textContent = fmt(v, 3);
+  }
+  const xl = el("text", { x: (L + W - R) / 2, y: H - 4, "text-anchor": "middle" }, ax); xl.textContent = opts.xlabel || "reward per play (EPV units)";
+  let clipped = 0, seed = 7;
+  const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+  rows.forEach((row, i) => {
+    const y0 = T + i * rowH + 5;
+    const t = el("text", { x: L - 8, y: y0 + (row.series.length * band) / 2 + 4, "text-anchor": "end" }, s); t.textContent = row.label;
+    row.series.forEach((se, k) => {
+      const st = se.stats, cy = y0 + k * band + band / 2;
+      if (!st || !st.n) return;
+      for (const v of st.values || []) {
+        if (v < lo || v > hi) clipped++;
+        el("circle", { cx: X(v), cy: cy + (rnd() - 0.5) * (band - 8), r: 2.2, fill: se.color, "fill-opacity": 0.35 }, s);
+      }
+      el("line", { x1: X(st.p5), x2: X(st.p95), y1: cy, y2: cy, stroke: se.color, "stroke-width": 1.5 }, s);
+      el("rect", { x: X(st.q1), y: cy - 6, width: Math.max(2, X(st.q3) - X(st.q1)), height: 12, rx: 2, fill: "var(--surface)", "fill-opacity": 0.6, stroke: se.color, "stroke-width": 2 }, s);
+      el("line", { x1: X(st.median), x2: X(st.median), y1: cy - 7, y2: cy + 7, stroke: se.color, "stroke-width": 2.5 }, s);
+      el("path", { d: `M${X(st.mean)},${cy - 5}l4,5l-4,5l-4,-5z`, fill: "var(--surface)", stroke: "var(--ink)", "stroke-width": 1.2 }, s);
+      const hit = el("rect", { x: L, y: cy - band / 2, width: W - L - R, height: band, fill: "transparent" }, s);
+      hover(hit, `<b>${row.label} · ${se.name}</b><br>${st.n} plays · mean ${fmt(st.mean, 4)} · median ${fmt(st.median, 4)}<br>middle half ${fmt(st.q1, 4)} to ${fmt(st.q3, 4)}<br>above +0.005: ${pct(st.share_positive)} · below −0.005: ${pct(st.share_negative)}`);
+    });
+  });
+  return clipped;
+}
+
 function xtMap(host, a, b) {
   host.innerHTML = "";
   const max = Math.max(...a.flat(), ...b.flat());
@@ -398,5 +462,83 @@ $("runTable").innerHTML = runs.length ? `<table><thead><tr><th>Run</th><th>Oppon
   const held = last && last.held_out_styles && last.held_out_styles.length ? last.held_out_styles : null;
   $("heldOutNote").innerHTML = held ? `Held-out styles, never used in training: ${held.map((h) => `<em>${h}</em>`).join(", ")}.` : "";
 }
+
+// -- distributions, zones, payoffs, validation ---------------------------------------------------------
+const AN = D.analysis || null;
+const mergeStats = (list) => {
+  const v = list.flatMap((x) => (x && x.values) || []);
+  if (!v.length) return { n: 0 };
+  const so = v.slice().sort((a, b) => a - b), q = (f) => so[Math.min(so.length - 1, Math.floor(f * so.length))];
+  return { values: v, n: v.length, mean: v.reduce((a, b) => a + b, 0) / v.length, p5: q(0.05), q1: q(0.25), median: q(0.5), q3: q(0.75), p95: q(0.95),
+           share_positive: v.filter((x) => x > 0.005).length / v.length, share_negative: v.filter((x) => x < -0.005).length / v.length };
+};
+function drawRewardDist() {
+  if (!AN || !AN.distributions || !AN.distributions.length) { empty($("rewardDist"), "League not run yet."); return; }
+  const who = $("distWho").value, learners = ["main", "main_exploiter", "league_exploiter"];
+  const pick = (u, kind) => who === "all" ? mergeStats(learners.map((l) => u[l][kind])) : u[who][kind];
+  const rows = AN.distributions.map((u) => ({ label: `update ${u.update}`, series: [
+    { name: "generated", color: "var(--s2)", stats: pick(u, "generated") }, { name: "library", color: "var(--s1)", stats: pick(u, "library") }] }));
+  const clipped = distRows($("rewardDist"), rows);
+  const g = mergeStats(AN.distributions.map((u) => pick(u, "generated"))), l = mergeStats(AN.distributions.map((u) => pick(u, "library")));
+  $("rewardDistNote").textContent = `All updates: ${g.n} generated plays (median ${fmt(g.median, 4)}, ${pct(g.share_positive)} above +0.005, ${pct(g.share_negative)} below −0.005) and ${l.n} library plays (median ${fmt(l.median, 4)}, ${pct(l.share_positive)} above, ${pct(l.share_negative)} below).` + (clipped ? ` ${clipped} extreme values are drawn at the edge of the axis.` : "");
+}
+try { $("distWho").value = localStorage.getItem("distWho") || "main"; } catch (e) { /* storage unavailable */ }
+$("distWho").addEventListener("change", () => { try { localStorage.setItem("distWho", $("distWho").value); } catch (e) { /* storage unavailable */ } drawRewardDist(); });
+drawRewardDist();
+
+if (D.mutation_rollouts && D.mutation_rollouts.length) {
+  const mr = D.mutation_rollouts.slice().sort((a, b) => (b.mutants.median ?? 0) - (a.mutants.median ?? 0));
+  const clipped = distRows($("mutDist"), mr.map((m) => ({ label: m.parent, series: [
+    { name: "parent", color: "var(--s1)", stats: m.parent }, { name: "all mutants", color: "var(--s2)", stats: m.mutants }] })), { left: 190 });
+  const par = mergeStats(mr.map((m) => m.parent)), mu = mergeStats(mr.map((m) => m.mutants));
+  $("mutDistNote").textContent = `All parents: ${par.n} rollouts, median ${fmt(par.median, 4)}, mean ${fmt(par.mean, 4)}, ${pct(par.share_positive)} above +0.005, ${pct(par.share_negative)} below −0.005. All mutants: ${mu.n} rollouts, median ${fmt(mu.median, 4)}, mean ${fmt(mu.mean, 4)}.` + (clipped ? ` ${clipped} extreme values are drawn at the edge of the axis.` : "");
+} else empty($("mutDist"), "Rollout rewards were not recorded for this generator.");
+
+const ZONE_ORDER = ["own_third", "mid_own", "mid_opp", "final_third"].flatMap((b) => ["near_wing", "near_halfspace", "center"].map((l) => `${b}.${l}`));
+if (AN && AN.zones && AN.zones.cells.length) {
+  const cells = AN.zones.cells, opps = [...new Set(cells.map((c) => c.opponent))].sort();
+  const zones = ZONE_ORDER.filter((z) => cells.some((c) => c.zone === z));
+  const get = (z, o) => cells.find((c) => c.zone === z && c.opponent === o);
+  const maxN = Math.max(...cells.map((c) => c.n));
+  const zl = (z) => z.replace(".", " · ").replaceAll("_", " ");
+  const cellTip = (c) => `${c.n} plays · mean ${fmt(c.mean_reward, 4)}<br>generated: ${c.generated_n} (mean ${c.generated_mean == null ? "–" : fmt(c.generated_mean, 4)})<br>library: ${c.n - c.generated_n} (mean ${c.library_mean == null ? "–" : fmt(c.library_mean, 4)})`;
+  heatGrid($("zoneCount"), zones.map(zl), opps, (r, c) => { const x = get(zones[zones.map(zl).indexOf(r)], c); return x ? x.n : null; },
+    { color: (v) => seqColor(Math.sqrt(v / maxN)), fmt: (v) => String(v), tip: (r, c) => cellTip(get(zones[zones.map(zl).indexOf(r)], c)), left: 170 });
+  heatGrid($("zoneReward"), zones.map(zl), opps, (r, c) => { const x = get(zones[zones.map(zl).indexOf(r)], c); return x && x.n >= 5 ? x.mean_reward : null; },
+    { color: (v) => v > 0.002 ? "var(--div-pos)" : v < -0.002 ? "var(--div-neg)" : "var(--div-mid)", fmt: (v) => (1000 * v).toFixed(1), tip: (r, c) => cellTip(get(zones[zones.map(zl).indexOf(r)], c)), left: 170 });
+  const sp = Object.entries(AN.zones.reward_frequency_spearman || {});
+  $("zoneNote").textContent = "Reward cells show thousandths of EPV (2.0 = 0.002). " + (sp.length ? "Do zones with higher reward come up more often? Rank correlation of reward and frequency across zones: " + sp.map(([o, r]) => `${o} ${r.toFixed(2)}`).join(", ") + " (+1 = yes, −1 = the opposite; only opponents with enough data)." : "Not enough data per opponent to correlate reward with frequency.");
+} else { empty($("zoneCount"), "League not run yet."); empty($("zoneReward"), "League not run yet."); }
+
+function payoffGrid(host, pay, order, label) {
+  const players = order.filter((p) => pay[p]);
+  const score = (r, c) => { const x = pay[r] && pay[r][c]; return x && x.n ? (x.w + 0.5 * x.d) / x.n : null; };
+  const lab = label || ((p) => p);
+  heatGrid(host, players.map(lab), players.map(lab), (r, c) => score(players[players.map(lab).indexOf(r)], players[players.map(lab).indexOf(c)]), {
+    color: (v) => v > 0.55 ? "var(--div-pos)" : v < 0.45 ? "var(--div-neg)" : "var(--div-mid)",
+    tip: (r, c, v) => { const x = pay[players[players.map(lab).indexOf(r)]][players[players.map(lab).indexOf(c)]]; return `score ${fmt(v, 2)} over ${x.n} games (W${x.w} D${x.d} L${x.l})<br>reward difference per game ${fmt(x.reward / x.n, 4)}`; },
+    fmt: (v) => fmt(v, 2), left: 150,
+  });
+}
+const STYLE_ORDER = Object.keys((D.league.final_eval || {}).main || {});
+if (AN && AN.phase_a_payoff) payoffGrid($("payoffA"), AN.phase_a_payoff, ["library", ...STYLE_ORDER, ...Object.keys(AN.phase_a_payoff).sort()].filter((v, i, a) => a.indexOf(v) === i));
+else empty($("payoffA"), "No Phase A data.");
+const val = D.league.validation;
+if (val) {
+  const held = new Set(val.held_out || []), lab = (p) => held.has(p) ? `${p} (held out)` : p.replace("library_critic", "library + critic");
+  payoffGrid($("payoffV"), val.payoff, val.teams, lab);
+  const mr = val.mean_play_reward || {};
+  heatGrid($("valReward"), val.teams.map(lab), val.teams.map(lab), (r, c) => { const a = val.teams[val.teams.map(lab).indexOf(r)], b = val.teams[val.teams.map(lab).indexOf(c)]; return mr[a] && mr[a][b] != null ? mr[a][b] : null; },
+    { color: (v) => v > 0.002 ? "var(--div-pos)" : v < -0.002 ? "var(--div-neg)" : "var(--div-mid)", fmt: (v) => (1000 * v).toFixed(1), tip: (r, c, v) => `mean reward per play ${fmt(v, 4)}`, left: 150 });
+  $("valNote").innerHTML = `After training, every pair of teams played ${val.games_per_pair} fixed games (half at home each way), including the held-out styles and the styles against each other. <b>main</b> is the trained agent (generator on library gaps, critic in the score); <b>library + critic</b> has the critic but no generator, so comparing the two isolates the generator; <b>library</b> has neither.`;
+} else { empty($("payoffV"), "No validation round-robin for this run yet."); empty($("valReward"), "No validation round-robin for this run yet."); }
+
+const eloNow = D.league.elo || {};
+const eloItems = Object.entries(eloNow).sort((a, b) => b[1] - a[1]);
+if (eloItems.length) {
+  const lo = Math.min(...eloItems.map((e) => e[1])) - 20;
+  hbars($("eloAll"), eloItems.map(([k, v]) => ({ label: k, values: [v - lo], tip: `Elo ${v.toFixed(0)}` })), { colors: ["var(--s1)"], names: ["Elo above " + lo.toFixed(0)], xfmt: (v) => (v + lo).toFixed(0), left: 150 });
+} else empty($("eloAll"), "League not run yet.");
+
 $("replayLink").innerHTML = D.replays ? `<p><a href="selfplay_replays.html">Open the highlight replays</a>: watch the agent call generated plays when the library has a gap, next to a library-only baseline game.</p>` : "";
 </script>

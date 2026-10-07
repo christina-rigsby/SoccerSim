@@ -65,7 +65,7 @@ class League:
     passing an existing run directory resumes it."""
 
     RUN_KEYS = ("run", "promotion_run", "pool", "pool_fingerprint", "continued_from", "start_from", "start_reason",
-                "seeded_from_runs", "seeds_to_evaluate", "gate")
+                "seeded_from_runs", "seeds_to_evaluate", "gate", "validation")
 
     def __init__(self, models_dir: str | Path, data_root: str | Path, profile: str | None = None,
                  seed: int = 0, run_dir: str | Path | None = None, start_mode: str = "auto",
@@ -372,6 +372,62 @@ class League:
         self.save()
         return out
 
+    def validation_spec(self, pid: str) -> dict[str, Any]:
+        """Teams in the validation round-robin. ``main`` plays as in evaluation (generator on
+        library gaps); ``library_critic`` is Module 2 with the critic but no generator, so the
+        generator's effect can be told apart from the critic's."""
+        if pid == "main":
+            return {**self.spec("main"), "activation": "on_gap", "gen_temperature": 0.7}
+        if pid == "library_critic":
+            return {**self.spec("main"), "id": "library_critic", "generator": False}
+        return self.spec(pid)
+
+    def validate(self, workers: int = 4, games_per_pair: int | None = None) -> dict[str, Any]:
+        """Round-robin after training: every pair of {main, library, library_critic, every scripted
+        style including the held-out ones} plays the same fixed games, half at home each way.
+
+        Unlike the league payoff (training games only, where styles never meet each other and
+        held-out styles never appear), this covers every pairing.
+        """
+        import itertools
+
+        n = int(games_per_pair or (1 if self.prof == "smoke" else self.lcfg.get("validation_games_per_pair", 8)))
+        teams = ["main", "library", "library_critic", *self.lcfg["scripted_styles"]]
+        jobs = []
+        for i, (a, b) in enumerate(itertools.combinations(teams, 2)):
+            rng = np.random.default_rng(777 + i)
+            for k in range(n):
+                sc = sample_scenario(rng, SCENARIO_TYPES[:-2] + ("random_open_play",), tuple(self.lcfg["formations"]))
+                home, away = (a, b) if k % 2 == 0 else (b, a)
+                jobs.append({"episode_id": f"V-{a}-{b}-{k}", "seed": int(rng.integers(1 << 31)),
+                             "scenario": sc.to_dict(), "home": self.validation_spec(home),
+                             "away": self.validation_spec(away), "randomise": True,
+                             "save_generated_successes": "main" in (home, away)})
+        out = Payoff()
+        rewards: dict[str, dict[str, list[float]]] = {}
+
+        def on_result(res: dict) -> None:
+            self.save_success_clips(res, "validation")
+            ep = res["episode"]
+            h, a = ep["home"], ep["away"]
+            rew = [sum(r["reward"] for r in res["rows"] if r["team"] == t) for t in (0, 1)]
+            gd = ep["goals_home"] - ep["goals_away"]
+            score = 1.0 if gd > 0 else 0.0 if gd < 0 else (0.5 if abs(rew[0] - rew[1]) < 0.005 else
+                                                           float(rew[0] > rew[1]))
+            out.add(h, a, score, rew[0] - rew[1])
+            for team, me, opp in ((0, h, a), (1, a, h)):
+                rewards.setdefault(me, {}).setdefault(opp, []).extend(
+                    r["reward"] for r in res["rows"] if r["team"] == team)
+
+        run_jobs(jobs, None, workers=workers, on_result=on_result, progress_every=0)
+        val = {"teams": teams, "games_per_pair": n, "held_out": list(self.lcfg["held_out_styles"]),
+               "payoff": out.to_json(),
+               "mean_play_reward": {me: {opp: float(np.mean(v)) if v else None for opp, v in d.items()}
+                                    for me, d in rewards.items()}}
+        self.run_info["validation"] = val
+        self.save()
+        return val
+
     def held_out_check(self, n: int = 6, workers: int = 4) -> dict[str, Any]:
         """Same games under the training and the held-out physics (spec §11 anti-exploit)."""
         base = load_config("sim")
@@ -482,6 +538,8 @@ def run_league(models_dir: str | Path, data_root: str | Path, updates: int | Non
     print("  held-out check:", ho, flush=True)
     ev = lg.evaluate(n=lg.lcfg.get("eval_games", 12), workers=workers)
     gate = lg.regression_gate(workers=workers)
+    val = lg.validate(workers=workers)
+    print(f"  validation round-robin: {len(val['teams'])} teams, {val['games_per_pair']} games per pair", flush=True)
     print(f"  regression gate: {'passed' if gate['passed'] else 'FAILED vs ' + ', '.join(gate['failed_styles'])}",
           flush=True)
     return {"run": lg.run, "dir": str(lg.dir), "continued_from": ri["continued_from"],

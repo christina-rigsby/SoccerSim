@@ -387,3 +387,14 @@ def test_gap_categories():
     assert gap_category([rec, weak], fb, 0.03) == "weak_fit"
     assert gap_category([rec, off, gen], fb, 0.03) == "only_circulation"  # generated plays do not count
     assert gap_category([{**rec, "feasible": False}], fb, 0.03) == "nothing_fits"
+
+
+def test_reward_distribution_summary():
+    from soccersim.eval.league_analysis import _spearman, summarize_distribution
+
+    s = summarize_distribution([0.0, 0.0, 0.01, -0.02, 0.0])
+    assert s["n"] == 5 and s["median"] == 0.0 and abs(s["share_positive"] - 0.2) < 1e-9
+    assert abs(s["share_negative"] - 0.2) < 1e-9 and s["p5"] <= s["q1"] <= s["median"] <= s["q3"] <= s["p95"]
+    assert summarize_distribution([]) == {"n": 0}
+    assert _spearman([1, 2, 3, 4], [10, 20, 30, 40]) == pytest.approx(1.0)
+    assert _spearman([1, 2, 3, 4], [4, 3, 2, 1]) == pytest.approx(-1.0)

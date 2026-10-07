@@ -69,6 +69,8 @@ adopted in their niche, D-046). Run 3 on pool v1 was skipped. Compared with the 
 | Held-out physics check | −41 % (flagged) | −35 % (flagged) |
 | Promoted | 6 (run 2) | 6 (`plays/generated_and_promoted/run_3/`) |
 | Generated plays that succeeded | not recorded | 259 times, 141 plays (`reports/run_3/generated_successes/`) |
+| Validation round-robin (8 games per pair, every pair incl. held-out styles) | — | average score vs the 7 styles: library 0.55, library + critic 0.47, main agent 0.46; main beats library + critic 0.69, ties library 0.50 (small samples: ±0.17 per cell) |
+| Reward distributions (all league plays) | — | median ≈ 0 for generated and library plays; generated: 7 % of plays > +0.005, 17 % < −0.005; library: 12 % / 17 %. No right shift over 6 updates |
 
 ## Design-doc milestones
 
