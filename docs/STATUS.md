@@ -47,6 +47,29 @@ lengths from the spec) is configured but has not been run.
 | Shots | library self-play: 37 shots in ~6,650 sim-minutes; agent: 0 in 16 highlight games | see Q-035 |
 
 
+### Results of run 3, opponent pool v2 (2026-10-07)
+
+Pool v2 (D-045): seven scripted styles, `possession` and `wing_play` held out of all training
+data; library of 29 plays (18 hand-written incl. six build-up plays, 11 promoted from runs 1-2
+adopted in their niche, D-046). Run 3 on pool v1 was skipped. Compared with the pool v1 run:
+
+| Check | Pool v1 (runs 1-2) | Pool v2 (run 3) |
+|---|---|---|
+| Decisions where only recycling fits | 82 % | 20 % |
+| Possessions that never get past recycling | 54 % | 7 % |
+| Own third: only recycling fits | 95 % | 14 % |
+| Decisions per possession | 2.9 | 1.7 |
+| Library gap rate (only circulation + weak fit) | 97 % | 94 % (mostly "weak fit": a play fits but scores < 0.03) |
+| Critic vs per-play mean (held-out MSE) | −15 % (40k rows) | −8 % (162k rows); outcomes 34 % more variable; plateaued after epoch 5 |
+| Critic vs overall mean | −32 % | −23 % |
+| Ranking with critic vs without (60 matched games) | flat (0.0017 vs 0.0018) | **better: 0.0050 vs 0.0010** mean play reward |
+| Generator validity / matched vs library | 100 % / −0.0030 vs −0.0041 | 100 % / −0.0028 vs −0.0053 |
+| Main agent vs library, per style | better vs 1 of 4 | better vs `direct`, held-out `possession`; level vs `mid_block`; worse vs `chaotic`, held-out `wing_play`, slightly vs `high_press`, `low_block_counter` |
+| Regression gate | run 2 passed | passed vs all 7 styles (run 4 may continue from run 3) |
+| Held-out physics check | −41 % (flagged) | −35 % (flagged) |
+| Promoted | 6 (run 2) | 6 (`plays/generated_and_promoted/run_3/`) |
+| Generated plays that succeeded | not recorded | 259 times, 141 plays (`reports/run_3/generated_successes/`) |
+
 ## Design-doc milestones
 
 | Milestone | State | Summary |

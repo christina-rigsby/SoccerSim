@@ -15,6 +15,7 @@ its run continued training). Mutants of earlier promoted plays record `parent_ru
 |---|---|---|
 | `run_1` | pretrained generator | first quick-profile league |
 | `run_2` | pretrained generator | after the finishing-step mutation and exploration changes |
+| `run_3` | pretrained generator (pool v2) | first run on opponent pool v2 and the 29-play library; not in the library (pool v2 adopts runs 1-2 only) |
 
 Every file is **pending human review**. Nothing here is loaded into the play library;
 move a play into `plays/offensive/` only after checking it.

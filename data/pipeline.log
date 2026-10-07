@@ -154,3 +154,492 @@ gen_a20edbb411                        392   0.2%    21.7%  -0.0309
 gen_692b502c31                        323   0.2%     0.0%  -0.0038
 == v2_stats: done 23:14:40
 == v2_critic: start 23:14:40
+  critic epoch 1: test MSE 0.000529 vs per-play baseline 0.000552, success acc 0.814
+  critic epoch 2: test MSE 0.000508 vs per-play baseline 0.000552, success acc 0.818
+  critic epoch 3: test MSE 0.000512 vs per-play baseline 0.000552, success acc 0.822
+  critic epoch 4: test MSE 0.000509 vs per-play baseline 0.000552, success acc 0.820
+  critic epoch 5: test MSE 0.000504 vs per-play baseline 0.000552, success acc 0.825
+  critic epoch 6: test MSE 0.000502 vs per-play baseline 0.000552, success acc 0.824
+  critic epoch 7: test MSE 0.000514 vs per-play baseline 0.000552, success acc 0.827
+  critic epoch 8: test MSE 0.000508 vs per-play baseline 0.000552, success acc 0.825
+  response epoch 1: opp-play acc 0.638 (majority 0.352), event BCE 0.1243 (base rate 0.1905)
+  response epoch 2: opp-play acc 0.656 (majority 0.352), event BCE 0.1162 (base rate 0.1905)
+  response epoch 3: opp-play acc 0.659 (majority 0.352), event BCE 0.1138 (base rate 0.1905)
+  response epoch 4: opp-play acc 0.658 (majority 0.352), event BCE 0.1129 (base rate 0.1905)
+  response epoch 5: opp-play acc 0.668 (majority 0.352), event BCE 0.1133 (base rate 0.1905)
+  response epoch 6: opp-play acc 0.669 (majority 0.352), event BCE 0.1113 (base rate 0.1905)
+{
+  "rows": 162428,
+  "train": 146175,
+  "test": 16253,
+  "dataset_build_s": 56.9,
+  "critic": {
+    "mse": 0.0005076129455119371,
+    "baseline_mse": 0.0005523160216398537,
+    "mean_mse": 0.0006573217106051743,
+    "success_acc": 0.8253860825693718,
+    "corr": 0.4795421350684477,
+    "epoch": 8,
+    "train_loss": 0.3929516207972041
+  },
+  "response": {
+    "opp_acc": 0.6686150249184766,
+    "opp_majority": 0.35248877130375933,
+    "event_bce": 0.11133719980716705,
+    "event_base_bce": 0.19051383435726166,
+    "epoch": 6
+  },
+  "critic_beats_baseline": true
+}
+== v2_critic: done 00:35:15
+== v2_critic_ab: start 00:35:15
+critic A/B {"without_critic": {"mean_play_reward": 0.000979609065155807, "mean_epv_delta": 0.0019144442734064806, "plays": 353, "shots": 3}, "with_critic": {"mean_play_reward": 0.005022320916905443, "mean_epv_delta": 0.0028446722977272312, "plays": 349, "shots": 2}, "improves": true}
+== v2_critic_ab: done 00:35:35
+== v2_pretrain: start 00:35:35
+  BC examples from logs: 12000
+  earlier promoted plays: 11 from runs [1, 2]
+== container restart at 00:38:44; resuming
+== run3_pretrain: already done
+== run3_league: already done
+== run3_promote: already done
+== run3_report: already done
+== run3_commit: already done
+== v2_merge: already done
+== v2_keep_v1: already done
+== v2_phase_a: already done
+== v2_heldout_ref: already done
+== v2_stats: already done
+== v2_critic: already done
+== v2_critic_ab: already done
+== v2_pretrain: start 00:38:44
+  BC examples from logs: 12000
+  earlier promoted plays: 11 from runs [1, 2]
+  mutation filtering: 275 plays evaluated, 164 survivors (85 from earlier promoted plays)
+  BC epoch 1: loss 0.584, held-out token acc 0.990
+  BC epoch 2: loss 0.062, held-out token acc 0.992
+  BC epoch 3: loss 0.039, held-out token acc 0.992
+  BC epoch 4: loss 0.032, held-out token acc 0.993
+  BC epoch 5: loss 0.028, held-out token acc 0.993
+  BC epoch 6: loss 0.026, held-out token acc 0.994
+  validity: 100.000% over 240 samples
+  matched scenarios: generated -0.0028 vs library -0.0053 mean play reward -> meets the 80% target
+{
+  "bc_examples": 12000,
+  "mutation": {
+    "summary": {
+      "build_out_short_goal_kick": {
+        "parent_mean": -0.008739822473685509,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": -0.00010001839781241123
+      },
+      "cb_carry_into_midfield": {
+        "parent_mean": -7.711990701189202e-05,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.00015748780793350235
+      },
+      "direct_counterattack": {
+        "parent_mean": -0.0012345994584547978,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.0007320308160413003
+      },
+      "fullback_outlet_bounce": {
+        "parent_mean": -0.0009341187910120499,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": -0.000702261329954971
+      },
+      "long_ball_to_target": {
+        "parent_mean": -0.009254914712211947,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": -3.209333211930468e-05
+      },
+      "one_two_wall_pass": {
+        "parent_mean": 0.004654101227343571,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.0063929229483640345
+      },
+      "recycle_possession": {
+        "parent_mean": -0.0009404342832942851,
+        "mutants": 10,
+        "kept": 10,
+        "best_mutant_mean": 0.0006544555594499955
+      },
+      "switch_of_play": {
+        "parent_mean": -0.01341159280308124,
+        "mutants": 10,
+        "kept": 9,
+        "best_mutant_mean": 0.0006513446801710022
+      },
+      "switch_through_keeper": {
+        "parent_mean": 0.00116799635414029,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.0012974041015005678
+      },
+      "third_man_combination": {
+        "parent_mean": -0.011387050187276086,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": -0.0004190268737874284
+      },
+      "through_ball_behind_high_line": {
+        "parent_mean": -0.007173502831767502,
+        "mutants": 10,
+        "kept": 10,
+        "best_mutant_mean": -2.780031079399903e-05
+      },
+      "wide_overlap_cross": {
+        "parent_mean": -0.012285370049018494,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": -0.0030326545574695944
+      },
+      "winger_checks_short": {
+        "parent_mean": -0.0023541941716076027,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.00032338204588365304
+      },
+      "gen_263419283b": {
+        "parent_mean": 0.004432260965286629,
+        "mutants": 10,
+        "kept": 10,
+        "best_mutant_mean": 0.007999035420942924
+      },
+      "gen_67c4d0530b": {
+        "parent_mean": -0.0034539377261317266,
+        "mutants": 10,
+        "kept": 10,
+        "best_mutant_mean": -0.0034539377261317266
+      },
+      "gen_7ae398e5e4": {
+        "parent_mean": -0.005143611024520686,
+        "mutants": 10,
+        "kept": 10,
+        "best_mutant_mean": -0.005143611024520686
+      },
+      "gen_7ed866b92a": {
+        "parent_mean": 0.008916002970655472,
+        "mutants": 10,
+        "kept": 7,
+        "best_mutant_mean": 0.008916002970655472
+      },
+      "gen_dcd5c3003a": {
+        "parent_mean": -0.001427435453929325,
+        "mutants": 10,
+        "kept": 9,
+        "best_mutant_mean": 0.004920057076922703
+      },
+      "gen_5fa1f3645f": {
+        "parent_mean": -0.0075775119635035125,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": -0.0027966718245455106
+      },
+      "gen_64c5493589": {
+        "parent_mean": 0.006647628333590901,
+        "mutants": 10,
+        "kept": 10,
+        "best_mutant_mean": 0.006647628333590901
+      },
+      "gen_692b502c31": {
+        "parent_mean": -0.0016271917248327009,
+        "mutants": 10,
+        "kept": 9,
+        "best_mutant_mean": 0.014611064057375407
+      },
+      "gen_cf5c9636cf": {
+        "parent_mean": 0.0,
+        "mutants": 10,
+        "kept": 10,
+        "best_mutant_mean": 0.0
+      },
+      "gen_e55b04e172": {
+        "parent_mean": 0.00012653135378381448,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.014897421710278793
+      }
+    },
+    "evaluated": 275
+  },
+  "survivors": 164,
+  "survivor_examples": 967,
+  "prior_promoted": {
+    "plays": 11,
+    "runs": [
+      1,
+      2
+    ],
+    "imitation_examples": 57,
+    "mutant_survivors": 85
+  },
+  "validity": {
+    "validity": 1.0,
+    "sampled": 240,
+    "mean_len": 116.21666666666667
+  },
+  "matched": {
+    "library_mean": -0.0053383200000000006,
+    "generated_mean": -0.00281086875,
+    "library_plays": 100,
+    "generated_plays": 160,
+    "meets_target": true
+  },
+  "elapsed_s": 3562.3
+}
+== v2_pretrain: done 01:39:29
+== v2_league: start 01:39:29
+  run 3 (opponent pool v2 (8a68e8d0c9a2)): starts from /home/user/SoccerSim/data/models/generator.pt (opponent pool changed since run 2 (formations, held_out_styles, library, pool_version, randomise_eval_formations, scripted_styles); not continuing); archive seeded from runs none
+  update 1: 16 games, main rollouts 45, mean generated-play reward -0.0026, generated share 0.50, validity 1.000, Elo main 1033, archive {'cells': 28, 'elite_cells': 16, 'plays': 34}, 145.2s
+  update 2: 16 games, main rollouts 36, mean generated-play reward -0.0028, generated share 0.44, validity 1.000, Elo main 990, archive {'cells': 36, 'elite_cells': 22, 'plays': 49}, 166.2s
+  update 3: 16 games, main rollouts 35, mean generated-play reward 0.0005, generated share 0.41, validity 1.000, Elo main 1004, archive {'cells': 48, 'elite_cells': 29, 'plays': 86}, 169.1s
+  update 4: 16 games, main rollouts 51, mean generated-play reward -0.0071, generated share 0.42, validity 1.000, Elo main 996, archive {'cells': 68, 'elite_cells': 33, 'plays': 152}, 290.7s
+  update 5: 16 games, main rollouts 14, mean generated-play reward 0.0008, generated share 0.20, validity 1.000, Elo main 982, archive {'cells': 76, 'elite_cells': 37, 'plays': 192}, 385.3s
+  update 6: 16 games, main rollouts 32, mean generated-play reward -0.0054, generated share 0.30, validity 1.000, Elo main 970, archive {'cells': 86, 'elite_cells': 40, 'plays': 251}, 476.7s
+  held-out check: {'train': 0.006870444444444445, 'held_out': 0.004473709677419356, 'relative_drop': 0.34884712137700613, 'flag': True, 'update': 6}
+  regression gate: passed
+{
+  "run": 3,
+  "dir": "/home/user/SoccerSim/data/models/runs/run_3",
+  "continued_from": null,
+  "start_reason": "opponent pool changed since run 2 (formations, held_out_styles, library, pool_version, randomise_eval_formations, scripted_styles); not continuing",
+  "updates": 6,
+  "held_out": {
+    "train": 0.006870444444444445,
+    "held_out": 0.004473709677419356,
+    "relative_drop": 0.34884712137700613,
+    "flag": true,
+    "update": 6
+  },
+  "evaluation": {
+    "main": {
+      "high_press": {
+        "mean_play_reward": 0.0025777142857142856,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 38,
+        "plays": 105,
+        "held_out": false
+      },
+      "mid_block": {
+        "mean_play_reward": -0.0012269178082191785,
+        "goal_diff": 0.0,
+        "shots": 1,
+        "generated_plays": 23,
+        "plays": 73,
+        "held_out": false
+      },
+      "low_block_counter": {
+        "mean_play_reward": -0.0019527051282051283,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 24,
+        "plays": 78,
+        "held_out": false
+      },
+      "possession": {
+        "mean_play_reward": 0.0008120169491525419,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 22,
+        "plays": 59,
+        "held_out": true
+      },
+      "direct": {
+        "mean_play_reward": 0.002178826086956522,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 32,
+        "plays": 92,
+        "held_out": false
+      },
+      "wing_play": {
+        "mean_play_reward": 0.00045807826086956505,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 55,
+        "plays": 115,
+        "held_out": true
+      },
+      "chaotic": {
+        "mean_play_reward": 0.0005894000000000002,
+        "goal_diff": 0.0,
+        "shots": 1,
+        "generated_plays": 32,
+        "plays": 105,
+        "held_out": false
+      }
+    },
+    "library": {
+      "high_press": {
+        "mean_play_reward": 0.003178013698630137,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 0,
+        "plays": 73,
+        "held_out": false
+      },
+      "mid_block": {
+        "mean_play_reward": -0.0013126582278481008,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 0,
+        "plays": 79,
+        "held_out": false
+      },
+      "low_block_counter": {
+        "mean_play_reward": -0.0015461428571428575,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 0,
+        "plays": 77,
+        "held_out": false
+      },
+      "possession": {
+        "mean_play_reward": -0.0005871230769230771,
+        "goal_diff": 0.0,
+        "shots": 1,
+        "generated_plays": 0,
+        "plays": 65,
+        "held_out": true
+      },
+      "direct": {
+        "mean_play_reward": -0.0005969722222222223,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 0,
+        "plays": 72,
+        "held_out": false
+      },
+      "wing_play": {
+        "mean_play_reward": 0.002189883116883117,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 0,
+        "plays": 77,
+        "held_out": true
+      },
+      "chaotic": {
+        "mean_play_reward": 0.005991985294117647,
+        "goal_diff": 0.0,
+        "shots": 0,
+        "generated_plays": 0,
+        "plays": 68,
+        "held_out": false
+      }
+    },
+    "beats_all_styles": false
+  },
+  "gate": {
+    "styles": {
+      "high_press": {
+        "start": 0.005197976744186047,
+        "final": 0.004103452380952381,
+        "diff": -0.0010945243632336657,
+        "allowed_drop": 0.002,
+        "ok": true,
+        "held_out": false
+      },
+      "mid_block": {
+        "start": 0.0023493199999999994,
+        "final": 0.00280642,
+        "diff": 0.00045710000000000065,
+        "allowed_drop": 0.002,
+        "ok": true,
+        "held_out": false
+      },
+      "low_block_counter": {
+        "start": 0.00422266,
+        "final": 0.0023464025974025966,
+        "diff": -0.001876257402597403,
+        "allowed_drop": 0.002,
+        "ok": true,
+        "held_out": false
+      },
+      "possession": {
+        "start": -0.0005648048780487801,
+        "final": -0.0009876829268292684,
+        "diff": -0.00042287804878048834,
+        "allowed_drop": 0.002,
+        "ok": true,
+        "held_out": true
+      },
+      "direct": {
+        "start": 0.0011504545454545454,
+        "final": 0.00015250769230769264,
+        "diff": -0.0009979468531468528,
+        "allowed_drop": 0.002,
+        "ok": true,
+        "held_out": false
+      },
+      "wing_play": {
+        "start": 0.005911138888888888,
+        "final": 0.0053658222222222225,
+        "diff": -0.0005453166666666651,
+        "allowed_drop": 0.002,
+        "ok": true,
+        "held_out": true
+      },
+      "chaotic": {
+        "start": -0.000500118644067797,
+        "final": 0.0002614918032786884,
+        "diff": 0.0007616104473464854,
+        "allowed_drop": 0.002,
+        "ok": true,
+        "held_out": false
+      }
+    },
+    "games_per_style": 8,
+    "passed": true,
+    "failed_styles": []
+  },
+  "archive": {
+    "cells": 86,
+    "elite_cells": 40,
+    "plays": 251
+  },
+  "elo": {
+    "mid_block": 1008.0675739439725,
+    "league_exploiter": 1019.1814025310271,
+    "chaotic": 985.7465551627865,
+    "main": 970.2968024924554,
+    "low_block_counter": 1015.1725801417095,
+    "main_exploiter": 987.6929556060294,
+    "high_press": 979.7425161458314,
+    "direct": 1045.5836185999653,
+    "main@5": 970.6825614164958
+  },
+  "flags": [
+    "update 6: held-out EPV dropped 35% \u2014 possible sim overfitting"
+  ]
+}
+== v2_league: done 03:04:48
+== v2_promote: start 03:04:48
+{
+  "run": 3,
+  "dir": "/home/user/SoccerSim/plays/generated_and_promoted/run_3",
+  "elites": 40,
+  "promoted": 6,
+  "kept_from_earlier_runs": [],
+  "heldout_medians_from": "/home/user/SoccerSim/data/heldout_reference_pool_v2",
+  "promoted_ids": [
+    "gen_6cd6536e86",
+    "gen_81eaa89b15",
+    "gen_edcabe7a8b",
+    "gen_e2f3c88f31",
+    "gen_d0cee3c696",
+    "gen_9b2fe595f8"
+  ]
+}
+== v2_promote: done 03:07:24
+== v2_report: start 03:07:24
+{'games': 17, 'kept': 5, 'generated_calls': 89, 'shots_agent': 0, 'goals_agent': 0}
+out/selfplay_report.html
+== v2_report: done 03:11:56
+PIPELINE_DONE

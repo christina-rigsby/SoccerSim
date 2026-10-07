@@ -8,8 +8,8 @@ decision inspector: download it and open it in a browser.
 |---|---|---|
 | [`play_examples/`](play_examples/README.md) | One clip per play: our play (blue) and the opponent's counter-play (red) running at the same time, with the outcome | `python scripts/selfplay.py examples` |
 | [`training_games/pool_v1/`](training_games/pool_v1/README.md) | Games from the Phase A self-play data the pool v1 critic and generator were trained on | `build_training_replays(...)` in `soccersim/viz/training_report.py` |
-| `training_games/pool_v2/` | The same for opponent pool v2 (after its Phase A run) | as above |
-| `run_<N>/generated_successes/` | Every time a generated play succeeded during run N's league training or final evaluation, with the play's definition | `build_success_gallery(...)` in `soccersim/viz/play_examples.py` |
-| `run_<N>/selfplay_report.html` | The Self-Play Lab report for run N | `python scripts/selfplay.py viz` |
+| [`training_games/pool_v2/`](training_games/pool_v2/README.md) | The same for opponent pool v2 | as above |
+| [`run_3/generated_successes/`](run_3/generated_successes/README.md) (and later runs) | Every time a generated play succeeded during run N's league training or final evaluation, with the play's definition | `build_success_gallery(...)` in `soccersim/viz/play_examples.py` |
+| `run_3/selfplay_report.html`, `run_3/selfplay_replays.html` | The Self-Play Lab report and highlight replays for run 3 | `python scripts/selfplay.py viz` |
 
 `out/` is a scratch folder and is not committed.
