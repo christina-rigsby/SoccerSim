@@ -10,6 +10,7 @@
     python scripts/selfplay.py promote                                   # latest run's elites -> run_<N>/
     python scripts/selfplay.py viz                                       # HTML report + replays
     python scripts/selfplay.py examples                                  # play / counter-play GIFs
+    python scripts/selfplay.py reports --run 3                           # everything in reports/run_3/
 
 Defaults read ``configs/training.yaml`` (profile ``quick`` or ``spec``). The self-play data
 root defaults to the current opponent pool's (``configs/league.yaml: data``).
@@ -119,6 +120,12 @@ def cmd_examples(a):
     print(json.dumps(build_play_examples(ROOT / "reports" / "play_examples", a.plays or None), indent=2))
 
 
+def cmd_reports(a):
+    from soccersim.viz.run_reports import build_run_reports
+
+    print(json.dumps(build_run_reports(a.models, a.run, a.root, a.fragment_dir), indent=2, default=str))
+
+
 def cmd_viz(a):
     from soccersim.viz.training_report import build_report
 
@@ -168,6 +175,10 @@ def main() -> None:
     s = sub.add_parser("examples", help="GIF clips of plays and the opponent's counter-plays (reports/)")
     s.add_argument("--plays", nargs="*", default=None)
     s.set_defaults(fn=cmd_examples)
+    s = sub.add_parser("reports", help="rebuild everything in reports/run_<N>/ for a run (default: latest)")
+    s.add_argument("--run", type=int, default=None)
+    s.add_argument("--fragment-dir", default=None, help="also write publishable fragments here")
+    s.set_defaults(fn=cmd_reports)
     s = sub.add_parser("viz")
     s.add_argument("--fragment", action="store_true")
     s.set_defaults(fn=cmd_viz)

@@ -12,4 +12,6 @@ decision inspector: download it and open it in a browser.
 | [`run_3/generated_successes/`](run_3/generated_successes/README.md) (and later runs) | Every time a generated play succeeded during run N's league training or final evaluation, with the play's definition | `build_success_gallery(...)` in `soccersim/viz/play_examples.py` |
 | `run_3/selfplay_report.html`, `run_3/selfplay_replays.html` | The Self-Play Lab report and highlight replays for run 3 | `python scripts/selfplay.py viz` |
 
-`out/` is a scratch folder and is not committed.
+Everything for one run is rebuilt with `python scripts/selfplay.py reports --run <N>`; the whole pipeline
+with `bash scripts/pipeline.sh` (see the main README, "Reproducing the Self-Play Lab"). `out/` is a scratch
+folder and is not committed.

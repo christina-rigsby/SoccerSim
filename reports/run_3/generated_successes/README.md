@@ -1,6 +1,6 @@
 # Generated plays that worked · run 3
 
-259 times a generated play succeeded in this run (141 different plays), during league training or the final evaluation. A generated play counts as successful when it reached its own success condition or gained at least 0.005 EPV. Below, the best instance of each play (by reward), with what the opponent was running and the play's full definition.
+293 times a generated play succeeded in this run (158 different plays), during league training or the final evaluation. A generated play counts as successful when it reached its own success condition or gained at least 0.005 EPV. Below, the best instance of each play (by reward), with what the opponent was running and the play's full definition.
 
 `generated_successes.html` has every clip with the decision inspector; download it and open it in a browser.
 

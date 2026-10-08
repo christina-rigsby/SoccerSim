@@ -133,6 +133,12 @@ a { color: var(--s1); }
     <div class="panel"><h3>Every reward, per update</h3><div class="note">Each dot is one play a learning agent called in a league game during that update (possession plays only), with its reward in EPV units. Compare the shape, not only the mean: if the generator learns when its plays work, the generated distribution should shift right or grow a right tail over the updates.</div>
       <div class="controls"><label for="distWho">Agent</label> <select id="distWho"><option value="main">Main agent</option><option value="main_exploiter">Main exploiter</option><option value="league_exploiter">League exploiter</option><option value="all">All three</option></select></div>
       <div class="legend"><span><i style="background:var(--s2)"></i>Generated plays</span><span><i style="background:var(--s1)"></i>Library plays</span><span>box: middle half · whiskers: 5th–95th percentile · line: median · ◇ mean · dots: every play</span></div><div class="chart" id="rewardDist"></div><div class="note" id="rewardDistNote"></div></div>
+    <div class="panel"><h3>Every reward, per play</h3><div class="note">The same plays, split by which play was called. Library plays (hand-written, and promoted plays adopted into the library, marked with their run) are shown one by one. Generated plays are new each time the generator writes one, so they are grouped by objective. Click a row, or pick a play, to see it update by update.</div>
+      <div class="controls"><label for="playWho">Agent</label> <select id="playWho"><option value="main">Main agent</option><option value="main_exploiter">Main exploiter</option><option value="league_exploiter">League exploiter</option><option value="all">All three</option></select></div>
+      <div class="legend"><span><i style="background:var(--s1)"></i>Library play</span><span><i style="background:var(--s3)"></i>Promoted play adopted into the library</span><span><i style="background:var(--s2)"></i>Generated plays, by objective</span><span>box: middle half · whiskers: 5th–95th percentile · line: median · ◇ mean · dots: every call</span></div>
+      <div class="chart" id="playDist"></div><div class="note" id="playDistNote"></div>
+      <div class="controls"><label for="playPick">Play, update by update</label> <select id="playPick"></select></div>
+      <div class="chart" id="playUpdates"></div></div>
     <div class="panel"><h3>Elo of every participant at the end of the run</h3><div class="note">Scripted styles and frozen snapshots of the main agent are rated too; the line chart above follows only the three learning agents.</div><div class="chart" id="eloAll"></div></div>
   </section>
 
@@ -333,7 +339,8 @@ function distRows(host, rows, opts = {}) {
       el("rect", { x: X(st.q1), y: cy - 6, width: Math.max(2, X(st.q3) - X(st.q1)), height: 12, rx: 2, fill: "var(--surface)", "fill-opacity": 0.6, stroke: se.color, "stroke-width": 2 }, s);
       el("line", { x1: X(st.median), x2: X(st.median), y1: cy - 7, y2: cy + 7, stroke: se.color, "stroke-width": 2.5 }, s);
       el("path", { d: `M${X(st.mean)},${cy - 5}l4,5l-4,5l-4,-5z`, fill: "var(--surface)", stroke: "var(--ink)", "stroke-width": 1.2 }, s);
-      const hit = el("rect", { x: L, y: cy - band / 2, width: W - L - R, height: band, fill: "transparent" }, s);
+      const hit = el("rect", { x: L, y: cy - band / 2, width: W - L - R, height: band, fill: "transparent", style: opts.onRow ? "cursor:pointer" : "" }, s);
+      if (opts.onRow) hit.addEventListener("click", () => opts.onRow(i));
       hover(hit, `<b>${row.label} · ${se.name}</b><br>${st.n} plays · mean ${fmt(st.mean, 4)} · median ${fmt(st.median, 4)}<br>middle half ${fmt(st.q1, 4)} to ${fmt(st.q3, 4)}<br>above +0.005: ${pct(st.share_positive)} · below −0.005: ${pct(st.share_negative)}`);
     });
   });
@@ -493,6 +500,38 @@ if (D.mutation_rollouts && D.mutation_rollouts.length) {
   const par = mergeStats(mr.map((m) => m.parent)), mu = mergeStats(mr.map((m) => m.mutants));
   $("mutDistNote").textContent = `All parents: ${par.n} rollouts, median ${fmt(par.median, 4)}, mean ${fmt(par.mean, 4)}, ${pct(par.share_positive)} above +0.005, ${pct(par.share_negative)} below −0.005. All mutants: ${mu.n} rollouts, median ${fmt(mu.median, 4)}, mean ${fmt(mu.mean, 4)}.` + (clipped ? ` ${clipped} extreme values are drawn at the edge of the axis.` : "");
 } else empty($("mutDist"), "Rollout rewards were not recorded for this generator.");
+
+const BYP = (AN && AN.by_play) || [];
+const LEARNERS3 = ["main", "main_exploiter", "league_exploiter"];
+const playColor = (e) => e.source === "generated" ? "var(--s2)" : e.promoted_run != null ? "var(--s3)" : "var(--s1)";
+const playLabel = (e) => e.promoted_run != null ? `${e.play} (run ${e.promoted_run})` : e.play;
+const valuesFor = (e, who, upd) => e.values.filter((v) => (who === "all" || v[1] === who) && (upd == null || v[0] === upd)).map((v) => v[2]);
+function drawPlayDist() {
+  if (!BYP.length) { empty($("playDist"), "League not run yet."); empty($("playUpdates"), "League not run yet."); return; }
+  const who = $("playWho").value;
+  const rows = BYP.map((e) => ({ e, st: mergeStats([{ values: valuesFor(e, who) }]) })).filter((r) => r.st.n)
+    .sort((a, b) => b.st.median - a.st.median || b.st.mean - a.st.mean);
+  if (!rows.length) { empty($("playDist"), "This agent called no plays."); return; }
+  const clipped = distRows($("playDist"), rows.map((r) => ({ label: `${playLabel(r.e)} · ${r.st.n}`, series: [{ name: r.e.source === "generated" ? "generated" : "library", color: playColor(r.e), stats: r.st }] })),
+    { left: 250, onRow: (i) => { $("playPick").value = rows[i].e.play; drawPlayUpdates(); $("playUpdates").scrollIntoView({ block: "nearest", behavior: "smooth" }); } });
+  $("playDistNote").textContent = `Sorted by median reward. The number after each name is how many times it was called.` + (clipped ? ` ${clipped} extreme values are drawn at the edge of the axis.` : "");
+  const keep = $("playPick").value;
+  $("playPick").innerHTML = rows.map((r) => `<option value="${r.e.play}">${playLabel(r.e)} (${r.st.n})</option>`).join("");
+  if (rows.some((r) => r.e.play === keep)) $("playPick").value = keep;
+  drawPlayUpdates();
+}
+function drawPlayUpdates() {
+  const who = $("playWho").value, e = BYP.find((x) => x.play === $("playPick").value);
+  if (!e) { empty($("playUpdates"), "Pick a play."); return; }
+  const updates = [...new Set(e.values.map((v) => v[0]))].sort((a, b) => a - b);
+  const rows = updates.map((u) => ({ label: `update ${u}`, series: [{ name: playLabel(e), color: playColor(e), stats: mergeStats([{ values: valuesFor(e, who, u) }]) }] }))
+    .filter((r) => r.series[0].stats.n);
+  if (!rows.length) { empty($("playUpdates"), "Not called by this agent."); return; }
+  distRows($("playUpdates"), rows);
+}
+for (const id of ["playWho"]) $(id).addEventListener("change", drawPlayDist);
+$("playPick").addEventListener("change", drawPlayUpdates);
+drawPlayDist();
 
 const ZONE_ORDER = ["own_third", "mid_own", "mid_opp", "final_third"].flatMap((b) => ["near_wing", "near_halfspace", "center"].map((l) => `${b}.${l}`));
 if (AN && AN.zones && AN.zones.cells.length) {

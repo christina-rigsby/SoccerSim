@@ -68,7 +68,8 @@ def league_analysis(root: str | Path, cache: Path | None = None) -> dict[str, An
             {"update": u["update"], **{who: {kind: {"values": v, **la.summarize_distribution(v)}
                                              for kind, v in u[who].items()} for who in la.LEARNERS}}
             for u in dists],
-            "zones": la.zone_opponent_table(root) if dists else None}
+            "zones": la.zone_opponent_table(root) if dists else None,
+            "by_play": la.reward_by_play(root) if dists else None}
         try:
             out["phase_a_payoff"] = la.phase_a_payoff(root)
         except FileNotFoundError:
@@ -197,11 +198,11 @@ def runs_summary(models_dir: str | Path) -> list[dict[str, Any]]:
     return rows
 
 
-def collect(models_dir: str | Path, root: str | Path) -> dict[str, Any]:
+def collect(models_dir: str | Path, root: str | Path, run_dir: str | Path | None = None) -> dict[str, Any]:
     from ..selfplay.runs import latest_run_dir
 
     models = Path(models_dir)
-    league = latest_run_dir(models) or models / "league"
+    league = Path(run_dir) if run_dir else (latest_run_dir(models) or models / "league")
     data: dict[str, Any] = {"runs": runs_summary(models)}
     from ..eval.reports import summarize
 
@@ -280,10 +281,11 @@ def render(data: dict[str, Any], fragment: bool = False) -> str:
             f"</head>\n<body>\n{body}\n</body>\n</html>\n")
 
 
-def build_report(models_dir: str | Path, root: str | Path, out: str | Path, fragment: bool = False) -> Path:
+def build_report(models_dir: str | Path, root: str | Path, out: str | Path, fragment: bool = False,
+                 run_dir: str | Path | None = None) -> Path:
     out = Path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(render(collect(models_dir, root), fragment))
+    out.write_text(render(collect(models_dir, root, run_dir), fragment))
     return out
 
 
@@ -343,7 +345,8 @@ def build_training_replays(root: str | Path, out: str | Path, run_id: str = "pha
 
 
 def build_highlights(models_dir: str | Path, out: str | Path, n_games: int = 12, keep: int = 4,
-                     workers: int = 4, fragment: bool = False, seed: int = 7) -> dict[str, Any]:
+                     workers: int = 4, fragment: bool = False, seed: int = 7,
+                     run_dir: str | Path | None = None) -> dict[str, Any]:
     """Play the trained agent (generator on the library-gap trigger) against scripted styles
     and keep the games where generated plays were actually called, plus one library-only
     baseline game, as an interactive replay page."""
@@ -352,7 +355,7 @@ def build_highlights(models_dir: str | Path, out: str | Path, n_games: int = 12,
     from ..selfplay.runs import latest_run_dir
     from ..sim.scenarios import Scenario
 
-    league_dir = latest_run_dir(models_dir) or Path(models_dir) / "league"
+    league_dir = Path(run_dir) if run_dir else (latest_run_dir(models_dir) or Path(models_dir) / "league")
     ckpt = league_dir if (league_dir / "main.pt").exists() else Path(models_dir)
     gfile = "main.pt" if ckpt == league_dir else "generator.pt"
     from ..selfplay.policies import style_spec

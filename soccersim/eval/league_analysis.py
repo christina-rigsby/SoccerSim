@@ -64,6 +64,37 @@ def reward_distributions(root: str | Path) -> list[dict[str, Any]]:
     return out
 
 
+def reward_by_play(root: str | Path) -> list[dict[str, Any]]:
+    """Every reward of every possession play the learners called, keyed by play.
+
+    Library plays (hand-written and adopted promoted ones) are keyed by id. Generated plays
+    are new each time the generator writes one, so they are grouped by their objective
+    (``generated · create_chance`` ...). Each entry lists ``[update, learner, reward]``.
+    """
+    from ..schema import load_library
+
+    adopted = {pid: (p.provenance or {}).get("run") for pid, p in load_library().items()
+               if (p.provenance or {}).get("adopted_into_library")}
+    plays: dict[str, dict[str, Any]] = {}
+    for update, d in _league_runs(Path(root)):
+        rows, eps = _rows(d, ["episode_id", "team", "phase", "chosen", "chosen_source", "objective", "reward"])
+        for r in rows:
+            if r["phase"] not in POSSESSION or r["chosen"] is None or r["reward"] is None:
+                continue
+            ep = eps.get(r["episode_id"])
+            if ep is None:
+                continue
+            who = ep["home"] if r["team"] == 0 else ep["away"]
+            if who not in LEARNERS:
+                continue
+            lib = r["chosen_source"] == "library"
+            key = r["chosen"] if lib else f"generated · {r['objective'] or 'unknown'}"
+            e = plays.setdefault(key, {"play": key, "source": "library" if lib else "generated",
+                                       "promoted_run": adopted.get(key) if lib else None, "values": []})
+            e["values"].append([update, who, round(r["reward"], 5)])
+    return sorted(plays.values(), key=lambda e: (e["source"], e["play"]))
+
+
 def zone_opponent_table(root: str | Path, who: str = "main") -> dict[str, Any]:
     """Start zone x opponent for ``who``'s possession decisions over the whole league run."""
     cells: dict[tuple[str, str], dict[str, list[float]]] = defaultdict(lambda: {"generated": [], "library": []})

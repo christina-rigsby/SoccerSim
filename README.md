@@ -99,6 +99,37 @@ training games, generated plays that worked, per-run Self-Play Lab reports). Scr
   timeline with generated plays highlighted, and the decision inspector showing every
   candidate Module 2 scored, whether the library had a gap, and what it chose.
 
+### Reproducing the Self-Play Lab
+
+All the code is in the repo; the data and trained models are not (they are large and
+git-ignored: `data/models/`, `data/selfplay*/`), so they are regenerated:
+
+```
+bash scripts/pipeline.sh                     # everything, for the current opponent pool
+python scripts/selfplay.py reports --run 3   # only rebuild reports/run_3/ from existing data
+```
+
+`scripts/pipeline.sh` runs, in order: Phase A self-play games, held-out reference games,
+critic and response model, critic A/B, generator pretraining, the league run (training,
+held-out physics check, evaluation, regression gate, validation round-robin), promotion,
+and `reports`, which writes `reports/run_<N>/` (Self-Play Lab report, highlight replays,
+generated plays that worked) and `reports/training_games/pool_v<V>/`. It is resumable: run it
+again after an interruption and it continues where it stopped. About 4-5 hours on 4 cores
+with the `quick` profile (`configs/training.yaml`). Report code:
+`soccersim/viz/training_report.py` and `soccersim/viz/report_template.html`, the analyses in
+`soccersim/eval/league_analysis.py`, the clips and galleries in `soccersim/viz/play_examples.py`.
+`data/pipeline.sh` is the one-off script that produced run 3 (it skipped a pool v1 run 3 and
+switched to pool v2).
+
+### Plays: actions and feasibility
+
+- [`docs/ACTIONS.md`](docs/ACTIONS.md): every action a play step can use, its parameters,
+  what it does and the controller that implements it (regenerate with
+  `python scripts/action_reference.py`).
+- [`docs/PLAY_FEASIBILITY.md`](docs/PLAY_FEASIBILITY.md): everything that decides whether a
+  play can be called, in order, with the code for each check;
+  `python scripts/explain_feasibility.py` prints every check for every play in a game situation.
+
 ## Where the project is (M0–M2 foundation, before the spec)
 
 
