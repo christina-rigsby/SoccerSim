@@ -83,6 +83,12 @@ def pool_definition(league_cfg: dict) -> dict[str, Any]:
     if league_cfg.get("pool_version", 1) >= 2:
         # Scripted styles choose from the library, so its exact content is part of the pool.
         out["library"] = library_fingerprint()
+        # So is how every team decides to shoot (soccersim/executor/shooting.py).
+        from ..config import load_config
+
+        shooting = load_config("ranking").get("shooting")
+        if shooting:
+            out["shooting"] = shooting
     return out
 
 

@@ -71,3 +71,13 @@ generator:
   threshold: 0.03
   k: 4
   phases: [in_possession, transition_attack]
+
+# Shoot when on (soccersim/executor/shooting.py): any ball carrier (not the keeper) shoots
+# when its xG, already reduced by defender pressure, is at least min_xg and no outfield
+# defender stands in the cone to the posts within block_range_m. Applies to every team.
+shooting:
+  enabled: true
+  min_xg: 0.10           # about the edge of the box, central, unpressured
+  block_range_m: 10.0
+  cone_margin_m: 0.5
+  settle_s: 0.2

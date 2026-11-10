@@ -7,7 +7,8 @@ Priority, highest first:
    interceptor attacks the interception point.
 3. Loose ball — each team's quickest player chases it.
 4. The active play's directives for bound players.
-5. Defaults: the keeper covers the goal, the nearest free defender engages the carrier,
+5. Shoot when on: a carrier with a good, clear chance shoots (:mod:`.shooting`).
+6. Defaults: the keeper covers the goal, the nearest free defender engages the carrier,
    a ball carrier with nothing to do shields, and everyone else holds shape (spec §7.4).
 """
 
@@ -16,9 +17,11 @@ from __future__ import annotations
 import numpy as np
 
 from ..controllers import Directive
+from ..controllers.base import FrameBallCommand
 from ..controllers.shape import shape_targets
 from ..dashboard.team_state import TeamView
 from .instance import PlayInstance
+from .shooting import shot_is_on
 
 
 def team_directives(view: TeamView, active: PlayInstance | None) -> dict[int, Directive]:
@@ -55,6 +58,11 @@ def team_directives(view: TeamView, active: PlayInstance | None) -> dict[int, Di
         out[gk] = Directive(pt, 0.8, label="set_position")
     if view.holder >= 0 and view.holder not in play_dirs:
         out[view.holder] = Directive(view.pos[view.holder].copy(), 0.0, protect=True, label="shield")
+    # Shoot when on: a good, clear chance overrides whatever the carrier was doing.
+    if shot_is_on(view):
+        h = view.holder
+        out[h] = Directive(view.pos[h].copy(), 0.0, FrameBallCommand("shoot", np.array([52.5, 0.0]), "placed"),
+                           label="shoot_on")
     if view.opp_holder >= 0:
         carrier = view.pos[view.opp_holder]
         free = [int(p) for p in view.outfield(view.us) if p not in bound]

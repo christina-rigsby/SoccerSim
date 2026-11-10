@@ -107,6 +107,16 @@ def check_predicate(p: Any, ctx: RefContext, where: str, in_trigger: bool = Fals
         if not isinstance(body, dict):
             return [f"{here}: must be a mapping"]
         return check_ref(body.get("ref"), ctx, here) + _check_cmp(body, here, allowed_extra=("ref",))
+    if key == "shot_clear":
+        if not isinstance(body, dict):
+            return [f"{here}: must be a mapping"]
+        errs = check_ref(body.get("ref"), ctx, here)
+        if "range" in body and not isinstance(body["range"], (int, float)):
+            errs.append(f"{here}: range must be a number")
+        extra = set(body) - {"ref", "range"}
+        if extra:
+            errs.append(f"{here}: unexpected keys {sorted(extra)}")
+        return errs
     if key == "line_height":
         if not isinstance(body, dict):
             return [f"{here}: must be a mapping"]

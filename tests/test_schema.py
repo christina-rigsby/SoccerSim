@@ -21,7 +21,7 @@ STARTERS = {
 
 BUILD_UP = {
     "cb_carry_into_midfield", "fullback_outlet_bounce", "long_ball_to_target", "pivot_drop_back_three",
-    "switch_through_keeper", "winger_checks_short",
+    "switch_through_keeper", "winger_checks_short", "edge_of_box_shot",
 }
 
 

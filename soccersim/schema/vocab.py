@@ -143,4 +143,5 @@ PREDICATE_KEYS = (
     "possession", "has_ball", "ball_in_zone", "role_in_zone", "dist", "ahead_of", "pressure_on",
     "lane_open", "pc_at", "xg", "line_height", "count_in_zone", "goal_side_count", "teammates_near",
     "onside", "event", "ball_beyond_line", "ball_behind_line", "elapsed_s", "step_elapsed_s", "game",
+    "shot_clear",
 )

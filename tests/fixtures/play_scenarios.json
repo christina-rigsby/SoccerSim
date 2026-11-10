@@ -59,6 +59,21 @@
     },
     "end_reason": "success"
   },
+  "edge_of_box_shot": {
+    "seed": 0,
+    "scenario": {
+      "type": "final_third_attack",
+      "attacking_team": 0,
+      "home_formation": "4-3-3",
+      "away_formation": "4-3-3",
+      "minute": 30.0,
+      "score": [
+        0,
+        0
+      ]
+    },
+    "end_reason": "success"
+  },
   "fullback_outlet_bounce": {
     "seed": 0,
     "scenario": {
@@ -90,7 +105,7 @@
     "end_reason": "completed"
   },
   "long_ball_to_target": {
-    "seed": 5,
+    "seed": 2,
     "scenario": {
       "type": "transition_win",
       "attacking_team": 0,
@@ -102,7 +117,7 @@
         0
       ]
     },
-    "end_reason": "preempted"
+    "end_reason": "step_timeout_abort"
   },
   "low_block_box_protection": {
     "seed": 0,
@@ -117,7 +132,7 @@
         0
       ]
     },
-    "end_reason": "success"
+    "end_reason": "preempted"
   },
   "mid_block_compact": {
     "seed": 0,
@@ -135,9 +150,9 @@
     "end_reason": "preempted"
   },
   "one_two_wall_pass": {
-    "seed": 1,
+    "seed": 3,
     "scenario": {
-      "type": "random_open_play",
+      "type": "final_third_attack",
       "attacking_team": 0,
       "home_formation": "4-3-3",
       "away_formation": "4-3-3",
@@ -147,7 +162,7 @@
         0
       ]
     },
-    "end_reason": "step_timeout_abort"
+    "end_reason": "preempted"
   },
   "pivot_drop_back_three": {
     "seed": 29,

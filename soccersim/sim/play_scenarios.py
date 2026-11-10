@@ -34,6 +34,7 @@ PLAY_SCENARIOS: dict[str, tuple[tuple[str, ...], int]] = {
     "pivot_drop_back_three": (("build_up", "mid_progression"), 0),
     "switch_through_keeper": (("build_up", "mid_progression"), 0),
     "winger_checks_short": (("mid_progression", "build_up", "random_open_play"), 0),
+    "edge_of_box_shot": (("final_third_attack", "random_open_play"), 0),
     "high_press_sideline_trap": (("build_up", "mid_progression", "random_open_play"), 1),
     "mid_block_compact": (("mid_progression", "random_open_play"), 1),
     "low_block_box_protection": (("final_third_attack", "random_open_play"), 1),

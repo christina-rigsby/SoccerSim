@@ -328,6 +328,17 @@ class Evaluator:
         if key == "xg":
             p_ = self.ref_player(body["ref"])
             return p_ >= 0 and compare(v.xg_of(p_), body)
+        if key == "shot_clear":
+            # No outfield defender in the cone from the player to the posts (shared with the
+            # shoot-when-on rule, soccersim/executor/shooting.py).
+            from ..executor.shooting import shooting_config, shot_blockers
+
+            p_ = self.ref_player(body["ref"])
+            if p_ < 0:
+                return False
+            cfg = shooting_config()
+            rng = float(body.get("range", cfg.get("block_range_m", 10.0)))
+            return not shot_blockers(v, p_, rng, float(cfg.get("cone_margin_m", 0.5)))
         if key == "line_height":
             return compare(v.line_height(body["line"]), body)
         if key == "count_in_zone":
