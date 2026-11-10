@@ -1,9 +1,10 @@
 # League configuration (spec §11 Phase C).
 
-# Opponent pool v2 (D-045). Frozen: a run only continues from the previous run's generator
+# Opponent pool v3 (D-045, D-047: v2 plus the shoot-when-on rule, the edge-of-box shot play and
+# run 3's promoted plays). Frozen: a run only continues from the previous run's generator
 # when everything that defines the pool (runs.pool_definition) is identical, so any change
 # here is a deliberate version bump that starts a new run lineage. Bump pool_version with it.
-pool_version: 2
+pool_version: 3
 
 # Scripted styles are library-only teams. They differ by play preferences, not formation:
 # every style draws its formation at random from `formations` each game, so the generator
@@ -51,8 +52,8 @@ randomise_eval_formations: true
 # Where this pool's data lives. Held-out reference games (library v held-out styles) are kept
 # apart from training data and used only for promotion's library medians.
 data:
-  selfplay: data/selfplay_pool_v2
-  heldout_reference: data/heldout_reference_pool_v2
+  selfplay: data/selfplay_pool_v3
+  heldout_reference: data/heldout_reference_pool_v3
 
 snapshot_every: 5          # updates between frozen snapshots of the main agent
 main_exploiter_reset_every: 20

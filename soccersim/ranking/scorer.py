@@ -39,6 +39,10 @@ def score_play(
     comp["critic"] = 0.0
     if critic is not None and cfg.get("critic", {}).get("enabled", False):
         comp["critic"] = cfg["critic"].get("weight", 1.0) * float(critic(view, play, asg.binding))
+        if cfg["critic"].get("replace_prior", False):
+            # Learned play selection: the learned value alone decides (the hand-written terms
+            # stay in the record for comparison but do not count).
+            return float(comp["critic"]), {k: round(v, 5) for k, v in comp.items()}
     if style_bonus:
         comp["style"] = style_bonus
     return float(sum(comp.values())), {k: round(v, 5) for k, v in comp.items()}

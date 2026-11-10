@@ -380,11 +380,16 @@ class League:
             return {**self.spec("main"), "activation": "on_gap", "gen_temperature": 0.7}
         if pid == "library_critic":
             return {**self.spec("main"), "id": "library_critic", "generator": False}
+        if pid == "selector":
+            from .selector import selector_spec
+
+            return selector_spec(self.models)
         return self.spec(pid)
 
     def validate(self, workers: int = 4, games_per_pair: int | None = None) -> dict[str, Any]:
-        """Round-robin after training: every pair of {main, library, library_critic, every scripted
-        style including the held-out ones} plays the same fixed games, half at home each way.
+        """Round-robin after training: every pair of {main, selector (the library-only learned play
+        selector, when trained), library, library_critic, every scripted style including the held-out
+        ones} plays the same fixed games, half at home each way.
 
         Unlike the league payoff (training games only, where styles never meet each other and
         held-out styles never appear), this covers every pairing.
@@ -392,7 +397,10 @@ class League:
         import itertools
 
         n = int(games_per_pair or (1 if self.prof == "smoke" else self.lcfg.get("validation_games_per_pair", 8)))
-        teams = ["main", "library", "library_critic", *self.lcfg["scripted_styles"]]
+        from .selector import selector_dir
+
+        learned = ["selector"] if (selector_dir(self.models) / "critic.pt").exists() else []
+        teams = ["main", *learned, "library", "library_critic", *self.lcfg["scripted_styles"]]
         jobs = []
         for i, (a, b) in enumerate(itertools.combinations(teams, 2)):
             rng = np.random.default_rng(777 + i)

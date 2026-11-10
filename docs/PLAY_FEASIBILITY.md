@@ -112,10 +112,15 @@ triggers even when a different R2 would have passed.
 | `ball_beyond_line` / `ball_behind_line: {line, by}` | the ball is past (or behind) that opponent/our line |
 | `elapsed_s`, `step_elapsed_s` | time since the play / step started (used in steps, success and abort) |
 | `game: {score_diff, minute}` | match state |
+| `shot_clear: {ref, range?}` | no outfield defender in the cone from that player to the posts within `range` metres (default 10; same check as the shoot-when-on rule) |
 
 Comparisons use `lt`, `le`, `gt`, `ge`, `eq`.
 
 ## After feasibility
+
+- **Shoot when on** (`soccersim/executor/shooting.py`): whatever play is running, a ball carrier
+  (not the keeper) with xG of at least 0.10 and a clear shot shoots. This is not a play and has
+  no feasibility check of its own; it overrides the carrier's play instruction for that tick.
 
 - **Scoring** (`scorer.py:22`): objective and strategy value from `configs/ranking.yaml`, minus
   penalties for risk, fatigue, positional fit, chain depth and assignment cost, plus the critic

@@ -110,7 +110,8 @@ python scripts/selfplay.py reports --run 3   # only rebuild reports/run_3/ from 
 ```
 
 `scripts/pipeline.sh` runs, in order: Phase A self-play games, held-out reference games,
-critic and response model, critic A/B, generator pretraining, the league run (training,
+critic and response model, critic A/B, the library-only learned selector (the second model,
+`train-selector`), generator pretraining, the league run (training,
 held-out physics check, evaluation, regression gate, validation round-robin), promotion,
 and `reports`, which writes `reports/run_<N>/` (Self-Play Lab report, highlight replays,
 generated plays that worked) and `reports/training_games/pool_v<V>/`. It is resumable: run it

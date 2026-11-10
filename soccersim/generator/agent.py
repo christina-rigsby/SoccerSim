@@ -22,7 +22,7 @@ from ..ranking.selector import RankingPolicy
 from ..schema.models import Play
 from ..schema.validate import PlayValidationError, parse_play
 from .critic import OUTCOME_EVENTS, Critic, ResponseModel
-from .data import opp_classes, play_ids
+from .data import learning_target, opp_classes, play_ids, target_value
 from .encoder import state_features
 from .grammar import BOS, EOS, play_id_for
 from .model import PlayGenerator, pad_batch
@@ -206,6 +206,9 @@ class AgentPolicy(RankingPolicy):
         self.critic = self.critic_fn
         cfg["critic"]["enabled"] = self.critic_fn is not None and bundle.critic is not None
         cfg["critic"]["weight"] = spec.get("critic_weight", 1.0)
+        # "learned": the critic's value alone ranks the plays (the library-only learned selector).
+        cfg["critic"]["replace_prior"] = spec.get("score_mode") == "learned"
+        self.epsilon = float(spec.get("epsilon", 0.0))
         gen_on = spec.get("generator", True) and bundle.generator is not None
         cfg["generator"]["enabled"] = gen_on
         cfg["generator"]["activation"] = spec.get("activation", cfg["generator"]["activation"])
@@ -214,6 +217,8 @@ class AgentPolicy(RankingPolicy):
             cfg["generator"]["threshold"] = spec["threshold"]
         self.generator = TorchGenerator(bundle, rng, spec.get("gen_temperature", 1.0)) if gen_on else None
         self.rollout_buffer: list[dict[str, Any]] = []
+        # PPO learns from the configured target (one play's reward, or its possession return).
+        self.target = learning_target()
         # Evaluation mode: the generator replaces the library's possession plays entirely.
         self.generated_only = bool(spec.get("generated_only", False))
 
@@ -244,7 +249,8 @@ class AgentPolicy(RankingPolicy):
             rec = by_dec.get(r["decision_id"])
             if rec is None or "reward" not in rec:
                 continue
-            out.append({**r, "reward": rec["reward"], "return": rec.get("return", rec["reward"]),
+            out.append({**r, "reward": target_value(rec, self.target), "play_reward": rec["reward"],
+                        "return": rec.get("return", rec["reward"]),
                         "end_reason": rec["end_reason"], "steps": rec["steps_visited"]})
         return out
 

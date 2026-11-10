@@ -30,6 +30,7 @@ DECISION_SCHEMA = pa.schema([
     ("opp_active_play", pa.string()), ("opp_play_at_end", pa.string()),
     ("events", pa.string()), ("end_reason", pa.string()), ("duration_s", pa.float32()),
     ("epv_start", pa.float32()), ("epv_end", pa.float32()), ("reward", pa.float32()), ("return", pa.float32()),
+    ("possession_return", pa.float32()),
     ("phase", pa.string()), ("objective", pa.string()), ("play_json", pa.string()),
     ("sim_config_hash", pa.string()), ("policy_checkpoint", pa.string()), ("opponent_id", pa.string()),
     ("scenario", pa.string()),
@@ -89,7 +90,7 @@ def episode_rows(res: EpisodeResult, episode_id: str, library: dict[str, Play], 
             "events": json.dumps(rec.get("events", [])), "end_reason": rec["end_reason"],
             "duration_s": rec["duration_s"], "epv_start": rec.get("epv_start") or 0.0,
             "epv_end": rec.get("epv_end") if rec.get("epv_end") is not None else rec.get("epv_start") or 0.0,
-            "reward": rec["reward"], "return": rec["return"],
+            "reward": rec["reward"], "return": rec["return"], "possession_return": rec.get("possession_return"),
             "phase": phases.get(rec["play_id"], ""), "objective": objectives.get(rec["play_id"], ""),
             "play_json": json.dumps(rec["play_yaml"]) if rec.get("play_yaml") else "",
             "sim_config_hash": res.sim_config_hash, "policy_checkpoint": checkpoint,
@@ -161,9 +162,11 @@ def _write_atomic(table: pa.Table, path: Path) -> None:
     tmp.replace(path)
 
 
-def load_table(root: str | Path, kind: str = "decisions", columns: list[str] | None = None) -> pa.Table:
-    """Load every ``kind`` Parquet file under ``root`` (any run / date partition)."""
-    files = sorted(Path(root).rglob(f"{kind}-*.parquet"))
+def load_table(root: str | Path | list, kind: str = "decisions", columns: list[str] | None = None) -> pa.Table:
+    """Load every ``kind`` Parquet file under ``root`` (any run / date partition); ``root`` may
+    also be a list of directories."""
+    roots = root if isinstance(root, (list, tuple)) else [root]
+    files = sorted(f for r in roots for f in Path(r).rglob(f"{kind}-*.parquet"))
     if not files:
         raise FileNotFoundError(f"no {kind} files under {root}")
     tables = []

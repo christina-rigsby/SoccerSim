@@ -70,10 +70,26 @@ def row_tokens(row: dict, lib_tokens: dict[str, list[int]]) -> list[int]:
     return []
 
 
-def build_dataset(root: str | Path, library: dict[str, Play], max_rows: int | None = None, seed: int = 0,
-                  recycle_share: float = 0.35, max_len: int = 256) -> Dataset:
+def learning_target() -> str:
+    """What the critic and the generator learn from (configs/training.yaml: rewards.target)."""
+    from ..config import load_config
+
+    return load_config("training")["rewards"].get("target", "reward")
+
+
+def target_value(rec: dict, target: str) -> float:
+    """The learning target of one play; logs written before a target existed fall back to ``reward``."""
+    v = rec.get(target)
+    return float(rec["reward"] if v is None else v)
+
+
+def build_dataset(root: str | Path | list, library: dict[str, Play], max_rows: int | None = None, seed: int = 0,
+                  recycle_share: float = 0.35, max_len: int = 256, keep_prefix: tuple[str, ...] = ()) -> Dataset:
+    """Decision rows -> tensors. Rows whose episode id starts with ``keep_prefix`` are always kept
+    (before the ``max_rows`` cap), e.g. the learned selector's own games next to Phase A data."""
     cols = ["episode_id", "t", "team", "state", "side", "chosen", "chosen_source", "chosen_tokens", "play_json",
-            "reward", "end_reason", "opp_play_at_end", "events", "phase"]
+            "reward", "possession_return", "end_reason", "opp_play_at_end", "events", "phase"]
+    target = learning_target()
     rows = load_table(root, "decisions", cols).to_pylist()
     eps = {e["episode_id"]: np.asarray(json.loads(e["caps"]), dtype=np.float32)
            for e in load_table(root, "episodes", ["episode_id", "caps"]).to_pylist()}
@@ -85,8 +101,12 @@ def build_dataset(root: str | Path, library: dict[str, Play], max_rows: int | No
     keep_rec = int(min(len(rec), recycle_share / (1 - recycle_share) * len(other)))
     idx = other + list(rng.choice(rec, keep_rec, replace=False)) if rec else other
     rng.shuffle(idx)
+    if keep_prefix:
+        first = [i for i in idx if rows[i]["episode_id"].startswith(keep_prefix)]
+        idx = first + [i for i in idx if not rows[i]["episode_id"].startswith(keep_prefix)]
     if max_rows:
         idx = idx[:max_rows]
+        rng.shuffle(idx)
     lib_tok = tokenize_library(library)
     ids = {p: i for i, p in enumerate(play_ids(library))}
     oc = {p: i for i, p in enumerate(opp_classes(library))}
@@ -106,7 +126,7 @@ def build_dataset(root: str | Path, library: dict[str, Play], max_rows: int | No
         toks[k, : len(tk)] = tk
         out["ident"].append(ids.get(r["chosen"], ids["generated"]) if r["chosen_source"] == "library"
                             else ids["generated"])
-        out["reward"].append(r["reward"])
+        out["reward"].append(target_value(r, target))
         out["success"].append(float(r["end_reason"] in SUCCESS))
         opp = r["opp_play_at_end"] or "none"
         out["opp"].append(oc.get(opp, oc["generated"]))

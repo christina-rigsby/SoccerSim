@@ -10,6 +10,8 @@ rewards:
   regain_bonus: 0.02
   gamma_per_play: 0.97
   retain_cap: 0.02          # cap on summed reward from consecutive non-improving retain_possession plays
+  shot_xg: 0.5              # a shot adds 0.5 x its xG (an opponent's shot subtracts it)
+  target: possession_return # what the critic and the generator learn from: reward | possession_return
 
 encoder:
   smoke: {hidden: 32, layers: 2, heads: 2}
@@ -56,3 +58,13 @@ phase_a:
   smoke: {episodes: 8}
   quick: {episodes: 240}
   spec: {episodes: 12000}   # ~200k decision records
+
+# The library-only learned play selector (soccersim/selfplay/selector.py): iterations of
+# games (calling a random feasible play with probability epsilon) then a refit on Phase A
+# data plus all its own games (always kept; Phase A sampled up to max_rows in total).
+selector:
+  iterations: 4
+  games_per_iteration: 300
+  epsilon_start: 0.2
+  epsilon_end: 0.05
+  max_rows: 60000

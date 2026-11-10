@@ -70,8 +70,9 @@ def _batches(n: int, bs: int, rng: np.random.Generator, shuffle: bool = True):
 # -- critic + response ---------------------------------------------------------------------
 
 
-def train_critic_and_response(root: str | Path, out_dir: str | Path, profile: str | None = None,
-                              max_rows: int | None = None, seed: int = 0) -> dict[str, Any]:
+def train_critic_and_response(root: str | Path | list, out_dir: str | Path, profile: str | None = None,
+                              max_rows: int | None = None, seed: int = 0,
+                              keep_prefix: tuple[str, ...] = ()) -> dict[str, Any]:
     cfg, prof = _profile(profile)
     torch.manual_seed(seed)
     torch.set_num_threads(max(1, mp.cpu_count()))
@@ -79,7 +80,8 @@ def train_critic_and_response(root: str | Path, out_dir: str | Path, profile: st
     out.mkdir(parents=True, exist_ok=True)
     lib = load_library()
     t0 = time.time()
-    ds = build_dataset(root, lib, max_rows=max_rows or cfg["critic"][prof].get("max_rows"), seed=seed)
+    ds = build_dataset(root, lib, max_rows=max_rows or cfg["critic"][prof].get("max_rows"), seed=seed,
+                       keep_prefix=keep_prefix)
     train, test = ds.split(0.1, seed)
     build_s = time.time() - t0
     enc = cfg["encoder"][prof]

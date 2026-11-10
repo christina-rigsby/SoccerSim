@@ -87,4 +87,7 @@ def ppo_update(gen: PlayGenerator, ref: PlayGenerator, rollouts: list[dict[str, 
     gen.eval()
     out = {k: v / max(steps, 1) for k, v in stats.items()}
     out.update(n=len(rollouts), mean_reward=float(rewards.mean()), mean_adv_raw=float((rewards - baseline).mean()))
+    if all("play_reward" in r for r in rollouts):
+        # ``reward`` is the learning target (possibly the possession return); keep the plain play reward too.
+        out["mean_play_reward"] = float(np.mean([r["play_reward"] for r in rollouts]))
     return out

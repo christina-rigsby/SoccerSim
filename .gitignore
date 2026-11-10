@@ -13,3 +13,5 @@ data/models/
 data/selfplay_pool_v2/
 data/heldout_reference_pool_v2/
 data/pipeline_state/
+data/selfplay_pool_v3/
+data/heldout_reference_pool_v3/

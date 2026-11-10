@@ -10,6 +10,7 @@
 #     stats          play usage summary (out/selfplay_summary.json)
 #     train-critic   critic + response model -> data/models/{critic,response}.pt
 #     critic-ab      ranking with vs without the critic (printed)
+#     selector       library-only learned play selector -> data/models/selector/ (second model)
 #   per league run (the next run, or the latest one if it never finished):
 #     pretrain       generator: behaviour cloning + mutation filtering -> data/models/generator.pt
 #     league         PPO league, held-out physics check, evaluation, regression gate, validation
@@ -48,6 +49,7 @@ step "$STATE/heldout_ref"  $SP heldout-ref --episodes 1500
 step "$STATE/stats"        $SP report
 step "$STATE/critic"       $SP train-critic
 step "$STATE/critic_ab"    critic_ab
+step "$STATE/selector"     $SP train-selector
 step "$STATE/run_${RUN}/pretrain" $SP pretrain-generator
 step "$STATE/run_${RUN}/league"   $SP league --resume-unfinished
 step "$STATE/run_${RUN}/promote"  $SP promote --run "$RUN"

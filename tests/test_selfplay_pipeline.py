@@ -61,6 +61,12 @@ def test_full_pipeline_smoke(phase_a, tmp_path):
     assert "mse" in crit["critic"] and (models / "critic.pt").exists()
     gen = pretrain_generator(root, models, profile="smoke", workers=2)
     assert gen["validity"]["validity"] >= 0.99
+    # The second model: the library-only learned selector (one iteration at smoke scale).
+    from soccersim.selfplay.selector import selector_dir, train_selector
+
+    sel = train_selector(models, root, iterations=1, games=2, workers=2, profile="smoke")
+    assert [h["iteration"] for h in sel["history"]] == [0, 1] and sel["history"][1]["games"] == 2
+    assert (selector_dir(models) / "critic.pt").exists()
     promoted = tmp_path / "promoted"
     lg = League(models, tmp_path / "league_data", profile="smoke", promoted_root=promoted)
     assert lg.run == 1 and lg.run_info["continued_from"] is None
@@ -69,6 +75,8 @@ def test_full_pipeline_smoke(phase_a, tmp_path):
     lg.evaluate(n=1, workers=2)
     lg.lcfg.update(gate_games=1, gate_tolerance_abs=10.0)   # smoke scale: let the gate pass
     assert lg.regression_gate(workers=2)["passed"]
+    val = lg.validate(workers=2, games_per_pair=1)
+    assert val["teams"][:2] == ["main", "selector"] and "library" in val["payoff"]["selector"]
     promo = promote_elites(models, root, promoted, profile="smoke", workers=2, rollouts=1)
     assert promo["run"] == 1
     for pid in promo["promoted_ids"]:

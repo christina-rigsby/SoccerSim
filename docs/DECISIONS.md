@@ -10,6 +10,39 @@ actually settled — always paired with an `OPEN_QUESTIONS.md` entry).
 
 ---
 
+## D-047 · Shoot when on, a possession horizon, and a library-only learned selector (pool v3)
+**Date:** 2026-11-10 · **Status:** `active`
+
+Teams almost never shot (36 shots in 13,500 training games) because a player only shot inside
+the few plays with a `shoot` step, and the learning signal per play was mostly noise.
+
+- **Shoot when on** (`soccersim/executor/shooting.py`, `configs/ranking.yaml: shooting`): any
+  ball carrier except the keeper shoots when its xG (already reduced by defender pressure) is
+  at least 0.10 and no outfield defender is in the cone to the posts within 10 m. The
+  simulator does not model blocked shots, so the cone check is explicit. Plays can use the same
+  check as the condition `shot_clear: {ref}`; the new play `edge_of_box_shot` does. In 400
+  library games: shots 41 -> 77, goals 1 -> 5.
+- **Shots count by quality**: a shot adds 0.5 x its xG to the play's reward (an opponent's shot
+  subtracts it), so a good chance earns credit even when missed.
+- **Possession horizon** (`rewards.target: possession_return`): the critic and the generator
+  learn from each play's reward plus the discounted rewards of its team's later plays in the
+  same possession (until the ball is lost or a goal falls), so a set-up play shares the
+  credit of the shot it leads to. The per-play reward is still logged and reported.
+- **A second model, the learned selector** (`soccersim/selfplay/selector.py`): it never writes
+  plays; a value model (the critic's architecture) ranks the feasible library plays on its own
+  (the hand-written score is not used). It trains iteratively on its own games with
+  exploration (a random feasible play 20% -> 5% of the time). The validation round-robin
+  includes it, so the generator agent can be compared with "the best you can do with the
+  library alone".
+- These change how every team plays, so the opponent pool is bumped to **v3**, which also
+  adopts run 3's promoted plays (36 library plays).
+
+**Rationale:** both weak results (critic barely beats the per-play average; the generator does
+not beat the library) share a root cause in the learning signal; fix it before scaling up.
+The critic's training curve (`reports/run_3/critic_training.png`) shows held-out error flat
+from epoch 2 while training loss keeps falling, which points to the data's predictability,
+not model size; a learning curve over data size and a capacity comparison would tell them apart.
+
 ## D-046 · A larger library: six build-up plays, and promoted plays adopted in place
 **Date:** 2026-10-03 · **Status:** `active` (part of opponent pool v2, D-045)
 

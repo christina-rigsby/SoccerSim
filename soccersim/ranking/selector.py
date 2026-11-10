@@ -67,6 +67,7 @@ class RankingPolicy:
         self.cfg = cfg or load_config("ranking")
         self.temperature = self.cfg["selection"]["temperature"] if temperature is None else temperature
         self.style = style or {}
+        self.epsilon = 0.0  # chance of calling a random feasible play (learned selector exploration)
         self.generator = generator
         self.critic = critic
         self.name = name
@@ -118,6 +119,9 @@ class RankingPolicy:
         return max(c.score for c in real) < self.cfg["generator"]["threshold"]
 
     def _select(self, feasible: list[Candidate]) -> Candidate:
+        if self.epsilon > 0 and len(feasible) > 1 and self.rng.random() < self.epsilon:
+            # Exploration while collecting training data: a random feasible play.
+            return feasible[int(self.rng.integers(len(feasible)))]
         if self.temperature and self.temperature > 0 and len(feasible) > 1:
             s = np.array([c.score for c in feasible]) / self.temperature
             p = np.exp(s - s.max())

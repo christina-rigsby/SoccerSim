@@ -6,6 +6,7 @@
     python scripts/selfplay.py fit-xt                                    # sim-derived xT
     python scripts/selfplay.py train-critic                              # M7 critic + response model
     python scripts/selfplay.py pretrain-generator                        # M8 BC + mutation filtering
+    python scripts/selfplay.py train-selector                            # library-only learned selector
     python scripts/selfplay.py league --updates 6                        # M9: next run (continues when safe)
     python scripts/selfplay.py promote                                   # latest run's elites -> run_<N>/
     python scripts/selfplay.py viz                                       # HTML report + replays
@@ -120,6 +121,13 @@ def cmd_examples(a):
     print(json.dumps(build_play_examples(ROOT / "reports" / "play_examples", a.plays or None), indent=2))
 
 
+def cmd_selector(a):
+    from soccersim.selfplay.selector import train_selector
+
+    st = train_selector(a.models, a.root, iterations=a.iterations, games=a.games, workers=a.workers, profile=a.profile)
+    print(json.dumps(st["history"][-1], indent=2))
+
+
 def cmd_reports(a):
     from soccersim.viz.run_reports import build_run_reports
 
@@ -175,6 +183,10 @@ def main() -> None:
     s = sub.add_parser("examples", help="GIF clips of plays and the opponent's counter-plays (reports/)")
     s.add_argument("--plays", nargs="*", default=None)
     s.set_defaults(fn=cmd_examples)
+    s = sub.add_parser("train-selector", help="the library-only learned play selector (second model)")
+    s.add_argument("--iterations", type=int, default=None)
+    s.add_argument("--games", type=int, default=None, help="games per iteration")
+    s.set_defaults(fn=cmd_selector)
     s = sub.add_parser("reports", help="rebuild everything in reports/run_<N>/ for a run (default: latest)")
     s.add_argument("--run", type=int, default=None)
     s.add_argument("--fragment-dir", default=None, help="also write publishable fragments here")
