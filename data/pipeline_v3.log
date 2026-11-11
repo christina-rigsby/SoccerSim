@@ -15,3 +15,9 @@ opponent pool 5bee276df0d7, league run 4
   2600/13500 episodes, 27408 decisions, 274s wall, 201x real time
   2800/13500 episodes, 29501 decisions, 293s wall, 202x real time
   3000/13500 episodes, 31687 decisions, 313s wall, 202x real time
+no saved models in checkpoints/
+opponent pool 5bee276df0d7, league run 4
+== phase_a: start 00:23:17
+  2850 episodes already logged; playing the remaining 10650
+  200/10650 episodes, 2132 decisions, 21s wall, 206x real time
+  400/10650 episodes, 4153 decisions, 40s wall, 208x real time
