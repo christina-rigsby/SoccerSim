@@ -1155,7 +1155,7 @@ critic and the hand-authored weights to share a scale.
 against hand-authored edge weights well enough for a fair comparison. Symptom: generated plays
 either always win or never win, regardless of situation.
 
-## D-048 — Goals and opponent shots are credited across play boundaries
+## D-048 · Goals and opponent shots are credited across play boundaries
 
 A play record only collected events of its own team, and the scoring team's play usually ends
 when the shot is struck, before the goal registers. In the first 6,159 pool-v3 Phase A games,
