@@ -186,3 +186,9 @@ gen_5fa1f3645f                        194   0.1%    35.6%  -0.0077
 == stats: done 20:02:19
 == critic: start 20:02:19
   critic epoch 1: test MSE 0.015456 vs per-play baseline 0.014881, success acc 0.807
+no saved models in checkpoints/
+opponent pool 5bee276df0d7, league run 4
+== phase_a: already done
+== heldout_ref: already done
+== stats: already done
+== critic: start 21:47:04
