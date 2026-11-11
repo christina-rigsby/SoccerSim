@@ -1,1 +1,2 @@
 143378 decisions; 12150 training games, 1350 held-out games; target possession_return (41s)
+  small (pipeline)    10% ( 1215 games,  12998 rows): held-out skill -3.9% (epoch 6), training skill -2.3%, corr 0.183  [1572s]
