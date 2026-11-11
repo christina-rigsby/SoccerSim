@@ -128,3 +128,60 @@ opponent pool 5bee276df0d7, league run 4
 == phase_a: done 19:57:40
 == heldout_ref: start 19:57:40
   200/1500 episodes, 2231 decisions, 30s wall, 141x real time
+  400/1500 episodes, 4539 decisions, 61s wall, 144x real time
+  600/1500 episodes, 6759 decisions, 100s wall, 132x real time
+  800/1500 episodes, 8998 decisions, 141s wall, 125x real time
+  1000/1500 episodes, 11171 decisions, 180s wall, 123x real time
+  1200/1500 episodes, 13396 decisions, 217s wall, 122x real time
+  1400/1500 episodes, 15424 decisions, 256s wall, 120x real time
+{
+  "run_id": "heldout_ref",
+  "episodes": 1500,
+  "decisions": 16541,
+  "wall_s": 276.5949897766113,
+  "dir": "/home/user/SoccerSim/data/heldout_reference_pool_v3/run=heldout_ref/date=2026-11-11"
+}
+== heldout_ref: done 20:02:18
+== stats: start 20:02:18
+13500 episodes · 143378 decisions · 4788 sim-minutes · 4814 shots · 408 goals
+library gaps: 120204 · generator consulted: 0 · generated plays chosen: 0
+
+play                                    n  share  success   reward
+recycle_possession                  33644  23.5%    76.9%  -0.0030
+mid_block_compact                   23656  16.5%     7.8%   0.0152
+low_block_box_protection            11851   8.3%    28.2%  -0.0080
+counterpress_five_seconds            6605   4.6%     0.1%   0.0054
+long_ball_to_target                  6578   4.6%    25.0%  -0.0112
+fullback_outlet_bounce               5911   4.1%    56.3%  -0.0055
+build_out_short_goal_kick            4627   3.2%    54.3%  -0.0099
+winger_checks_short                  4474   3.1%    42.2%  -0.0062
+switch_of_play                       4208   2.9%    24.5%  -0.0069
+edge_of_box_shot                     3693   2.6%    87.7%   0.1056
+cb_carry_into_midfield               3528   2.5%    70.1%  -0.0010
+high_press_sideline_trap             3330   2.3%    31.0%   0.0103
+direct_counterattack                 2889   2.0%    21.9%   0.0139
+gen_cf5c9636cf                       2816   2.0%    99.1%  -0.0000
+gen_263419283b                       2683   1.9%     0.0%   0.0002
+one_two_wall_pass                    2226   1.6%     4.4%  -0.0015
+gen_dcd5c3003a                       2167   1.5%     0.0%  -0.0011
+gen_d0cee3c696                       2014   1.4%    80.7%  -0.0003
+third_man_combination                1935   1.3%     3.3%  -0.0065
+wide_overlap_cross                   1799   1.3%     0.3%  -0.0049
+gen_e55b04e172                       1706   1.2%     1.6%  -0.0068
+gen_67c4d0530b                       1659   1.2%     0.0%  -0.0143
+gen_e2f3c88f31                       1569   1.1%    68.5%  -0.0035
+pivot_drop_back_three                1298   0.9%    26.6%  -0.0072
+through_ball_behind_high_line         988   0.7%     0.0%  -0.0042
+gen_6cd6536e86                        898   0.6%    63.9%   0.0049
+gen_7ae398e5e4                        687   0.5%    28.1%   0.0065
+switch_through_keeper                 666   0.5%    49.4%  -0.0016
+gen_7ed866b92a                        610   0.4%     0.3%   0.0034
+gen_edcabe7a8b                        584   0.4%     0.5%   0.0032
+gen_81eaa89b15                        567   0.4%   100.0%   0.0159
+gen_64c5493589                        437   0.3%     0.0%   0.0157
+gen_9b2fe595f8                        315   0.2%     0.0%   0.0116
+gen_692b502c31                        295   0.2%     0.0%  -0.0063
+gen_a20edbb411                        271   0.2%    66.1%   0.3673
+gen_5fa1f3645f                        194   0.1%    35.6%  -0.0077
+== stats: done 20:02:19
+== critic: start 20:02:19
