@@ -95,7 +95,18 @@ def train_critic_and_response(root: str | Path | list, out_dir: str | Path, prof
     opt = torch.optim.AdamW(critic.parameters(), lr=cc["lr"], weight_decay=1e-4)
     base = per_play_baseline(train, test)
     hist = []
-    for ep in range(cc["epochs"]):
+    # Resume after a machine restart: one checkpoint per finished epoch, for this exact dataset.
+    ck_path, ck_key = out / "critic_epoch_ckpt.pt", [len(train), len(test), seed, cc["epochs"]]
+    start = 0
+    if ck_path.exists():
+        ck = torch.load(ck_path, weights_only=False)
+        if ck.get("key") == ck_key:
+            critic.load_state_dict(ck["model"])
+            opt.load_state_dict(ck["opt"])
+            hist, start = ck["hist"], ck["epoch"]
+            print(f"  critic: resuming after epoch {start}", flush=True)
+    for ep in range(start, cc["epochs"]):
+        rng = np.random.default_rng(seed + 1000 * (ep + 1))
         critic.train()
         tot = 0.0
         for b in _batches(len(train), cc["batch"], rng):
@@ -114,8 +125,11 @@ def train_critic_and_response(root: str | Path | list, out_dir: str | Path, prof
         hist.append(m)
         print(f"  critic epoch {ep + 1}: test MSE {m['mse']:.6f} vs per-play baseline {m['baseline_mse']:.6f}, "
               f"success acc {m['success_acc']:.3f}", flush=True)
+        torch.save({"key": ck_key, "model": critic.state_dict(), "opt": opt.state_dict(), "hist": hist,
+                    "epoch": ep + 1}, ck_path)
     critic.eval()
     save_model(critic, out / "critic.pt", ids=play_ids(lib))
+    ck_path.unlink(missing_ok=True)
 
     # Response model.
     rc = cfg["response"][prof]

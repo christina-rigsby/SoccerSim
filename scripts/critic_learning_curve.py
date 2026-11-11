@@ -63,7 +63,17 @@ def train_one(train, test, prof: str, epochs: int, lr: float, batch: int, seed: 
     probe = train.subset(probe_idx)
     base_probe = per_play_baseline(train, probe)
     hist = []
-    for ep in range(epochs):
+    ck_path = ROOT / "data" / f"critic_lc_ckpt_{prof}_{len(train)}.pt"  # resume a run after a restart
+    start = 0
+    if ck_path.exists():
+        ck = torch.load(ck_path, weights_only=False)
+        if ck.get("epochs") == epochs:
+            critic.load_state_dict(ck["model"])
+            opt.load_state_dict(ck["opt"])
+            hist, start = ck["hist"], ck["epoch"]
+            print(f"    resuming {prof} on {len(train)} rows after epoch {start}", flush=True)
+    for ep in range(start, epochs):
+        rng = np.random.default_rng(seed + 1000 * (ep + 1))
         critic.train()
         for b in _batches(len(train), batch, rng):
             x, h, tk, ident = _tensors(train, b)
@@ -80,6 +90,9 @@ def train_one(train, test, prof: str, epochs: int, lr: float, batch: int, seed: 
         hist.append({"epoch": ep + 1, "test_skill": 1 - te["mse"] / te["baseline_mse"],
                      "train_skill": 1 - tr["mse"] / tr["baseline_mse"], "test_corr": te["corr"],
                      "test_mse": te["mse"], "baseline_mse": te["baseline_mse"]})
+        torch.save({"epochs": epochs, "model": critic.state_dict(), "opt": opt.state_dict(), "hist": hist,
+                    "epoch": ep + 1}, ck_path)
+    ck_path.unlink(missing_ok=True)
     params = sum(p.numel() for p in critic.parameters())
     return hist, params
 
