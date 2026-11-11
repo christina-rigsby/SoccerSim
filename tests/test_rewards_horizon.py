@@ -40,3 +40,24 @@ def test_an_opponent_shot_counts_against_the_defending_play():
     plays = [_play("press", 0.0, events=[shot])]
     assign_rewards(plays, PHASES, OBJ, cfg)
     assert plays[0]["reward"] == pytest.approx(-cfg["rewards"]["shot_xg"] * 0.2, abs=1e-6)
+
+
+def test_goal_after_the_shooting_play_ended_is_credited_to_the_scorer():
+    """The scorer's play ends at the shot; only the defending play sees the goal (as conceded)."""
+    cfg = load_config("training")
+    shot = {"type": "shot_taken", "team": 0, "t": 4.0, "pos": [40, 0], "data": {"xg": 0.3}}
+    conceded = {"type": "goal_conceded", "team": 1, "t": 4.6, "pos": [52, 0]}
+    att = _play("shot", 3.0, events=[shot])
+    att["t_end"] = 4.0
+    dfn = _play("press", 2.0, team=1, events=[conceded])
+    dfn["t_end"] = 4.6
+    plays = [_play("build", 0.0), att, dfn]
+    plays[0]["t_end"] = 3.0
+    assign_rewards(plays, PHASES, OBJ, cfg)
+    g, xgw = cfg["rewards"]["gamma_per_play"], cfg["rewards"]["shot_xg"]
+    assert att["reward"] == pytest.approx(1.0 + xgw * 0.3, abs=1e-6)
+    assert plays[0]["possession_return"] == pytest.approx(g * att["reward"], abs=1e-6)
+    # The defending play loses the goal and the shot's xG, once each.
+    assert dfn["reward"] == pytest.approx(-1.0 - xgw * 0.3, abs=1e-6)
+    assign_rewards(plays, PHASES, OBJ, cfg)  # idempotent
+    assert sum(e["type"] == "goal" for e in att["events"]) == 1

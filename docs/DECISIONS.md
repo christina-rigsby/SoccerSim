@@ -1154,3 +1154,16 @@ critic and the hand-authored weights to share a scale.
 **Backtrack trigger:** Q-003 proves intractable — i.e. critic scores cannot be calibrated
 against hand-authored edge weights well enough for a fair comparison. Symptom: generated plays
 either always win or never win, regardless of situation.
+
+## D-048 — Goals and opponent shots are credited across play boundaries
+
+A play record only collected events of its own team, and the scoring team's play usually ends
+when the shot is struck, before the goal registers. In the first 6,159 pool-v3 Phase A games,
+181 goals were recorded as `goal_conceded` on the defending play but only 5 as `goal` on a
+scoring play, so attacks were never paid for their goals (only the 0.5 × xG shot credit), and
+opponent shots never counted against the defending play. `credit_cross_team_events`
+(`soccersim/selfplay/rewards.py`) now runs before rewards are assigned: each goal goes to the
+scorer's play that took the shot (and so into its possession return), and each opponent shot to
+the defending play running at the time. Check on 400 games: 18 goals, 18 credited, 18 conceded.
+Rewards are computed when games are logged, so the pool-v3 Phase A data was discarded and is
+being regenerated.

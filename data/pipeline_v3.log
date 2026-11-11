@@ -21,3 +21,27 @@ opponent pool 5bee276df0d7, league run 4
   2850 episodes already logged; playing the remaining 10650
   200/10650 episodes, 2132 decisions, 21s wall, 206x real time
   400/10650 episodes, 4153 decisions, 40s wall, 208x real time
+  600/10650 episodes, 6236 decisions, 60s wall, 211x real time
+  800/10650 episodes, 8374 decisions, 80s wall, 211x real time
+  1000/10650 episodes, 10577 decisions, 100s wall, 213x real time
+  1200/10650 episodes, 12648 decisions, 119s wall, 214x real time
+  1400/10650 episodes, 14771 decisions, 137s wall, 217x real time
+  1600/10650 episodes, 16900 decisions, 156s wall, 218x real time
+  1800/10650 episodes, 19051 decisions, 175s wall, 218x real time
+  2000/10650 episodes, 21182 decisions, 193s wall, 219x real time
+  2200/10650 episodes, 23317 decisions, 212s wall, 220x real time
+  2400/10650 episodes, 25476 decisions, 230s wall, 221x real time
+  2600/10650 episodes, 27505 decisions, 249s wall, 221x real time
+  2800/10650 episodes, 29610 decisions, 269s wall, 221x real time
+  3000/10650 episodes, 31750 decisions, 288s wall, 221x real time
+  3200/10650 episodes, 33899 decisions, 306s wall, 221x real time
+  3400/10650 episodes, 36031 decisions, 326s wall, 221x real time
+no saved models in checkpoints/
+opponent pool 5bee276df0d7, league run 4
+== phase_a: start 00:51:31
+  6159 episodes already logged; playing the remaining 7341
+  200/7341 episodes, 2223 decisions, 22s wall, 195x real time
+  400/7341 episodes, 4271 decisions, 43s wall, 205x real time
+no saved models in checkpoints/
+opponent pool 5bee276df0d7, league run 4
+== phase_a: start 00:56:26
