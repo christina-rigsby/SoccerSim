@@ -117,6 +117,7 @@ def plot(res: dict, path: Path) -> None:
         for s in ("left", "bottom"):
             ax.spines[s].set_color(grid)
         ax.tick_params(colors=muted)
+        ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v:g}"))
     axes[0].set_ylabel("skill over per-play average (%)", color=muted)
     axes[0].legend(frameon=False, fontsize=9, loc="lower right")
     fig.suptitle("Critic: does more data or a bigger model help?  (best epoch; 0% = no better than "
@@ -130,9 +131,9 @@ def main() -> int:
     ap.add_argument("--root", default=None, help="self-play data root (default: the current pool's)")
     ap.add_argument("--fractions", type=float, nargs="+", default=[0.1, 0.25, 0.5, 1.0])
     ap.add_argument("--sizes", nargs="+", default=list(SIZES), choices=list(SIZES))
-    ap.add_argument("--epochs", type=int, default=8)
+    ap.add_argument("--epochs", type=int, default=6)
     ap.add_argument("--lr", type=float, default=0.002)
-    ap.add_argument("--batch", type=int, default=128)
+    ap.add_argument("--batch", type=int, default=256)
     ap.add_argument("--seed", type=int, default=0)
     a = ap.parse_args()
 
@@ -146,11 +147,17 @@ def main() -> int:
           f"target {learning_target()} ({time.time() - t0:.0f}s)", flush=True)
     order = np.random.default_rng(a.seed).permutation(eps)
     OUT.mkdir(parents=True, exist_ok=True)
+    prev = json.loads((OUT / "results.json").read_text()) if (OUT / "results.json").exists() else None
     res = {"target": learning_target(), "decisions": len(ds), "test_games": int(len(np.unique(test.episode))),
            "test_rows": len(test), "epochs": a.epochs, "lr": a.lr, "runs": {}}
-    for size in a.sizes:
-        res["runs"][size] = []
-        for f in sorted(a.fractions):
+    for f in sorted(a.fractions):  # both sizes at each fraction, so small runs finish first
+        for size in a.sizes:
+            res["runs"].setdefault(size, [])
+            done = [r for r in ((prev or {}).get("runs", {}).get(size, [])) if r["fraction"] == f
+                    and prev.get("epochs") == a.epochs and prev.get("decisions") == len(ds)]
+            if done:  # resume: this run finished before a restart
+                res["runs"][size].append(done[0])
+                continue
             keep = set(order[: max(1, int(round(f * len(eps))))])  # nested subsets: 10% within 25% ...
             tr = train_all.subset(np.where([e in keep for e in train_all.episode])[0])
             t1 = time.time()

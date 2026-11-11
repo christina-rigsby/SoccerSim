@@ -108,3 +108,22 @@ opponent pool 5bee276df0d7, league run 4
   8200/10651 episodes, 87114 decisions, 1169s wall, 150x real time
   8400/10651 episodes, 89335 decisions, 1188s wall, 151x real time
   8600/10651 episodes, 91526 decisions, 1209s wall, 152x real time
+  8800/10651 episodes, 93817 decisions, 1230s wall, 154x real time
+  9000/10651 episodes, 95818 decisions, 1247s wall, 155x real time
+  9200/10651 episodes, 97992 decisions, 1266s wall, 156x real time
+  9400/10651 episodes, 100002 decisions, 1283s wall, 157x real time
+  9600/10651 episodes, 102149 decisions, 1300s wall, 158x real time
+  9800/10651 episodes, 104276 decisions, 1318s wall, 159x real time
+  10000/10651 episodes, 106492 decisions, 1338s wall, 160x real time
+  10200/10651 episodes, 108637 decisions, 1357s wall, 161x real time
+  10400/10651 episodes, 110716 decisions, 1376s wall, 161x real time
+  10600/10651 episodes, 112816 decisions, 1395s wall, 162x real time
+{
+  "run_id": "phase_a",
+  "episodes": 10651,
+  "decisions": 113345,
+  "wall_s": 1399.221548318863,
+  "dir": "/home/user/SoccerSim/data/selfplay_pool_v3/run=phase_a/date=2026-11-11"
+}
+== phase_a: done 19:57:40
+== heldout_ref: start 19:57:40
