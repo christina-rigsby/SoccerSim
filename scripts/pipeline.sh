@@ -18,13 +18,18 @@
 #     promote        archive elites -> plays/generated_and_promoted/run_<N>/
 #     reports        everything in reports/run_<N>/ (scripts/selfplay.py reports)
 #
-# Every finished stage leaves a marker in data/pipeline_state/, so if the machine restarts,
+# After every training stage the models are saved to checkpoints/ and pushed (one version,
+# scripts/checkpoints.py); on a fresh machine they are restored first, so nothing trained is
+# redone. Every finished stage leaves a marker in data/pipeline_state/, so if the machine restarts,
 # running this script again picks up at the first unfinished stage (stages also resume
 # internally: logged games are skipped, mutation filtering is cached, behaviour cloning is
 # checkpointed every epoch, and an unfinished league run is resumed).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 SP="python scripts/selfplay.py --workers ${WORKERS:-4}"
+export SOCCERSIM_SAVE_CHECKPOINTS=1   # also save mid-step: every selector iteration, every 2 league updates
+# On a fresh machine, put back the saved models (checkpoints/) before deciding what is left to do.
+python scripts/checkpoints.py restore
 POOL=$(python -c "from soccersim.config import load_config; from soccersim.selfplay.runs import pool_fingerprint; print(pool_fingerprint(load_config('league')))")
 RUN=$(python -c "
 from soccersim.selfplay.runs import latest_run_dir, next_run_number, read_state
@@ -39,6 +44,10 @@ step() {
   "$@"
   touch "$marker"
   echo "== $(basename "$marker"): done $(date -u +%H:%M:%S)"
+  # Save trained models to the repo after every step that trains something.
+  case "$(basename "$marker")" in
+    critic|selector|pretrain|league|promote) python scripts/checkpoints.py save --push || true ;;
+  esac
 }
 critic_ab() {
   python -c "from soccersim.generator.train import compare_critic_ranking; import json; print('critic A/B', json.dumps(compare_critic_ranking('data/models', 60)))"

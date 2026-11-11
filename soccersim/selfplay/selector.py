@@ -30,6 +30,7 @@ from ..config import load_config
 from ..sim.scenarios import SCENARIO_TYPES, sample_scenario
 from .policies import style_spec
 from .runner import run_jobs
+from .runs import save_checkpoint
 
 SELECTOR_DIR = "selector"
 
@@ -118,6 +119,7 @@ def train_selector(models_dir: str | Path, data_root: str | Path, iterations: in
                "wall_s": round(time.time() - t0, 1)}
         state["history"].append(rec)
         state_path.write_text(json.dumps(state, indent=1))
+        save_checkpoint(f"selector iteration {it}")
         print(f"  selector iteration {it}: {len(res)} games (epsilon {eps:.2f}), mean play reward "
               f"{rec['mean_play_reward']:+.4f}, goals {goals_for}-{goals_against}, shots {shots}; refit MSE "
               f"{fit['mse']:.6f} vs per-play {fit['baseline_mse']:.6f}", flush=True)

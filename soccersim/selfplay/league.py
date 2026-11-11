@@ -54,6 +54,7 @@ from .runs import (
     read_state,
     run_dirs,
     runs_root,
+    save_checkpoint,
 )
 
 BAND_SCENARIOS = {"own_third": "mid_progression", "mid_own": "mid_progression", "mid_opp": "random_open_play",
@@ -542,6 +543,8 @@ def run_league(models_dir: str | Path, data_root: str | Path, updates: int | Non
               f"Elo main {rec['elo'].get('main', 0):.0f}, archive {rec['archive']}, {rec['wall_s']}s", flush=True)
         if lg.update % every == 0:
             print("  held-out check:", lg.held_out_check(workers=workers), flush=True)
+        if lg.update % 2 == 0:
+            save_checkpoint(f"run {lg.run}, update {lg.update}")
     ho = lg.held_out_check(workers=workers)
     print("  held-out check:", ho, flush=True)
     ev = lg.evaluate(n=lg.lcfg.get("eval_games", 12), workers=workers)

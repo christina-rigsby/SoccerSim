@@ -206,3 +206,18 @@ def plan_start(models_dir: str | Path, league_cfg: dict, mode: str = "auto") -> 
                               f"started from (last passed in run {prev.get('continued_from')})"}
         return {**fresh, "reason": f"run {prev_n} failed its regression gate and started fresh itself"}
     return {**fresh, "reason": f"run {prev_n} has no regression-gate result"}
+
+
+def save_checkpoint(label: str) -> None:
+    """Save trained models to the repo mid-step (scripts/checkpoints.py save --push), when the
+    pipeline asks for it with ``SOCCERSIM_SAVE_CHECKPOINTS=1``; a no-op otherwise."""
+    import os
+    import subprocess
+    import sys
+
+    if os.environ.get("SOCCERSIM_SAVE_CHECKPOINTS") != "1":
+        return
+    from ..config import REPO_ROOT
+
+    print(f"  saving models ({label})", flush=True)
+    subprocess.run([sys.executable, str(REPO_ROOT / "scripts" / "checkpoints.py"), "save", "--push"], check=False)
