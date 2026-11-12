@@ -206,3 +206,4 @@ opponent pool 5bee276df0d7, league run 4
   critic epoch 5: test MSE 0.015212 vs per-play baseline 0.014881, success acc 0.823
   critic epoch 6: test MSE 0.015257 vs per-play baseline 0.014881, success acc 0.824
   critic epoch 7: test MSE 0.015277 vs per-play baseline 0.014881, success acc 0.821
+  critic epoch 8: test MSE 0.015071 vs per-play baseline 0.014881, success acc 0.825
