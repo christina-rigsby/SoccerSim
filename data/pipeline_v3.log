@@ -350,3 +350,4891 @@ push failed; the commit is local and will go with the next push
 saved 6 items to checkpoints/ (4.6 MB)
 push failed; the commit is local and will go with the next push
 == pretrain: start 14:49:24
+  BC examples from logs: 12000
+  earlier promoted plays: 17 from runs [1, 2, 3]
+  mutation filtering: 352 plays evaluated, 203 survivors (125 from earlier promoted plays)
+  BC epoch 1: loss 0.578, held-out token acc 0.990
+  BC epoch 2: loss 0.066, held-out token acc 0.991
+  BC epoch 3: loss 0.042, held-out token acc 0.993
+  BC epoch 4: loss 0.034, held-out token acc 0.992
+  BC epoch 5: loss 0.030, held-out token acc 0.993
+  BC epoch 6: loss 0.028, held-out token acc 0.993
+  validity: 100.000% over 240 samples
+  matched scenarios: generated 0.0371 vs library 0.0094 mean play reward -> meets the 80% target
+{
+  "bc_examples": 12000,
+  "mutation": {
+    "summary": {
+      "build_out_short_goal_kick": {
+        "parent_mean": -0.008739822473685509,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": -0.00010001839781241123
+      },
+      "cb_carry_into_midfield": {
+        "parent_mean": -7.711990701189202e-05,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.00015748780793350235
+      },
+      "direct_counterattack": {
+        "parent_mean": -0.0012345994584547978,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.008581603341135334
+      },
+      "edge_of_box_shot": {
+        "parent_mean": 0.04495070853569614,
+        "mutants": 10,
+        "kept": 7,
+        "best_mutant_mean": 0.06747535363649802
+      },
+      "fullback_outlet_bounce": {
+        "parent_mean": -0.0009341187910120499,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": -0.0002571272030690945
+      },
+      "long_ball_to_target": {
+        "parent_mean": -0.004863819608348022,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.00836990627517086
+      },
+      "recycle_possession": {
+        "parent_mean": -0.0009404342832942851,
+        "mutants": 10,
+        "kept": 10,
+        "best_mutant_mean": 0.0006643824082129037
+      },
+      "switch_of_play": {
+        "parent_mean": -0.0031964347051478825,
+        "mutants": 10,
+        "kept": 6,
+        "best_mutant_mean": -0.002099442908790354
+      },
+      "switch_through_keeper": {
+        "parent_mean": 0.0013840080986098125,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.0014177130037716806
+      },
+      "third_man_combination": {
+        "parent_mean": -0.006201223381067639,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.007343090978972032
+      },
+      "through_ball_behind_high_line": {
+        "parent_mean": -0.007173502831767502,
+        "mutants": 10,
+        "kept": 10,
+        "best_mutant_mean": 0.0012145127176246863
+      },
+      "wide_overlap_cross": {
+        "parent_mean": -0.012285370049018494,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.010830292805996483
+      },
+      "winger_checks_short": {
+        "parent_mean": -0.002123187664816391,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.0010765529605280008
+      },
+      "gen_263419283b": {
+        "parent_mean": 0.004432260965286629,
+        "mutants": 10,
+        "kept": 10,
+        "best_mutant_mean": 0.005677606351142549
+      },
+      "gen_67c4d0530b": {
+        "parent_mean": -0.012202776217412557,
+        "mutants": 10,
+        "kept": 10,
+        "best_mutant_mean": -0.005194469505304243
+      },
+      "gen_7ae398e5e4": {
+        "parent_mean": -0.0038020770443376282,
+        "mutants": 10,
+        "kept": 10,
+        "best_mutant_mean": 0.00017375669611616648
+      },
+      "gen_7ed866b92a": {
+        "parent_mean": 0.011031276645157502,
+        "mutants": 10,
+        "kept": 8,
+        "best_mutant_mean": 0.011031276645157502
+      },
+      "gen_dcd5c3003a": {
+        "parent_mean": -0.003230685120878476,
+        "mutants": 10,
+        "kept": 9,
+        "best_mutant_mean": 0.005228064731924646
+      },
+      "gen_5fa1f3645f": {
+        "parent_mean": -0.007294563189357742,
+        "mutants": 10,
+        "kept": 7,
+        "best_mutant_mean": -0.003941106561683381
+      },
+      "gen_64c5493589": {
+        "parent_mean": 0.006647628333590901,
+        "mutants": 10,
+        "kept": 10,
+        "best_mutant_mean": 0.006647628333590901
+      },
+      "gen_692b502c31": {
+        "parent_mean": -0.0017655554378633777,
+        "mutants": 10,
+        "kept": 9,
+        "best_mutant_mean": 0.01851550396452589
+      },
+      "gen_e55b04e172": {
+        "parent_mean": -0.006350605560268033,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.02775793685141788
+      },
+      "gen_6cd6536e86": {
+        "parent_mean": -0.0035948977185644207,
+        "mutants": 10,
+        "kept": 9,
+        "best_mutant_mean": 0.0005038948822658953
+      },
+      "gen_81eaa89b15": {
+        "parent_mean": 0.0,
+        "mutants": 10,
+        "kept": 10,
+        "best_mutant_mean": 0.0
+      },
+      "gen_9b2fe595f8": {
+        "parent_mean": 0.006647628333590901,
+        "mutants": 10,
+        "kept": 10,
+        "best_mutant_mean": 0.006647628333590901
+      },
+      "gen_d0cee3c696": {
+        "parent_mean": 0.00039040363831490424,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": 0.0004883827722664535
+      },
+      "gen_e2f3c88f31": {
+        "parent_mean": -0.0003192867714475519,
+        "mutants": 10,
+        "kept": 5,
+        "best_mutant_mean": -0.0002795447750359792
+      },
+      "gen_edcabe7a8b": {
+        "parent_mean": 0.011031276645157502,
+        "mutants": 10,
+        "kept": 8,
+        "best_mutant_mean": 0.011031276645157502
+      }
+    },
+    "evaluated": 352,
+    "rollouts": [
+      {
+        "id": "build_out_short_goal_kick",
+        "parent": "build_out_short_goal_kick",
+        "kind": "parent",
+        "rewards": [
+          -0.001994404924493093,
+          -3.1635736085024874e-05,
+          -0.00021246205254289198,
+          -0.00017153542194060616,
+          -0.00010215118121365864,
+          -0.04992674552583778
+        ],
+        "kept": false
+      },
+      {
+        "id": "build_out_short_goal_kick__m6ed27f78",
+        "parent": "build_out_short_goal_kick",
+        "kind": "mutant",
+        "rewards": [
+          -0.0006131369106667558,
+          5.195032220146195e-06,
+          -2.3357961707361208e-07,
+          7.563797975826403e-06,
+          -1.6134827988220635e-05,
+          1.2515927212002759e-05
+        ],
+        "kept": true
+      },
+      {
+        "id": "build_out_short_goal_kick__m9d1a4759",
+        "parent": "build_out_short_goal_kick",
+        "kind": "mutant",
+        "rewards": [
+          -0.002073027368116971,
+          -1.6971374910027676e-05,
+          -0.0496917878948548,
+          -1.2300649286312026e-05,
+          -7.423822028908289e-05,
+          -1.9404205049013135e-05
+        ],
+        "kept": false
+      },
+      {
+        "id": "build_out_short_goal_kick__mc9982b33",
+        "parent": "build_out_short_goal_kick",
+        "kind": "mutant",
+        "rewards": [
+          -0.001994404924493093,
+          -0.00014511727551277769,
+          -0.0001871729023570929,
+          -0.00039325305497982417,
+          -0.00012591425844236254,
+          -0.0001189754236827871
+        ],
+        "kept": true
+      },
+      {
+        "id": "build_out_short_goal_kick__m7bd2e9fc",
+        "parent": "build_out_short_goal_kick",
+        "kind": "mutant",
+        "rewards": [
+          -0.001994404924493093,
+          -3.1635736085024874e-05,
+          -0.00021246205254289198,
+          -0.00017153542194060616,
+          -0.00010215118121365864,
+          -0.04992674552583778
+        ],
+        "kept": false
+      },
+      {
+        "id": "build_out_short_goal_kick__m5167ad2c",
+        "parent": "build_out_short_goal_kick",
+        "kind": "mutant",
+        "rewards": [
+          -0.0019933808361866645,
+          -3.1635736085024874e-05,
+          -0.00021209616147553102,
+          -0.00017153542194060616,
+          -0.00010215118121365864,
+          -0.04992674552583778
+        ],
+        "kept": false
+      },
+      {
+        "id": "build_out_short_goal_kick__mc4c19a22",
+        "parent": "build_out_short_goal_kick",
+        "kind": "mutant",
+        "rewards": [
+          -0.001994404924493093,
+          -0.04999035086507985,
+          -0.00021246205254289198,
+          -0.049828897563319006,
+          -0.049711763653647996,
+          -0.04975182847475843
+        ],
+        "kept": false
+      },
+      {
+        "id": "build_out_short_goal_kick__m8cb6758a",
+        "parent": "build_out_short_goal_kick",
+        "kind": "mutant",
+        "rewards": [
+          -0.0008881258377845692,
+          -1.3935079843879414e-05,
+          -3.722667117927493e-05,
+          -5.954194790568079e-06,
+          -2.292192812261909e-05,
+          -1.4470178351502772e-05
+        ],
+        "kept": true
+      },
+      {
+        "id": "build_out_short_goal_kick__m4d771345",
+        "parent": "build_out_short_goal_kick",
+        "kind": "mutant",
+        "rewards": [
+          -4.54568163767502e-05,
+          -3.1126051872401583e-07,
+          -1.9953144424940394e-06,
+          3.509339035735748e-06,
+          -0.0005585828879666917,
+          2.7265533944567655e-06
+        ],
+        "kept": true
+      },
+      {
+        "id": "build_out_short_goal_kick__ma23b8068",
+        "parent": "build_out_short_goal_kick",
+        "kind": "mutant",
+        "rewards": [
+          -0.001994404924493093,
+          -0.0018833040161502033,
+          -0.00021246205254289198,
+          -0.0019072287086537645,
+          -0.0018878240824344167,
+          -0.04992674552583778
+        ],
+        "kept": false
+      },
+      {
+        "id": "build_out_short_goal_kick__mc0eba0c1",
+        "parent": "build_out_short_goal_kick",
+        "kind": "mutant",
+        "rewards": [
+          -0.001995105975576266,
+          -0.00014511727551277769,
+          -0.0001877542794159262,
+          -0.00039325305497982417,
+          -0.00012591425844236254,
+          -0.00011918372367211542
+        ],
+        "kept": true
+      },
+      {
+        "id": "cb_carry_into_midfield",
+        "parent": "cb_carry_into_midfield",
+        "kind": "parent",
+        "rewards": [
+          0.0002678974684216136,
+          0.0003348936921179248,
+          0.00013191211946711467,
+          -0.0006223113219762499,
+          -0.00033957447429296996,
+          -0.00023553692580878527
+        ],
+        "kept": false
+      },
+      {
+        "id": "cb_carry_into_midfield__m959c8220",
+        "parent": "cb_carry_into_midfield",
+        "kind": "mutant",
+        "rewards": [
+          -0.0015662375026243881,
+          -0.00044427455380055374,
+          -0.0004990937858108061,
+          -0.0016103106895687513,
+          -9.035790893513126e-06,
+          8.20777009716972e-06
+        ],
+        "kept": false
+      },
+      {
+        "id": "cb_carry_into_midfield__mdc82ae71",
+        "parent": "cb_carry_into_midfield",
+        "kind": "mutant",
+        "rewards": [
+          8.714456207481285e-05,
+          5.561461932401812e-05,
+          0.00013191211946711467,
+          -0.0006223113219762499,
+          -0.0016258759387270828,
+          -0.00023553692580878527
+        ],
+        "kept": true
+      },
+      {
+        "id": "cb_carry_into_midfield__mf1cd46c0",
+        "parent": "cb_carry_into_midfield",
+        "kind": "mutant",
+        "rewards": [
+          0.0002678974684216136,
+          0.0003348936921179248,
+          0.0002283814367365581,
+          -0.0003899722692472258,
+          -0.00033957447429296996,
+          -0.00020088899358819065
+        ],
+        "kept": true
+      },
+      {
+        "id": "cb_carry_into_midfield__m5b6ffe65",
+        "parent": "cb_carry_into_midfield",
+        "kind": "mutant",
+        "rewards": [
+          -0.001688657292110582,
+          -0.0017334326190391602,
+          -0.0015299591807384078,
+          -0.0014249015609905658,
+          -0.00010281653918085311,
+          -0.001647587116099223
+        ],
+        "kept": false
+      },
+      {
+        "id": "cb_carry_into_midfield__mcc46c0bc",
+        "parent": "cb_carry_into_midfield",
+        "kind": "mutant",
+        "rewards": [
+          0.0002678974684216136,
+          0.0003348936921179248,
+          0.000126743090581782,
+          -0.0006026358751050429,
+          -0.00033957447429296996,
+          -0.00020523125052848874
+        ],
+        "kept": true
+      },
+      {
+        "id": "cb_carry_into_midfield__m7236674f",
+        "parent": "cb_carry_into_midfield",
+        "kind": "mutant",
+        "rewards": [
+          -0.0008560173740061842,
+          0.00015963674317001977,
+          0.00013191211946711467,
+          -0.0006223113219762499,
+          -0.04670649162512242,
+          -0.00023553692580878527
+        ],
+        "kept": false
+      },
+      {
+        "id": "cb_carry_into_midfield__mfd414e48",
+        "parent": "cb_carry_into_midfield",
+        "kind": "mutant",
+        "rewards": [
+          0.00022556166671137967,
+          0.0003162258606065702,
+          -0.00021982372536885793,
+          0.00019315343911750597,
+          0.0003671873162760606,
+          6.262229025835557e-05
+        ],
+        "kept": true
+      },
+      {
+        "id": "cb_carry_into_midfield__m8de3d76e",
+        "parent": "cb_carry_into_midfield",
+        "kind": "mutant",
+        "rewards": [
+          0.00026822529343085294,
+          0.0003348936921179248,
+          0.00013239381038433577,
+          -0.0006223113219762499,
+          -0.00052604846555648,
+          -0.00027648946891322204
+        ],
+        "kept": true
+      },
+      {
+        "id": "cb_carry_into_midfield__m712ccaeb",
+        "parent": "cb_carry_into_midfield",
+        "kind": "mutant",
+        "rewards": [
+          -0.0014926966123587557,
+          -0.001553549769386953,
+          -0.0010234505798662127,
+          -0.0016905622432225893,
+          -0.001367798844365187,
+          -0.001843769507985725
+        ],
+        "kept": false
+      },
+      {
+        "id": "cb_carry_into_midfield__m20ccb36a",
+        "parent": "cb_carry_into_midfield",
+        "kind": "mutant",
+        "rewards": [
+          -0.0014105223973645067,
+          -0.00025600817365408444,
+          0.00013191211946711467,
+          -0.0006223113219762499,
+          -0.0006079173275129277,
+          -0.00023553692580878527
+        ],
+        "kept": false
+      },
+      {
+        "id": "direct_counterattack",
+        "parent": "direct_counterattack",
+        "kind": "parent",
+        "rewards": [
+          -0.002438535145137234,
+          -0.0008392162975505713,
+          -0.00341868178469586,
+          0.0009181578974893165,
+          -0.00022822713208750338,
+          -0.0014010942887469346
+        ],
+        "kept": false
+      },
+      {
+        "id": "direct_counterattack__m8d46dc94",
+        "parent": "direct_counterattack",
+        "kind": "mutant",
+        "rewards": [
+          -0.001561705420875652,
+          0.011686828366715347,
+          -0.003474222634694678,
+          0.0009244455667591842,
+          -0.0012069892968156748,
+          -0.0019761716848407246
+        ],
+        "kept": true
+      },
+      {
+        "id": "direct_counterattack__mfe4585e4",
+        "parent": "direct_counterattack",
+        "kind": "mutant",
+        "rewards": [
+          -0.002438535145137234,
+          -0.0008392162975505713,
+          -0.00341868178469586,
+          0.0009181578974893165,
+          -0.00022822713208750338,
+          -0.0014010942887469346
+        ],
+        "kept": false
+      },
+      {
+        "id": "direct_counterattack__m09cb1ba2",
+        "parent": "direct_counterattack",
+        "kind": "mutant",
+        "rewards": [
+          -0.002531307184123737,
+          -0.0019498391828438148,
+          -0.003378931964188963,
+          0.0009181578974893165,
+          3.4362265179808255e-05,
+          -0.0014485535044855419
+        ],
+        "kept": false
+      },
+      {
+        "id": "direct_counterattack__mcf4659cd",
+        "parent": "direct_counterattack",
+        "kind": "mutant",
+        "rewards": [
+          -0.002438535145137234,
+          -0.0008392162975505713,
+          -0.00341868178469586,
+          0.006177362296491252,
+          -0.0007599210208687826,
+          -0.0014010942887469346
+        ],
+        "kept": true
+      },
+      {
+        "id": "direct_counterattack__m5c48e22b",
+        "parent": "direct_counterattack",
+        "kind": "mutant",
+        "rewards": [
+          -0.002438535145137234,
+          -0.0008392162975505713,
+          -0.0020850099180622153,
+          0.0009181578974893165,
+          -0.00022822713208750338,
+          -0.0014010942887469346
+        ],
+        "kept": true
+      },
+      {
+        "id": "direct_counterattack__m0c86a941",
+        "parent": "direct_counterattack",
+        "kind": "mutant",
+        "rewards": [
+          -0.002438535145137234,
+          -0.0008392162975505713,
+          -0.00341868178469586,
+          0.0009181578974893165,
+          -0.00022822713208750338,
+          -0.0014010942887469346
+        ],
+        "kept": false
+      },
+      {
+        "id": "direct_counterattack__m583c520e",
+        "parent": "direct_counterattack",
+        "kind": "mutant",
+        "rewards": [
+          -0.0019679934234855517,
+          -0.00044221049510462414,
+          0.08327036891593223,
+          0.0009181578974893165,
+          -0.00022822713208750338,
+          -0.030060475715931876
+        ],
+        "kept": true
+      },
+      {
+        "id": "direct_counterattack__m22f77f3f",
+        "parent": "direct_counterattack",
+        "kind": "mutant",
+        "rewards": [
+          -0.0026184373475365147,
+          -0.00042634598820793547,
+          -0.0033050306423678903,
+          0.0009181578974893165,
+          -0.00022822713208750338,
+          -0.001388916465276415
+        ],
+        "kept": false
+      },
+      {
+        "id": "direct_counterattack__m6ef6e229",
+        "parent": "direct_counterattack",
+        "kind": "mutant",
+        "rewards": [
+          -0.0014220306138382557,
+          -0.013850469094670937,
+          0.00045943626618959177,
+          0.0009181578974893165,
+          -0.00022822713208750338,
+          -0.00038984298184987706
+        ],
+        "kept": false
+      },
+      {
+        "id": "direct_counterattack__mebb81cfd",
+        "parent": "direct_counterattack",
+        "kind": "mutant",
+        "rewards": [
+          -0.0026180617549170573,
+          -0.0011496432670929178,
+          -0.0009945172172073427,
+          0.0009181578974893165,
+          -0.00022822713208750338,
+          -0.0016885274851627247
+        ],
+        "kept": true
+      },
+      {
+        "id": "edge_of_box_shot",
+        "parent": "edge_of_box_shot",
+        "kind": "parent",
+        "rewards": [
+          0.09270004769399436,
+          0.08701284629186533,
+          0.034264405083732366,
+          0.0005565183080812192,
+          0.020584659205234154,
+          0.03458577463126938
+        ],
+        "kept": false
+      },
+      {
+        "id": "edge_of_box_shot__mbed28cf9",
+        "parent": "edge_of_box_shot",
+        "kind": "mutant",
+        "rewards": [
+          0.09270004769399436,
+          0.08701284629186533,
+          0.0005565183080812192,
+          0.03458577463126938,
+          0.09187839393205255,
+          0.09811854096172526
+        ],
+        "kept": true
+      },
+      {
+        "id": "edge_of_box_shot__m2b851d6d",
+        "parent": "edge_of_box_shot",
+        "kind": "mutant",
+        "rewards": [
+          0.05647738508533881,
+          0.08580176730850787,
+          -0.0015914907800770178,
+          0.07075754731072137,
+          0.052820187091780595,
+          0.032000154494073126
+        ],
+        "kept": false
+      },
+      {
+        "id": "edge_of_box_shot__m9e81f835",
+        "parent": "edge_of_box_shot",
+        "kind": "mutant",
+        "rewards": [
+          0.09270004769399436,
+          0.08701284629186533,
+          0.0005565183080812192,
+          0.03458577463126938,
+          0.09187839393205255,
+          0.033961523989169726
+        ],
+        "kept": true
+      },
+      {
+        "id": "edge_of_box_shot__mf04297c1",
+        "parent": "edge_of_box_shot",
+        "kind": "mutant",
+        "rewards": [
+          0.03031979522343901,
+          0.023671170242302923,
+          -0.0033669629605767026,
+          -0.001887422672734727,
+          0.02215841716409198,
+          0.00914560438045844
+        ],
+        "kept": false
+      },
+      {
+        "id": "edge_of_box_shot__m6afe0103",
+        "parent": "edge_of_box_shot",
+        "kind": "mutant",
+        "rewards": [
+          0.09270004769399436,
+          0.08701284629186533,
+          0.0005565183080812192,
+          0.03458577463126938,
+          0.09187839393205255,
+          0.033961523989169726
+        ],
+        "kept": true
+      },
+      {
+        "id": "edge_of_box_shot__mbeee8b07",
+        "parent": "edge_of_box_shot",
+        "kind": "mutant",
+        "rewards": [
+          0.09270004769399436,
+          0.08701284629186533,
+          0.0005565183080812192,
+          0.03458577463126938,
+          0.09187839393205255,
+          0.033961523989169726
+        ],
+        "kept": true
+      },
+      {
+        "id": "edge_of_box_shot__mbedc29d0",
+        "parent": "edge_of_box_shot",
+        "kind": "mutant",
+        "rewards": [
+          0.09020117668977107,
+          0.05872562199733391,
+          0.0007456631840868089,
+          0.03417765478709487,
+          0.06943580646556892,
+          0.09764652866612822
+        ],
+        "kept": true
+      },
+      {
+        "id": "edge_of_box_shot__m6ffaf0d7",
+        "parent": "edge_of_box_shot",
+        "kind": "mutant",
+        "rewards": [
+          0.09270004769399436,
+          -0.0030808569197267807,
+          0.0005565183080812192,
+          0.027432473669304014,
+          0.09187839393205255,
+          0.002397390964110943
+        ],
+        "kept": false
+      },
+      {
+        "id": "edge_of_box_shot__m59c31ab8",
+        "parent": "edge_of_box_shot",
+        "kind": "mutant",
+        "rewards": [
+          0.09270004769399436,
+          0.08701284629186533,
+          0.0005565183080812192,
+          0.03458577463126938,
+          0.09187839393205255,
+          0.033961523989169726
+        ],
+        "kept": true
+      },
+      {
+        "id": "edge_of_box_shot__m25658ec3",
+        "parent": "edge_of_box_shot",
+        "kind": "mutant",
+        "rewards": [
+          0.09270004769399436,
+          0.08701284629186533,
+          0.0005565183080812192,
+          0.03458577463126938,
+          0.09187839393205255,
+          0.033961523989169726
+        ],
+        "kept": true
+      },
+      {
+        "id": "fullback_outlet_bounce",
+        "parent": "fullback_outlet_bounce",
+        "kind": "parent",
+        "rewards": [
+          -0.0007911823813076622,
+          -0.0008303789520818124,
+          -0.0009826400346624707,
+          -0.001371300232661736,
+          -0.0017662746072313017,
+          0.00013706346187268396
+        ],
+        "kept": false
+      },
+      {
+        "id": "fullback_outlet_bounce__m48a4ee6c",
+        "parent": "fullback_outlet_bounce",
+        "kind": "mutant",
+        "rewards": [
+          -0.0017913642301521891,
+          -0.0013560872485471123,
+          -0.0002672594455845039,
+          -0.00012977786097944852,
+          -0.0007681036709503292,
+          -0.002640365684780847
+        ],
+        "kept": true
+      },
+      {
+        "id": "fullback_outlet_bounce__mc6dbfce8",
+        "parent": "fullback_outlet_bounce",
+        "kind": "mutant",
+        "rewards": [
+          -0.0006630665565665154,
+          6.953049597533192e-06,
+          -0.03968709715523226,
+          -0.0015145217656885365,
+          -0.0016468923051103576,
+          1.1413179989641295e-05
+        ],
+        "kept": false
+      },
+      {
+        "id": "fullback_outlet_bounce__mf0b7b23c",
+        "parent": "fullback_outlet_bounce",
+        "kind": "mutant",
+        "rewards": [
+          -0.0011849693817871255,
+          0.00040201440557722547,
+          -9.425930108377181e-05,
+          -0.00012874714391762458,
+          -0.0005994240874616259,
+          6.262229025835557e-05
+        ],
+        "kept": true
+      },
+      {
+        "id": "fullback_outlet_bounce__m8715ec5e",
+        "parent": "fullback_outlet_bounce",
+        "kind": "mutant",
+        "rewards": [
+          -0.0009419249976253454,
+          -0.0816783504911874,
+          -0.0013402046835832501,
+          0.00014549091799101986,
+          -0.08363951365589342,
+          0.0013172346296963181
+        ],
+        "kept": false
+      },
+      {
+        "id": "fullback_outlet_bounce__m39533e27",
+        "parent": "fullback_outlet_bounce",
+        "kind": "mutant",
+        "rewards": [
+          -0.0007911823813076622,
+          0.00036234165095694847,
+          -0.0012617283164911095,
+          -0.0019135085553949154,
+          -0.0006294818961848827,
+          1.999151869179483e-05
+        ],
+        "kept": true
+      },
+      {
+        "id": "fullback_outlet_bounce__m18451685",
+        "parent": "fullback_outlet_bounce",
+        "kind": "mutant",
+        "rewards": [
+          -0.027414765228070716,
+          0.001213315609007476,
+          -0.00014827060738140108,
+          -0.0003225474843092154,
+          0.0013687367966839902
+        ],
+        "kept": false
+      },
+      {
+        "id": "fullback_outlet_bounce__m95976ec8",
+        "parent": "fullback_outlet_bounce",
+        "kind": "mutant",
+        "rewards": [
+          -0.0007911823813076622,
+          -0.025291357006154508,
+          -0.0009826400346624707,
+          -0.00033240998738071244,
+          -0.00172271022211809,
+          -6.36172324830972e-05
+        ],
+        "kept": false
+      },
+      {
+        "id": "fullback_outlet_bounce__m8488d6bc",
+        "parent": "fullback_outlet_bounce",
+        "kind": "mutant",
+        "rewards": [
+          -0.0007911823813076622,
+          -0.0008303789520818124,
+          -0.0009826400346624707,
+          -0.001371300232661736,
+          -0.0017662746072313017,
+          -9.648247239887539e-06
+        ],
+        "kept": true
+      },
+      {
+        "id": "fullback_outlet_bounce__mb98ab3e8",
+        "parent": "fullback_outlet_bounce",
+        "kind": "mutant",
+        "rewards": [
+          -0.0006400560060314756,
+          -0.04145821011296036,
+          -0.0009605708618255042,
+          -0.001317107018845286,
+          -0.001740962995656313,
+          -2.614098844692242e-05
+        ],
+        "kept": false
+      },
+      {
+        "id": "fullback_outlet_bounce__m53cd64d0",
+        "parent": "fullback_outlet_bounce",
+        "kind": "mutant",
+        "rewards": [
+          -0.0006780221147355912,
+          -0.0013546235204401347,
+          -0.0015343743539071725,
+          -0.001390224463551937,
+          -0.0018141169436684274,
+          1.7512741645915597e-07
+        ],
+        "kept": true
+      },
+      {
+        "id": "long_ball_to_target",
+        "parent": "long_ball_to_target",
+        "kind": "parent",
+        "rewards": [
+          0.009625872638255331,
+          0.0007389618936733157,
+          0.010687311168082591,
+          -0.0005471424137640287,
+          -0.024179569637509904,
+          -0.025508351298825435
+        ],
+        "kept": false
+      },
+      {
+        "id": "long_ball_to_target__m12418706",
+        "parent": "long_ball_to_target",
+        "kind": "mutant",
+        "rewards": [
+          -8.373196678811146e-05,
+          0.00020064853919401354,
+          -0.0004107370649885488,
+          0.0015886954816663797,
+          0.00019064981379229157,
+          -0.0001377034755396956
+        ],
+        "kept": true
+      },
+      {
+        "id": "long_ball_to_target__mfa3e6973",
+        "parent": "long_ball_to_target",
+        "kind": "mutant",
+        "rewards": [
+          0.018270557932507293,
+          0.009832839803317967,
+          -0.0004311455954301782,
+          -0.04268510970984248,
+          0.0038237708185252083,
+          0.0024582045814283363
+        ],
+        "kept": true
+      },
+      {
+        "id": "long_ball_to_target__md736d91c",
+        "parent": "long_ball_to_target",
+        "kind": "mutant",
+        "rewards": [
+          -0.025302721596858438,
+          0.009186765526293269,
+          -0.00048533581866885313,
+          0.005493454681244856,
+          0.00366091250443319,
+          0.0027121462210079623
+        ],
+        "kept": true
+      },
+      {
+        "id": "long_ball_to_target__m59388562",
+        "parent": "long_ball_to_target",
+        "kind": "mutant",
+        "rewards": [
+          0.009625872638255331,
+          0.010687311168082591,
+          -0.0007979224543717568,
+          -0.024179569637509904,
+          -0.025508351298825435,
+          -0.037899683567151336
+        ],
+        "kept": false
+      },
+      {
+        "id": "long_ball_to_target__ma4fbbd85",
+        "parent": "long_ball_to_target",
+        "kind": "mutant",
+        "rewards": [
+          0.009625872638255331,
+          0.010687311168082591,
+          -0.0005471424137640287,
+          -0.024179569637509904,
+          -0.025508351298825435,
+          -0.037899683567151336
+        ],
+        "kept": false
+      },
+      {
+        "id": "long_ball_to_target__m22fe6ddd",
+        "parent": "long_ball_to_target",
+        "kind": "mutant",
+        "rewards": [
+          0.01599377031050981,
+          0.011285702194975891,
+          -0.00015508852865950447,
+          0.006909307470261998,
+          -0.0005275241937427576,
+          0.016713270397679718
+        ],
+        "kept": true
+      },
+      {
+        "id": "long_ball_to_target__m12418706",
+        "parent": "long_ball_to_target",
+        "kind": "mutant",
+        "rewards": [
+          -8.373196678811146e-05,
+          0.00020064853919401354,
+          -0.0004107370649885488,
+          0.0015886954816663797,
+          0.00019064981379229157,
+          -0.0001377034755396956
+        ],
+        "kept": true
+      },
+      {
+        "id": "long_ball_to_target__m94e7e7e3",
+        "parent": "long_ball_to_target",
+        "kind": "mutant",
+        "rewards": [
+          0.009625872638255331,
+          0.010687311168082591,
+          -0.0005471424137640287,
+          -0.024179569637509904,
+          -0.025508351298825435,
+          -0.037899683567151336
+        ],
+        "kept": false
+      },
+      {
+        "id": "long_ball_to_target__md634a90f",
+        "parent": "long_ball_to_target",
+        "kind": "mutant",
+        "rewards": [
+          0.009625872638255331,
+          0.010687311168082591,
+          -0.0003190015937009263,
+          -0.024179569637509904,
+          -0.025508351298825435,
+          -0.037899683567151336
+        ],
+        "kept": false
+      },
+      {
+        "id": "long_ball_to_target__m8b5ad2b8",
+        "parent": "long_ball_to_target",
+        "kind": "mutant",
+        "rewards": [
+          0.009625872638255331,
+          0.010687311168082591,
+          0.001018570706237499,
+          -0.024179569637509904,
+          -0.025508351298825435,
+          -0.037899683567151336
+        ],
+        "kept": false
+      },
+      {
+        "id": "one_two_wall_pass",
+        "parent": "one_two_wall_pass",
+        "kind": "parent",
+        "rewards": [
+          0.0016631805956763557,
+          0.04905832617949277,
+          -0.000562363935717819
+        ],
+        "kept": false
+      },
+      {
+        "id": "one_two_wall_pass__ma8af5356",
+        "parent": "one_two_wall_pass",
+        "kind": "mutant",
+        "rewards": [
+          0.0016631805956763557,
+          0.04905832617949277
+        ],
+        "kept": false
+      },
+      {
+        "id": "one_two_wall_pass__m8b7d3094",
+        "parent": "one_two_wall_pass",
+        "kind": "mutant",
+        "rewards": [
+          0.0016631805956763557,
+          0.04905832617949277
+        ],
+        "kept": false
+      },
+      {
+        "id": "one_two_wall_pass__me85b491c",
+        "parent": "one_two_wall_pass",
+        "kind": "mutant",
+        "rewards": [
+          0.0016631805956763557,
+          0.04905832617949277
+        ],
+        "kept": false
+      },
+      {
+        "id": "one_two_wall_pass__mc54480a3",
+        "parent": "one_two_wall_pass",
+        "kind": "mutant",
+        "rewards": [
+          0.0016631805956763557,
+          0.04905832617949277
+        ],
+        "kept": false
+      },
+      {
+        "id": "one_two_wall_pass__m8a5b3500",
+        "parent": "one_two_wall_pass",
+        "kind": "mutant",
+        "rewards": [
+          0.0016631805956763557,
+          0.04905832617949277
+        ],
+        "kept": false
+      },
+      {
+        "id": "one_two_wall_pass__m73602f0c",
+        "parent": "one_two_wall_pass",
+        "kind": "mutant",
+        "rewards": [
+          0.0016631805956763557,
+          0.04905832617949277
+        ],
+        "kept": false
+      },
+      {
+        "id": "one_two_wall_pass__mfbd35618",
+        "parent": "one_two_wall_pass",
+        "kind": "mutant",
+        "rewards": [
+          0.0016631805956763557,
+          0.04905832617949277
+        ],
+        "kept": false
+      },
+      {
+        "id": "one_two_wall_pass__me427148d",
+        "parent": "one_two_wall_pass",
+        "kind": "mutant",
+        "rewards": [
+          0.0016631805956763557,
+          0.04905832617949277
+        ],
+        "kept": false
+      },
+      {
+        "id": "one_two_wall_pass__m2814a17e",
+        "parent": "one_two_wall_pass",
+        "kind": "mutant",
+        "rewards": [
+          0.0016631805956763557,
+          0.04905832617949277
+        ],
+        "kept": false
+      },
+      {
+        "id": "one_two_wall_pass__m844dbe67",
+        "parent": "one_two_wall_pass",
+        "kind": "mutant",
+        "rewards": [
+          0.004975897826967342,
+          0.0017970121157552532
+        ],
+        "kept": false
+      },
+      {
+        "id": "pivot_drop_back_three",
+        "parent": "pivot_drop_back_three",
+        "kind": "parent",
+        "rewards": [
+          -0.0001531039652220862,
+          -0.00015445920995361268
+        ],
+        "kept": false
+      },
+      {
+        "id": "pivot_drop_back_three__m56362651",
+        "parent": "pivot_drop_back_three",
+        "kind": "mutant",
+        "rewards": [],
+        "kept": false
+      },
+      {
+        "id": "pivot_drop_back_three__m19237c48",
+        "parent": "pivot_drop_back_three",
+        "kind": "mutant",
+        "rewards": [],
+        "kept": false
+      },
+      {
+        "id": "pivot_drop_back_three__madf69687",
+        "parent": "pivot_drop_back_three",
+        "kind": "mutant",
+        "rewards": [],
+        "kept": false
+      },
+      {
+        "id": "pivot_drop_back_three__m7113b990",
+        "parent": "pivot_drop_back_three",
+        "kind": "mutant",
+        "rewards": [],
+        "kept": false
+      },
+      {
+        "id": "pivot_drop_back_three__m75db7605",
+        "parent": "pivot_drop_back_three",
+        "kind": "mutant",
+        "rewards": [],
+        "kept": false
+      },
+      {
+        "id": "pivot_drop_back_three__med80811f",
+        "parent": "pivot_drop_back_three",
+        "kind": "mutant",
+        "rewards": [],
+        "kept": false
+      },
+      {
+        "id": "pivot_drop_back_three__m424fc0e8",
+        "parent": "pivot_drop_back_three",
+        "kind": "mutant",
+        "rewards": [],
+        "kept": false
+      },
+      {
+        "id": "pivot_drop_back_three__m00673159",
+        "parent": "pivot_drop_back_three",
+        "kind": "mutant",
+        "rewards": [],
+        "kept": false
+      },
+      {
+        "id": "pivot_drop_back_three__mee53437e",
+        "parent": "pivot_drop_back_three",
+        "kind": "mutant",
+        "rewards": [],
+        "kept": false
+      },
+      {
+        "id": "pivot_drop_back_three__mae4da70c",
+        "parent": "pivot_drop_back_three",
+        "kind": "mutant",
+        "rewards": [],
+        "kept": false
+      },
+      {
+        "id": "recycle_possession",
+        "parent": "recycle_possession",
+        "kind": "parent",
+        "rewards": [
+          0.00043925901778150457,
+          -0.001277794172558338,
+          -0.0013710550372068447,
+          -0.0016484687352981784,
+          -0.0011538257170949986,
+          -0.0006307210553888557
+        ],
+        "kept": false
+      },
+      {
+        "id": "recycle_possession__m0ce5fb20",
+        "parent": "recycle_possession",
+        "kind": "mutant",
+        "rewards": [
+          0.00043925901778150457,
+          -0.001277794172558338,
+          -0.0013710550372068447,
+          -0.0016484687352981784,
+          -0.0011538257170949986,
+          -0.0006307210553888557
+        ],
+        "kept": true
+      },
+      {
+        "id": "recycle_possession__m15b5da4f",
+        "parent": "recycle_possession",
+        "kind": "mutant",
+        "rewards": [
+          0.00043925901778150457,
+          -0.001277794172558338,
+          -0.0013710550372068447,
+          -0.0016484687352981784,
+          -0.0011538257170949986,
+          -0.0006307210553888557
+        ],
+        "kept": true
+      },
+      {
+        "id": "recycle_possession__mbe34e7cc",
+        "parent": "recycle_possession",
+        "kind": "mutant",
+        "rewards": [
+          0.00043925901778150457,
+          -0.001277794172558338,
+          -0.0013710550372068447,
+          -0.0016484687352981784,
+          -0.0011538257170949986,
+          -0.0006307210553888557
+        ],
+        "kept": true
+      },
+      {
+        "id": "recycle_possession__m35e79409",
+        "parent": "recycle_possession",
+        "kind": "mutant",
+        "rewards": [
+          0.00043925901778150457,
+          -0.001277794172558338,
+          -0.0013710550372068447,
+          -0.0016484687352981784,
+          -0.0011538257170949986,
+          -0.0006307210553888557
+        ],
+        "kept": true
+      },
+      {
+        "id": "recycle_possession__me0422c8f",
+        "parent": "recycle_possession",
+        "kind": "mutant",
+        "rewards": [
+          0.00043925901778150457,
+          -0.001277794172558338,
+          -0.0013710550372068447,
+          -0.0016484687352981784,
+          -0.0011538257170949986,
+          -0.0006307210553888557
+        ],
+        "kept": true
+      },
+      {
+        "id": "recycle_possession__m998dcc17",
+        "parent": "recycle_possession",
+        "kind": "mutant",
+        "rewards": [
+          0.00043925901778150457,
+          -0.001277794172558338,
+          -0.0013710550372068447,
+          -0.0016484687352981784,
+          -0.0011538257170949986,
+          -0.0006307210553888557
+        ],
+        "kept": true
+      },
+      {
+        "id": "recycle_possession__m9507088f",
+        "parent": "recycle_possession",
+        "kind": "mutant",
+        "rewards": [
+          0.00043925901778150457,
+          -0.001277794172558338,
+          -0.0013710550372068447,
+          -0.0016484687352981784,
+          -0.0011538257170949986,
+          -0.0006307210553888557
+        ],
+        "kept": true
+      },
+      {
+        "id": "recycle_possession__m78642b7a",
+        "parent": "recycle_possession",
+        "kind": "mutant",
+        "rewards": [
+          0.0006162580877248254,
+          -0.000996604573825749,
+          -0.0010665099497819304,
+          -0.0016484687352981784,
+          -0.0011538257170949986,
+          -0.0005107907409127657
+        ],
+        "kept": true
+      },
+      {
+        "id": "recycle_possession__m5eaabdb0",
+        "parent": "recycle_possession",
+        "kind": "mutant",
+        "rewards": [
+          0.0013517309597672004,
+          0.007624233476748718,
+          -0.0009026759367781745,
+          -0.0016861294818689924,
+          -0.0007727493999782845,
+          -0.0016281151686130448
+        ],
+        "kept": true
+      },
+      {
+        "id": "recycle_possession__m737bcbad",
+        "parent": "recycle_possession",
+        "kind": "mutant",
+        "rewards": [
+          0.00043925901778150457,
+          -0.001277794172558338,
+          -0.0013710550372068447,
+          -0.0016484687352981784,
+          -0.0011538257170949986,
+          -0.0006307210553888557
+        ],
+        "kept": true
+      },
+      {
+        "id": "switch_of_play",
+        "parent": "switch_of_play",
+        "kind": "parent",
+        "rewards": [
+          -0.0002238270467974056,
+          -0.00034789662850803066,
+          -0.004876050836259756,
+          0.0005912243559142386,
+          -0.0025654483141132837,
+          -0.011756609761123058
+        ],
+        "kept": false
+      },
+      {
+        "id": "switch_of_play__mfd154fe9",
+        "parent": "switch_of_play",
+        "kind": "mutant",
+        "rewards": [
+          -0.0002238270467974056,
+          -0.00034789662850803066,
+          0.001448451427305042,
+          0.0005912243559142386,
+          -0.0025654483141132837,
+          -0.011756609761123058
+        ],
+        "kept": true
+      },
+      {
+        "id": "switch_of_play__md8b13ec1",
+        "parent": "switch_of_play",
+        "kind": "mutant",
+        "rewards": [
+          -0.0006120738690677946,
+          -0.00034789662850803066,
+          -0.0029670462415992364,
+          0.0005912243559142386,
+          -0.0025654483141132837,
+          -0.011756609761123058
+        ],
+        "kept": false
+      },
+      {
+        "id": "switch_of_play__ma9553338",
+        "parent": "switch_of_play",
+        "kind": "mutant",
+        "rewards": [
+          -0.0022248687726562615,
+          -0.00034789662850803066,
+          -0.0053354168900786245,
+          0.0005912243559142386,
+          -0.0025654483141132837,
+          -0.011756609761123058
+        ],
+        "kept": false
+      },
+      {
+        "id": "switch_of_play__mb2c653f4",
+        "parent": "switch_of_play",
+        "kind": "mutant",
+        "rewards": [
+          -0.0002238270467974056,
+          -0.00034789662850803066,
+          0.001448451427305042,
+          0.0005912243559142386,
+          -0.0025654483141132837,
+          -0.011756609761123058
+        ],
+        "kept": true
+      },
+      {
+        "id": "switch_of_play__mff0f9bee",
+        "parent": "switch_of_play",
+        "kind": "mutant",
+        "rewards": [
+          -0.0002238270467974056,
+          -0.00034789662850803066,
+          0.001448451427305042,
+          0.0005912243559142386,
+          -0.0025654483141132837,
+          -0.011756609761123058
+        ],
+        "kept": true
+      },
+      {
+        "id": "switch_of_play__mb5e85444",
+        "parent": "switch_of_play",
+        "kind": "mutant",
+        "rewards": [
+          -0.04072188541271371,
+          -0.00034789662850803066,
+          0.0030985329376414794,
+          -0.0011661007811405218,
+          -0.0025654483141132837,
+          -0.013232623553080199
+        ],
+        "kept": false
+      },
+      {
+        "id": "switch_of_play__m95de1458",
+        "parent": "switch_of_play",
+        "kind": "mutant",
+        "rewards": [
+          3.3621467782967915e-05,
+          -0.00034789662850803066,
+          0.001448451427305042,
+          0.0005912243559142386,
+          -0.0025654483141132837,
+          -0.011756609761123058
+        ],
+        "kept": true
+      },
+      {
+        "id": "switch_of_play__mf83b314b",
+        "parent": "switch_of_play",
+        "kind": "mutant",
+        "rewards": [
+          -0.0002238270467974056,
+          -0.00034789662850803066,
+          0.001448451427305042,
+          0.0005912243559142386,
+          -0.0025654483141132837,
+          -0.011756609761123058
+        ],
+        "kept": true
+      },
+      {
+        "id": "switch_of_play__med5a9f8c",
+        "parent": "switch_of_play",
+        "kind": "mutant",
+        "rewards": [
+          0.0004122156988498795,
+          -0.00034789662850803066,
+          -0.02977606893669284,
+          3.338017424950844e-05,
+          -0.03845886541069338,
+          -0.011901454542659331
+        ],
+        "kept": false
+      },
+      {
+        "id": "switch_of_play__mf6697681",
+        "parent": "switch_of_play",
+        "kind": "mutant",
+        "rewards": [
+          -0.00016650246482131578,
+          -0.00034789662850803066,
+          0.001448451427305042,
+          0.0005912243559142386,
+          -0.0025654483141132837,
+          -0.011756609761123058
+        ],
+        "kept": true
+      },
+      {
+        "id": "switch_through_keeper",
+        "parent": "switch_through_keeper",
+        "kind": "parent",
+        "rewards": [
+          0.001845005448883297,
+          -0.0006697137143767129,
+          0.0015106457654227978,
+          0.0023319954317052166,
+          0.0019021075614144636
+        ],
+        "kept": false
+      },
+      {
+        "id": "switch_through_keeper__m90ff485a",
+        "parent": "switch_through_keeper",
+        "kind": "mutant",
+        "rewards": [
+          0.0016387127936002364,
+          -0.0005369975350313447,
+          0.001676419830392066,
+          0.001265954875053982,
+          0.0018656702450254858
+        ],
+        "kept": false
+      },
+      {
+        "id": "switch_through_keeper__m41d49a13",
+        "parent": "switch_through_keeper",
+        "kind": "mutant",
+        "rewards": [
+          0.001845005448883297,
+          -0.0006697137143767129,
+          0.0015106457654227978,
+          0.0023319954317052166,
+          0.0019021075614144636
+        ],
+        "kept": true
+      },
+      {
+        "id": "switch_through_keeper__m31824bd3",
+        "parent": "switch_through_keeper",
+        "kind": "mutant",
+        "rewards": [
+          0.001764069444746115,
+          -0.0006697137143767129,
+          0.0015106457654227978,
+          0.0023319954317052166,
+          0.0018410797580061498
+        ],
+        "kept": false
+      },
+      {
+        "id": "switch_through_keeper__m08c735c4",
+        "parent": "switch_through_keeper",
+        "kind": "mutant",
+        "rewards": [
+          0.0017550424285154211,
+          -0.0006697137143767129,
+          0.0015106457654227978,
+          0.0023319954317052166,
+          0.0019210474870812854
+        ],
+        "kept": false
+      },
+      {
+        "id": "switch_through_keeper__m4b0244be",
+        "parent": "switch_through_keeper",
+        "kind": "mutant",
+        "rewards": [
+          0.001751021182668136,
+          -0.0005867548673825253,
+          0.001664640701170476,
+          0.0023228055799963034,
+          0.001923682732583018
+        ],
+        "kept": true
+      },
+      {
+        "id": "switch_through_keeper__m509c86d0",
+        "parent": "switch_through_keeper",
+        "kind": "mutant",
+        "rewards": [
+          0.0017937339118046826,
+          -0.0006697137143767129,
+          0.0015106457654227978,
+          0.0023319954317052166,
+          0.0018619308689952659
+        ],
+        "kept": false
+      },
+      {
+        "id": "switch_through_keeper__m603708f0",
+        "parent": "switch_through_keeper",
+        "kind": "mutant",
+        "rewards": [
+          0.001845005448883297,
+          -0.0006697137143767129,
+          0.0015106457654227978,
+          0.0023319954317052166,
+          0.0019021075614144636
+        ],
+        "kept": true
+      },
+      {
+        "id": "switch_through_keeper__mc58d109f",
+        "parent": "switch_through_keeper",
+        "kind": "mutant",
+        "rewards": [
+          0.001845005448883297,
+          -0.0006697137143767129,
+          0.0015106457654227978,
+          0.0023319954317052166,
+          0.0019021075614144636
+        ],
+        "kept": true
+      },
+      {
+        "id": "switch_through_keeper__maa7279f3",
+        "parent": "switch_through_keeper",
+        "kind": "mutant",
+        "rewards": [
+          0.0016387127936002364,
+          -0.0005369975350313447,
+          0.001676419830392066,
+          0.001265954875053982,
+          0.0018656702450254858
+        ],
+        "kept": false
+      },
+      {
+        "id": "switch_through_keeper__m32f786c1",
+        "parent": "switch_through_keeper",
+        "kind": "mutant",
+        "rewards": [
+          0.0018081170644263147,
+          -0.0005867548673825253,
+          0.001664640701170476,
+          0.002301684723973298,
+          0.001900877396670839
+        ],
+        "kept": true
+      },
+      {
+        "id": "third_man_combination",
+        "parent": "third_man_combination",
+        "kind": "parent",
+        "rewards": [
+          -0.04029846800469816,
+          0.0015641460030689554,
+          -8.724827726231017e-05,
+          0.0014338804329526184,
+          0.0018010538125472972,
+          -0.0016207042530142352
+        ],
+        "kept": false
+      },
+      {
+        "id": "third_man_combination__m8e420231",
+        "parent": "third_man_combination",
+        "kind": "mutant",
+        "rewards": [
+          -0.04029846800469816,
+          0.0015641460030689554,
+          0.0014338804329526184,
+          0.0011623438954877947,
+          -0.0016207042530142352,
+          -0.0558447575596658
+        ],
+        "kept": false
+      },
+      {
+        "id": "third_man_combination__m0bcba0fd",
+        "parent": "third_man_combination",
+        "kind": "mutant",
+        "rewards": [
+          -0.04029846800469816,
+          -0.0017669568720959962,
+          0.0014338804329526184,
+          -0.001833210712033951,
+          -0.001849092120912792,
+          -2.837618961160429e-05
+        ],
+        "kept": true
+      },
+      {
+        "id": "third_man_combination__m1ebfbda3",
+        "parent": "third_man_combination",
+        "kind": "mutant",
+        "rewards": [
+          -0.04029846800469816,
+          0.0015641460030689554,
+          0.0014338804329526184,
+          0.0018010538125472972,
+          -0.0016207042530142352,
+          -0.0558447575596658
+        ],
+        "kept": false
+      },
+      {
+        "id": "third_man_combination__m89624b12",
+        "parent": "third_man_combination",
+        "kind": "mutant",
+        "rewards": [
+          -0.04029846800469816,
+          0.0015641460030689554,
+          0.0014338804329526184,
+          0.0011623438954877947,
+          -0.0016207042530142352,
+          -0.0558447575596658
+        ],
+        "kept": false
+      },
+      {
+        "id": "third_man_combination__m9d40a153",
+        "parent": "third_man_combination",
+        "kind": "mutant",
+        "rewards": [
+          -0.00015178287882210324,
+          0.00079977185488222,
+          0.00024001204159552342,
+          0.0007204360595984352,
+          -0.0017651237992052076,
+          0.00035553863198339343
+        ],
+        "kept": true
+      },
+      {
+        "id": "third_man_combination__m040cd8ae",
+        "parent": "third_man_combination",
+        "kind": "mutant",
+        "rewards": [
+          0.01057703052868903,
+          0.0015641460030689554,
+          0.0014338804329526184,
+          0.021911462151856506,
+          0.008572790997389846,
+          -7.642401247658775e-07
+        ],
+        "kept": true
+      },
+      {
+        "id": "third_man_combination__maf73477f",
+        "parent": "third_man_combination",
+        "kind": "mutant",
+        "rewards": [
+          0.001237719452607585,
+          0.00017977318122597806,
+          0.0014338804329526184,
+          0.0030247133588585245,
+          -0.001736317342918672,
+          -0.0004147630014656959
+        ],
+        "kept": true
+      },
+      {
+        "id": "third_man_combination__m4bc1f523",
+        "parent": "third_man_combination",
+        "kind": "mutant",
+        "rewards": [
+          -0.04017592319817022,
+          0.0015641460030689554,
+          0.0014338804329526184,
+          0.003203865049381069,
+          -0.014882148224779625,
+          0.00029868794695613043
+        ],
+        "kept": true
+      },
+      {
+        "id": "third_man_combination__m8ea7ff9a",
+        "parent": "third_man_combination",
+        "kind": "mutant",
+        "rewards": [
+          -0.04029846800469816,
+          0.0015641460030689554,
+          0.0014338804329526184,
+          0.0018010538125472972,
+          -0.0016207042530142352,
+          -0.0558447575596658
+        ],
+        "kept": false
+      },
+      {
+        "id": "third_man_combination__m8b8ad3fd",
+        "parent": "third_man_combination",
+        "kind": "mutant",
+        "rewards": [
+          -0.04029846800469816,
+          0.0015641460030689554,
+          0.0014338804329526184,
+          0.003644983276596056,
+          -0.0016207042530142352,
+          -0.0558447575596658
+        ],
+        "kept": false
+      },
+      {
+        "id": "through_ball_behind_high_line",
+        "parent": "through_ball_behind_high_line",
+        "kind": "parent",
+        "rewards": [
+          -0.029669854006251432,
+          0.00034079109265042033,
+          3.473115906589899e-05,
+          0.0006003204274651012
+        ],
+        "kept": false
+      },
+      {
+        "id": "through_ball_behind_high_line__m644a7116",
+        "parent": "through_ball_behind_high_line",
+        "kind": "mutant",
+        "rewards": [
+          -0.029669854006251432,
+          3.473115906589899e-05,
+          0.0006003204274651012
+        ],
+        "kept": true
+      },
+      {
+        "id": "through_ball_behind_high_line__m4f07be7c",
+        "parent": "through_ball_behind_high_line",
+        "kind": "mutant",
+        "rewards": [
+          0.008871594068015139,
+          0.02007187785679898,
+          -0.02529993377194006
+        ],
+        "kept": true
+      },
+      {
+        "id": "through_ball_behind_high_line__m036bf0a8",
+        "parent": "through_ball_behind_high_line",
+        "kind": "mutant",
+        "rewards": [
+          -0.029669854006251432,
+          3.473115906589899e-05,
+          0.0006003204274651012
+        ],
+        "kept": true
+      },
+      {
+        "id": "through_ball_behind_high_line__m8db0cc9d",
+        "parent": "through_ball_behind_high_line",
+        "kind": "mutant",
+        "rewards": [
+          -0.029669854006251432,
+          3.473115906589899e-05,
+          0.0006003204274651012
+        ],
+        "kept": true
+      },
+      {
+        "id": "through_ball_behind_high_line__macae9f3b",
+        "parent": "through_ball_behind_high_line",
+        "kind": "mutant",
+        "rewards": [
+          -0.029669854006251432,
+          3.473115906589899e-05,
+          0.0006003204274651012
+        ],
+        "kept": true
+      },
+      {
+        "id": "through_ball_behind_high_line__mebb0c152",
+        "parent": "through_ball_behind_high_line",
+        "kind": "mutant",
+        "rewards": [
+          -0.001239376099007334,
+          -0.00024024130218368647,
+          0.0013962164688090233
+        ],
+        "kept": true
+      },
+      {
+        "id": "through_ball_behind_high_line__mb3a7cfa5",
+        "parent": "through_ball_behind_high_line",
+        "kind": "mutant",
+        "rewards": [
+          -0.001239376099007334,
+          -0.00024024130218368647,
+          0.0013962164688090233
+        ],
+        "kept": true
+      },
+      {
+        "id": "through_ball_behind_high_line__m7825b8c1",
+        "parent": "through_ball_behind_high_line",
+        "kind": "mutant",
+        "rewards": [
+          -0.029669854006251432,
+          3.473115906589899e-05,
+          0.0006003204274651012
+        ],
+        "kept": true
+      },
+      {
+        "id": "through_ball_behind_high_line__m56eead37",
+        "parent": "through_ball_behind_high_line",
+        "kind": "mutant",
+        "rewards": [
+          -0.0010945663106769112,
+          0.0012471189760445162,
+          0.0008475148795024524
+        ],
+        "kept": true
+      },
+      {
+        "id": "through_ball_behind_high_line__med6c4d5d",
+        "parent": "through_ball_behind_high_line",
+        "kind": "mutant",
+        "rewards": [
+          -0.029669854006251432,
+          3.473115906589899e-05,
+          0.0006003204274651012
+        ],
+        "kept": true
+      },
+      {
+        "id": "wide_overlap_cross",
+        "parent": "wide_overlap_cross",
+        "kind": "parent",
+        "rewards": [
+          -0.00024590482830550743,
+          -0.027476027060416477,
+          -0.030403572316610932,
+          0.007082072717615535,
+          -0.02653916395205802,
+          0.003870375145664434
+        ],
+        "kept": false
+      },
+      {
+        "id": "wide_overlap_cross__mc4e0cddd",
+        "parent": "wide_overlap_cross",
+        "kind": "mutant",
+        "rewards": [
+          -0.00024590482830550743,
+          0.011676378955294745,
+          -0.030403572316610932,
+          0.015811202960366245,
+          -0.02653916395205802,
+          0.003870375145664434
+        ],
+        "kept": true
+      },
+      {
+        "id": "wide_overlap_cross__m1ed6b5b6",
+        "parent": "wide_overlap_cross",
+        "kind": "mutant",
+        "rewards": [
+          -0.00024590482830550743,
+          0.007805932876526174,
+          -0.030403572316610932,
+          0.003962076665753118,
+          -0.02653916395205802,
+          0.003870375145664434
+        ],
+        "kept": true
+      },
+      {
+        "id": "wide_overlap_cross__med8b9863",
+        "parent": "wide_overlap_cross",
+        "kind": "mutant",
+        "rewards": [
+          -0.00024590482830550743,
+          -0.026651585334569048,
+          -0.030403572316610932,
+          0.0034131831794655433,
+          -0.02653916395205802,
+          0.003870375145664434
+        ],
+        "kept": false
+      },
+      {
+        "id": "wide_overlap_cross__mf043f3ce",
+        "parent": "wide_overlap_cross",
+        "kind": "mutant",
+        "rewards": [
+          -0.00024590482830550743,
+          -0.0274761212020981,
+          -0.030403572316610932,
+          0.001631645302680746,
+          -0.02653916395205802,
+          0.003870375145664434
+        ],
+        "kept": false
+      },
+      {
+        "id": "wide_overlap_cross__m73c764c4",
+        "parent": "wide_overlap_cross",
+        "kind": "mutant",
+        "rewards": [
+          -0.0261868429873651,
+          0.0018725161107478582,
+          -0.029859893834055806,
+          0.0005831912051297607,
+          0.003870375145664434,
+          0.005580736866314523
+        ],
+        "kept": false
+      },
+      {
+        "id": "wide_overlap_cross__meca2473f",
+        "parent": "wide_overlap_cross",
+        "kind": "mutant",
+        "rewards": [
+          -0.00024590482830550743,
+          -0.027476027060416477,
+          -0.030403572316610932,
+          0.1457760498477054,
+          -0.02653916395205802,
+          0.003870375145664434
+        ],
+        "kept": true
+      },
+      {
+        "id": "wide_overlap_cross__mec6ce58d",
+        "parent": "wide_overlap_cross",
+        "kind": "mutant",
+        "rewards": [
+          -0.00024590482830550743,
+          0.04341063136986351,
+          -0.030403572316610932,
+          0.007082072717615535,
+          -0.02653916395205802,
+          0.003870375145664434
+        ],
+        "kept": true
+      },
+      {
+        "id": "wide_overlap_cross__m71c0c9d3",
+        "parent": "wide_overlap_cross",
+        "kind": "mutant",
+        "rewards": [
+          -0.00024590482830550743,
+          0.005409276163763523,
+          -0.030403572316610932,
+          0.007082072717615535,
+          -0.02653916395205802,
+          0.003870375145664434
+        ],
+        "kept": true
+      },
+      {
+        "id": "wide_overlap_cross__m94fd3014",
+        "parent": "wide_overlap_cross",
+        "kind": "mutant",
+        "rewards": [
+          -0.00024590482830550743,
+          -0.027476027060416477,
+          -0.030403572316610932,
+          0.007082072717615535,
+          -0.02653916395205802,
+          0.003870375145664434
+        ],
+        "kept": false
+      },
+      {
+        "id": "wide_overlap_cross__m92cb4193",
+        "parent": "wide_overlap_cross",
+        "kind": "mutant",
+        "rewards": [
+          -0.00024590482830550743,
+          -0.027476027060416477,
+          -0.030403572316610932,
+          0.007082072717615535,
+          -0.02653916395205802,
+          0.003870375145664434
+        ],
+        "kept": false
+      },
+      {
+        "id": "winger_checks_short",
+        "parent": "winger_checks_short",
+        "kind": "parent",
+        "rewards": [
+          -0.00044791613894604523,
+          -0.013774495403262643,
+          1.7711841619860724e-05,
+          -0.0013162708858368323,
+          -0.0008859380508559455,
+          0.00366778264838326
+        ],
+        "kept": false
+      },
+      {
+        "id": "winger_checks_short__m08dfe96c",
+        "parent": "winger_checks_short",
+        "kind": "mutant",
+        "rewards": [
+          -0.00044791613894604523,
+          -0.013774495403262643,
+          -0.001381861525675319,
+          -0.0011668041348814624,
+          -0.0008859380508559455,
+          0.00366778264838326
+        ],
+        "kept": false
+      },
+      {
+        "id": "winger_checks_short__m6c19260d",
+        "parent": "winger_checks_short",
+        "kind": "mutant",
+        "rewards": [
+          -1.4246027370793876e-05,
+          -0.013774495403262643,
+          -3.792720258247867e-06,
+          0.00017136052976753254,
+          -0.0008859380508559455,
+          -0.01359753745031564
+        ],
+        "kept": false
+      },
+      {
+        "id": "winger_checks_short__mc196660b",
+        "parent": "winger_checks_short",
+        "kind": "mutant",
+        "rewards": [
+          -0.00044791613894604523,
+          -0.013774495403262643,
+          4.769378622610648e-05,
+          -0.04426107896330459,
+          -0.0008859380508559455,
+          0.00366778264838326
+        ],
+        "kept": false
+      },
+      {
+        "id": "winger_checks_short__m6aa8076b",
+        "parent": "winger_checks_short",
+        "kind": "mutant",
+        "rewards": [
+          -8.78358393012757e-05,
+          -0.0014746037624253604,
+          -0.0013517888407251558,
+          -0.0002067647832284681,
+          0.00037208339987415164,
+          0.009208227588974114
+        ],
+        "kept": true
+      },
+      {
+        "id": "winger_checks_short__m93c341f0",
+        "parent": "winger_checks_short",
+        "kind": "mutant",
+        "rewards": [
+          -0.00044791613894604523,
+          -0.013774495403262643,
+          1.7711841619860724e-05,
+          -0.0012289183182476772,
+          -0.0008859380508559455,
+          0.00366778264838326
+        ],
+        "kept": false
+      },
+      {
+        "id": "winger_checks_short__m673b7cbf",
+        "parent": "winger_checks_short",
+        "kind": "mutant",
+        "rewards": [
+          -0.00044791613894604523,
+          -0.013774495403262643,
+          0.00012716935320021723,
+          -0.001225010523453843,
+          -0.0008859380508559455,
+          0.00366778264838326
+        ],
+        "kept": true
+      },
+      {
+        "id": "winger_checks_short__mdf13724a",
+        "parent": "winger_checks_short",
+        "kind": "mutant",
+        "rewards": [
+          -0.0006638246714541236,
+          -0.00010742188483001819,
+          -0.0005504201067587228,
+          -0.0009915179452562022,
+          0.0006246668264501248,
+          -0.0014685142540218216
+        ],
+        "kept": true
+      },
+      {
+        "id": "winger_checks_short__m06266c51",
+        "parent": "winger_checks_short",
+        "kind": "mutant",
+        "rewards": [
+          -0.00044791613894604523,
+          -0.013774495403262643,
+          6.902237077503585e-05,
+          -0.0009637435270505885,
+          -0.0008859380508559455,
+          0.00366778264838326
+        ],
+        "kept": true
+      },
+      {
+        "id": "winger_checks_short__m9af2ba69",
+        "parent": "winger_checks_short",
+        "kind": "mutant",
+        "rewards": [
+          -0.00044791613894604523,
+          -0.013774495403262643,
+          0.0001270698728349784,
+          -0.0012963035637328698,
+          -0.0008859380508559455,
+          0.00366778264838326
+        ],
+        "kept": true
+      },
+      {
+        "id": "winger_checks_short__m62abba40",
+        "parent": "winger_checks_short",
+        "kind": "mutant",
+        "rewards": [
+          0.002535486549022782,
+          -0.04415138998293563,
+          1.7711841619860724e-05,
+          -0.0013162708858368323,
+          0.0034565770748970753,
+          -0.026550047334857545
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_263419283b",
+        "parent": "gen_263419283b",
+        "kind": "parent",
+        "rewards": [
+          0.0055919783224623165,
+          0.0055155364090195055,
+          0.006646893128261288,
+          0.004009392381742702,
+          0.0003975045849473318
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_263419283b__me3247ea5",
+        "parent": "gen_263419283b",
+        "kind": "mutant",
+        "rewards": [
+          0.0055919783224623165,
+          0.0055155364090195055,
+          0.006646893128261288,
+          0.004009392381742702,
+          0.0003975045849473318
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_263419283b__mffbf7d45",
+        "parent": "gen_263419283b",
+        "kind": "mutant",
+        "rewards": [
+          0.0055919783224623165,
+          0.0055155364090195055,
+          0.006646893128261288,
+          0.004009392381742702,
+          0.0003975045849473318
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_263419283b__m6f4fd1f0",
+        "parent": "gen_263419283b",
+        "kind": "mutant",
+        "rewards": [
+          0.00562132018067567,
+          0.005509527547894575,
+          0.012019515528238631,
+          0.004811379137647806,
+          0.00042628936125606136
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_263419283b__m8cfce871",
+        "parent": "gen_263419283b",
+        "kind": "mutant",
+        "rewards": [
+          0.0055919783224623165,
+          0.0055155364090195055,
+          0.006646893128261288,
+          0.004009392381742702,
+          0.0003975045849473318
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_263419283b__m78678b81",
+        "parent": "gen_263419283b",
+        "kind": "mutant",
+        "rewards": [
+          0.0055919783224623165,
+          0.0055155364090195055,
+          0.006646893128261288,
+          0.004009392381742702,
+          0.0003975045849473318
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_263419283b__mbeca8fc6",
+        "parent": "gen_263419283b",
+        "kind": "mutant",
+        "rewards": [
+          0.0055919783224623165,
+          0.0055155364090195055,
+          0.006646893128261288,
+          0.004009392381742702,
+          0.0003975045849473318
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_263419283b__m8686e045",
+        "parent": "gen_263419283b",
+        "kind": "mutant",
+        "rewards": [
+          0.0055919783224623165,
+          0.0055155364090195055,
+          0.006646893128261288,
+          0.004009392381742702,
+          0.0003975045849473318
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_263419283b__m74ecbc39",
+        "parent": "gen_263419283b",
+        "kind": "mutant",
+        "rewards": [
+          0.0055919783224623165,
+          0.0055155364090195055,
+          0.006646893128261288,
+          0.004009392381742702,
+          0.0003975045849473318
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_263419283b__m01a417b4",
+        "parent": "gen_263419283b",
+        "kind": "mutant",
+        "rewards": [
+          0.0055919783224623165,
+          0.0055155364090195055,
+          0.006646893128261288,
+          0.004009392381742702,
+          0.0003975045849473318
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_263419283b__m566fcd78",
+        "parent": "gen_263419283b",
+        "kind": "mutant",
+        "rewards": [
+          0.0055919783224623165,
+          0.0055155364090195055,
+          0.006646893128261288,
+          0.004009392381742702,
+          0.0003975045849473318
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_67c4d0530b",
+        "parent": "gen_67c4d0530b",
+        "kind": "parent",
+        "rewards": [
+          -0.007400430336367336,
+          -0.004768435642226766,
+          -0.04848102775635064,
+          -0.003229554992154167,
+          -0.005967081065257104,
+          -0.0033701275121193197
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_67c4d0530b__maeafb024",
+        "parent": "gen_67c4d0530b",
+        "kind": "mutant",
+        "rewards": [
+          -0.007400430336367336,
+          -0.004768435642226766,
+          -0.04848102775635064,
+          -0.003229554992154167,
+          -0.005967081065257104,
+          -0.0033701275121193197
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_67c4d0530b__mbc28f5ea",
+        "parent": "gen_67c4d0530b",
+        "kind": "mutant",
+        "rewards": [
+          -0.007400430336367336,
+          -0.004768435642226766,
+          -0.04848102775635064,
+          -0.003229554992154167,
+          -0.005967081065257104,
+          -0.0033701275121193197
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_67c4d0530b__mba519ef2",
+        "parent": "gen_67c4d0530b",
+        "kind": "mutant",
+        "rewards": [
+          -0.007400430336367336,
+          -0.004768435642226766,
+          -0.04848102775635064,
+          -0.003229554992154167,
+          -0.005967081065257104,
+          -0.0033701275121193197
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_67c4d0530b__m5fceba54",
+        "parent": "gen_67c4d0530b",
+        "kind": "mutant",
+        "rewards": [
+          -0.007400430336367336,
+          -0.004768435642226766,
+          -0.04848102775635064,
+          -0.003229554992154167,
+          -0.005967081065257104,
+          -0.0033701275121193197
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_67c4d0530b__md19f00f6",
+        "parent": "gen_67c4d0530b",
+        "kind": "mutant",
+        "rewards": [
+          -0.007400430336367336,
+          -0.004768435642226766,
+          -0.04848102775635064,
+          -0.003229554992154167,
+          -0.005967081065257104,
+          -0.0033701275121193197
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_67c4d0530b__m57d146e7",
+        "parent": "gen_67c4d0530b",
+        "kind": "mutant",
+        "rewards": [
+          -0.007400430336367336,
+          -0.004768435642226766,
+          -0.04848102775635064,
+          -0.003229554992154167,
+          -0.005967081065257104,
+          -0.0033701275121193197
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_67c4d0530b__m6de87c37",
+        "parent": "gen_67c4d0530b",
+        "kind": "mutant",
+        "rewards": [
+          -0.00904201227014325,
+          0.001020552035097301,
+          -0.04848102775635064,
+          -0.004316792080210099,
+          0.011862153079302537,
+          0.017790309960478687
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_67c4d0530b__m80cbd200",
+        "parent": "gen_67c4d0530b",
+        "kind": "mutant",
+        "rewards": [
+          -0.007400430336367336,
+          -0.004768435642226766,
+          -0.04848102775635064,
+          -0.003229554992154167,
+          -0.005967081065257104,
+          -0.0033701275121193197
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_67c4d0530b__m7824b847",
+        "parent": "gen_67c4d0530b",
+        "kind": "mutant",
+        "rewards": [
+          -0.007400430336367336,
+          -0.004768435642226766,
+          -0.04848102775635064,
+          -0.003229554992154167,
+          -0.005967081065257104,
+          -0.0033701275121193197
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_67c4d0530b__m39fc0893",
+        "parent": "gen_67c4d0530b",
+        "kind": "mutant",
+        "rewards": [
+          -0.007400430336367336,
+          -0.004768435642226766,
+          -0.04848102775635064,
+          -0.003229554992154167,
+          -0.005967081065257104,
+          -0.0033701275121193197
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ae398e5e4",
+        "parent": "gen_7ae398e5e4",
+        "kind": "parent",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_7ae398e5e4__m1222de93",
+        "parent": "gen_7ae398e5e4",
+        "kind": "mutant",
+        "rewards": [
+          0.018063086275416473,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ae398e5e4__mc5b1536e",
+        "parent": "gen_7ae398e5e4",
+        "kind": "mutant",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ae398e5e4__m0f245cd3",
+        "parent": "gen_7ae398e5e4",
+        "kind": "mutant",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ae398e5e4__m7035d556",
+        "parent": "gen_7ae398e5e4",
+        "kind": "mutant",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.018026715267855695,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ae398e5e4__m63eaf353",
+        "parent": "gen_7ae398e5e4",
+        "kind": "mutant",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ae398e5e4__mecc4fc06",
+        "parent": "gen_7ae398e5e4",
+        "kind": "mutant",
+        "rewards": [
+          0.01418696306484455,
+          0.0,
+          0.0,
+          -0.013144422888147551,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ae398e5e4__mdd661507",
+        "parent": "gen_7ae398e5e4",
+        "kind": "mutant",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ae398e5e4__m700f04c5",
+        "parent": "gen_7ae398e5e4",
+        "kind": "mutant",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ae398e5e4__m278c57e4",
+        "parent": "gen_7ae398e5e4",
+        "kind": "mutant",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ae398e5e4__me8a80995",
+        "parent": "gen_7ae398e5e4",
+        "kind": "mutant",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ed866b92a",
+        "parent": "gen_7ed866b92a",
+        "kind": "parent",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_7ed866b92a__macf6257e",
+        "parent": "gen_7ed866b92a",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ed866b92a__m6e9e80bd",
+        "parent": "gen_7ed866b92a",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ed866b92a__med2dae10",
+        "parent": "gen_7ed866b92a",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ed866b92a__m419cc58b",
+        "parent": "gen_7ed866b92a",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ed866b92a__m19ee3a79",
+        "parent": "gen_7ed866b92a",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ed866b92a__ma13172b3",
+        "parent": "gen_7ed866b92a",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ed866b92a__m6b352975",
+        "parent": "gen_7ed866b92a",
+        "kind": "mutant",
+        "rewards": [
+          0.011316940108709914,
+          0.0063566592180564,
+          0.02852398126007434,
+          -0.002471070653248461,
+          -0.024867807266022064,
+          -0.036329943259648334
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_7ed866b92a__m8a5b1c6c",
+        "parent": "gen_7ed866b92a",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_7ed866b92a__mb23e06cc",
+        "parent": "gen_7ed866b92a",
+        "kind": "mutant",
+        "rewards": [
+          0.011316940108709914,
+          0.0063566592180564,
+          0.02852398126007434,
+          -0.002471070653248461,
+          -0.024867807266022064,
+          -0.036329943259648334
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_7ed866b92a__m7f23f5f2",
+        "parent": "gen_7ed866b92a",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_dcd5c3003a",
+        "parent": "gen_dcd5c3003a",
+        "kind": "parent",
+        "rewards": [
+          0.000838016246707032,
+          -0.0013249810938789925,
+          0.00416903787062812,
+          0.004461207013029019,
+          -0.025503390850915138,
+          -0.0020239999108408978
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_dcd5c3003a__mf9f726ec",
+        "parent": "gen_dcd5c3003a",
+        "kind": "mutant",
+        "rewards": [
+          0.0005379483510936575,
+          0.0015247054037510806,
+          -0.0003873779720815918,
+          0.001978242331322516,
+          6.704274260467893e-05,
+          -3.894041003571491e-05
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_dcd5c3003a__m8b218083",
+        "parent": "gen_dcd5c3003a",
+        "kind": "mutant",
+        "rewards": [
+          -0.0013249810938789925,
+          0.00416903787062812,
+          0.004461207013029019,
+          -0.025503390850915138,
+          -0.0020239999108408978,
+          -0.0007640822588959699
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_dcd5c3003a__m485a26b9",
+        "parent": "gen_dcd5c3003a",
+        "kind": "mutant",
+        "rewards": [
+          -0.0013249810938789925,
+          0.00416903787062812,
+          0.004461207013029019,
+          -0.025503390850915138,
+          -0.0020239999108408978,
+          -0.0007640822588959699
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_dcd5c3003a__ma474e4e7",
+        "parent": "gen_dcd5c3003a",
+        "kind": "mutant",
+        "rewards": [
+          -0.0008111895090930441,
+          -0.036406534703425704,
+          -0.00076389366093765,
+          0.00011264795210388749,
+          -0.00029577763482200106,
+          -0.001222206756151218
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_dcd5c3003a__m271e679c",
+        "parent": "gen_dcd5c3003a",
+        "kind": "mutant",
+        "rewards": [
+          0.0019238400871746577,
+          0.013321634039643331,
+          0.006872782526672934,
+          0.007098816858687535,
+          -0.0006501137353641037,
+          0.0028014286147335227
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_dcd5c3003a__m4b14d0ec",
+        "parent": "gen_dcd5c3003a",
+        "kind": "mutant",
+        "rewards": [
+          -0.0013249810938789925,
+          0.00416903787062812,
+          0.004461207013029019,
+          -0.025503390850915138,
+          -0.0020239999108408978,
+          -0.0007640822588959699
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_dcd5c3003a__m2eab2d00",
+        "parent": "gen_dcd5c3003a",
+        "kind": "mutant",
+        "rewards": [
+          -0.0013249810938789925,
+          0.00416903787062812,
+          0.004461207013029019,
+          -0.025503390850915138,
+          -0.0020239999108408978,
+          -0.0007640822588959699
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_dcd5c3003a__m960fae61",
+        "parent": "gen_dcd5c3003a",
+        "kind": "mutant",
+        "rewards": [
+          -0.0013249810938789925,
+          0.00416903787062812,
+          0.004461207013029019,
+          -0.025503390850915138,
+          -0.0020239999108408978,
+          -0.0007640822588959699
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_dcd5c3003a__ma490921d",
+        "parent": "gen_dcd5c3003a",
+        "kind": "mutant",
+        "rewards": [
+          -0.0012829304233642203,
+          0.007397854910114398,
+          0.004519979093391616,
+          0.00641426133085958,
+          0.0020898216373988893,
+          0.0009149264695096394
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_dcd5c3003a__md01b881c",
+        "parent": "gen_dcd5c3003a",
+        "kind": "mutant",
+        "rewards": [
+          -0.0012829304233642203,
+          0.007397854910114398,
+          0.004519979093391616,
+          0.00641426133085958,
+          0.0020898216373988893,
+          0.0009149264695096394
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_5fa1f3645f",
+        "parent": "gen_5fa1f3645f",
+        "kind": "parent",
+        "rewards": [
+          -0.024879829612862885,
+          0.00022867371352600085,
+          0.002769644330385651,
+          -0.01992602746076034,
+          0.0002048316616471424,
+          -0.002164671768082025
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_5fa1f3645f__mc2ddd0e8",
+        "parent": "gen_5fa1f3645f",
+        "kind": "mutant",
+        "rewards": [
+          -0.024879829612862885,
+          0.00022867371352600085,
+          0.002769644330385651,
+          -0.01992602746076034,
+          0.0002048316616471424,
+          -0.002164671768082025
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_5fa1f3645f__m3292579e",
+        "parent": "gen_5fa1f3645f",
+        "kind": "mutant",
+        "rewards": [
+          -0.0031550537839861517,
+          -0.004112884370767317,
+          -0.0033802425394294823,
+          -0.013194672589800428,
+          0.00015476253014200594,
+          4.145138374108889e-05
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_5fa1f3645f__m37871e31",
+        "parent": "gen_5fa1f3645f",
+        "kind": "mutant",
+        "rewards": [
+          -0.024879829612862885,
+          0.00022867371352600085,
+          0.002769644330385651,
+          -0.01992602746076034,
+          0.0002048316616471424,
+          -0.002164671768082025
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_5fa1f3645f__mf2482841",
+        "parent": "gen_5fa1f3645f",
+        "kind": "mutant",
+        "rewards": [
+          -0.024879829612862885,
+          0.00022867371352600085,
+          0.002769644330385651,
+          -0.01992602746076034,
+          0.0002048316616471424,
+          0.0009304557415419391
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_5fa1f3645f__m3fc0708b",
+        "parent": "gen_5fa1f3645f",
+        "kind": "mutant",
+        "rewards": [
+          -0.018110102513868492,
+          0.00022867371352600085,
+          -0.008880132047147271,
+          -0.02999456168949547,
+          -0.007584204149937112,
+          -0.004203573371222548
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_5fa1f3645f__m29cbafb8",
+        "parent": "gen_5fa1f3645f",
+        "kind": "mutant",
+        "rewards": [
+          -0.024879829612862885,
+          0.00022867371352600085,
+          0.002769644330385651,
+          -0.01992602746076034,
+          0.0002048316616471424,
+          -0.002164671768082025
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_5fa1f3645f__m2254c18f",
+        "parent": "gen_5fa1f3645f",
+        "kind": "mutant",
+        "rewards": [
+          -0.024879829612862885,
+          0.00022867371352600085,
+          0.002769644330385651,
+          -0.01992602746076034,
+          0.0002048316616471424,
+          -0.002164671768082025
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_5fa1f3645f__mb60b17ae",
+        "parent": "gen_5fa1f3645f",
+        "kind": "mutant",
+        "rewards": [
+          -0.024879829612862885,
+          0.00022867371352600085,
+          0.002769644330385651,
+          -0.01992602746076034,
+          0.0002048316616471424,
+          -0.012636472863386683
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_5fa1f3645f__m62fc2a35",
+        "parent": "gen_5fa1f3645f",
+        "kind": "mutant",
+        "rewards": [
+          -0.024879829612862885,
+          0.00022867371352600085,
+          0.002769644330385651,
+          -0.01992602746076034,
+          0.0002048316616471424,
+          -0.0028321381290638097
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_5fa1f3645f__m5b093b16",
+        "parent": "gen_5fa1f3645f",
+        "kind": "mutant",
+        "rewards": [
+          -0.024879829612862885,
+          0.00022867371352600085,
+          0.002769644330385651,
+          -0.01992602746076034,
+          0.0002048316616471424,
+          -0.002164671768082025
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_64c5493589",
+        "parent": "gen_64c5493589",
+        "kind": "parent",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_64c5493589__m64a491c2",
+        "parent": "gen_64c5493589",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_64c5493589__m1042a149",
+        "parent": "gen_64c5493589",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_64c5493589__m094041b3",
+        "parent": "gen_64c5493589",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_64c5493589__m636ce621",
+        "parent": "gen_64c5493589",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_64c5493589__mc58185fa",
+        "parent": "gen_64c5493589",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_64c5493589__ma4ce80f6",
+        "parent": "gen_64c5493589",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_64c5493589__m1042a149",
+        "parent": "gen_64c5493589",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_64c5493589__m73be88b1",
+        "parent": "gen_64c5493589",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_64c5493589__m67d62c96",
+        "parent": "gen_64c5493589",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_64c5493589__m7d31913b",
+        "parent": "gen_64c5493589",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_692b502c31",
+        "parent": "gen_692b502c31",
+        "kind": "parent",
+        "rewards": [
+          -0.00448025005539969,
+          -0.004675378991210892,
+          -0.0005672926465991462,
+          -0.003606959724148706,
+          0.003985847109143546,
+          -0.0012492983189653778
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_692b502c31__m5078e168",
+        "parent": "gen_692b502c31",
+        "kind": "mutant",
+        "rewards": [
+          -0.00448025005539969,
+          -0.004675378991210892,
+          -0.0005672926465991462,
+          -0.003606959724148706,
+          0.003985847109143546,
+          -0.0012492983189653778
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_692b502c31__m48b4e281",
+        "parent": "gen_692b502c31",
+        "kind": "mutant",
+        "rewards": [
+          -0.00448025005539969,
+          -0.004675378991210892,
+          -0.0005672926465991462,
+          -0.003606959724148706,
+          0.003985847109143546,
+          -0.0012492983189653778
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_692b502c31__m4ce44719",
+        "parent": "gen_692b502c31",
+        "kind": "mutant",
+        "rewards": [
+          -0.004652206337756617,
+          -0.006485316690990187,
+          -0.0006061008217947347,
+          -0.00622225471579,
+          0.0035590086408576714,
+          -0.0030535890521873194
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_692b502c31__mc10dd317",
+        "parent": "gen_692b502c31",
+        "kind": "mutant",
+        "rewards": [
+          0.0885254931322341,
+          -0.014403439890890518,
+          -0.0005672926465991462,
+          0.0075891783264987675,
+          0.031088928360939776,
+          -0.0011398434950276315
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_692b502c31__m6cd1eb1b",
+        "parent": "gen_692b502c31",
+        "kind": "mutant",
+        "rewards": [
+          -0.00448025005539969,
+          -0.004675378991210892,
+          -0.0005672926465991462,
+          -0.003606959724148706,
+          0.003985847109143546,
+          -0.0012492983189653778
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_692b502c31__mdd75024a",
+        "parent": "gen_692b502c31",
+        "kind": "mutant",
+        "rewards": [
+          -0.00448025005539969,
+          -0.004675378991210892,
+          -0.0005672926465991462,
+          -0.003606959724148706,
+          0.003985847109143546,
+          -0.0012492983189653778
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_692b502c31__m9754ec54",
+        "parent": "gen_692b502c31",
+        "kind": "mutant",
+        "rewards": [
+          -0.00448025005539969,
+          -0.004675378991210892,
+          -0.0005672926465991462,
+          -0.003606959724148706,
+          0.003985847109143546,
+          -0.0012492983189653778
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_692b502c31__m1c8ac24d",
+        "parent": "gen_692b502c31",
+        "kind": "mutant",
+        "rewards": [
+          -0.00448025005539969,
+          -0.004675378991210892,
+          -0.0005672926465991462,
+          -0.003606959724148706,
+          0.003985847109143546,
+          -0.0012492983189653778
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_692b502c31__m344a5503",
+        "parent": "gen_692b502c31",
+        "kind": "mutant",
+        "rewards": [
+          -0.00448025005539969,
+          -0.004675378991210892,
+          -0.0005672926465991462,
+          -0.003606959724148706,
+          0.003985847109143546,
+          -0.0012492983189653778
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_692b502c31__m9e6e7bac",
+        "parent": "gen_692b502c31",
+        "kind": "mutant",
+        "rewards": [
+          -0.00448025005539969,
+          -0.004675378991210892,
+          -0.0005672926465991462,
+          -0.003606959724148706,
+          0.003985847109143546,
+          -0.0012492983189653778
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_a20edbb411",
+        "parent": "gen_a20edbb411",
+        "kind": "parent",
+        "rewards": [
+          0.26226737275361295,
+          -0.15132477412379944
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_a20edbb411__m8c675707",
+        "parent": "gen_a20edbb411",
+        "kind": "mutant",
+        "rewards": [
+          0.26226737275361295,
+          -0.15132477412379944
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_a20edbb411__m13605a01",
+        "parent": "gen_a20edbb411",
+        "kind": "mutant",
+        "rewards": [
+          0.26226737275361295,
+          0.23744839402586207
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_a20edbb411__m017503d8",
+        "parent": "gen_a20edbb411",
+        "kind": "mutant",
+        "rewards": [
+          0.26226737275361295,
+          -0.15132477412379944
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_a20edbb411__medf069a5",
+        "parent": "gen_a20edbb411",
+        "kind": "mutant",
+        "rewards": [
+          0.26226737275361295,
+          -0.15132477412379944
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_a20edbb411__me81e7a38",
+        "parent": "gen_a20edbb411",
+        "kind": "mutant",
+        "rewards": [
+          0.26226737275361295,
+          -0.15132477412379944
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_a20edbb411__mb5071b0f",
+        "parent": "gen_a20edbb411",
+        "kind": "mutant",
+        "rewards": [
+          0.26226737275361295,
+          -0.15132477412379944
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_a20edbb411__m4df39bc7",
+        "parent": "gen_a20edbb411",
+        "kind": "mutant",
+        "rewards": [
+          0.26226737275361295,
+          -0.15133875278983688
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_a20edbb411__ma52e4d9a",
+        "parent": "gen_a20edbb411",
+        "kind": "mutant",
+        "rewards": [
+          0.26226737275361295,
+          -0.15132477412379944
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_a20edbb411__m241ea963",
+        "parent": "gen_a20edbb411",
+        "kind": "mutant",
+        "rewards": [
+          0.26226737275361295,
+          -0.15132477412379944
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_a20edbb411__m155b65a5",
+        "parent": "gen_a20edbb411",
+        "kind": "mutant",
+        "rewards": [
+          0.26226737275361295,
+          -0.15132477412379944
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_cf5c9636cf",
+        "parent": "gen_cf5c9636cf",
+        "kind": "parent",
+        "rewards": [
+          0.0,
+          0.0
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_cf5c9636cf__m0429ee04",
+        "parent": "gen_cf5c9636cf",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_cf5c9636cf__m0878b2c5",
+        "parent": "gen_cf5c9636cf",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_cf5c9636cf__md9dcc5c8",
+        "parent": "gen_cf5c9636cf",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_cf5c9636cf__m596ca241",
+        "parent": "gen_cf5c9636cf",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_cf5c9636cf__mee1a5aab",
+        "parent": "gen_cf5c9636cf",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_cf5c9636cf__me0b1e75f",
+        "parent": "gen_cf5c9636cf",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_cf5c9636cf__mf219e438",
+        "parent": "gen_cf5c9636cf",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_cf5c9636cf__m7280a832",
+        "parent": "gen_cf5c9636cf",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_cf5c9636cf__m1f96209b",
+        "parent": "gen_cf5c9636cf",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_cf5c9636cf__mbe1cf405",
+        "parent": "gen_cf5c9636cf",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_e55b04e172",
+        "parent": "gen_e55b04e172",
+        "kind": "parent",
+        "rewards": [
+          -0.0005187099316242283,
+          -0.002151471516497673,
+          -0.04875501520767263,
+          0.006302921162086909,
+          0.001577676324958234,
+          0.005440965807141186
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_e55b04e172__m7740149b",
+        "parent": "gen_e55b04e172",
+        "kind": "mutant",
+        "rewards": [
+          0.00027018127620847404,
+          0.006825945839566465,
+          -0.04897489804723315,
+          -0.0010921113084356865,
+          0.003558358687046466,
+          0.013792379971288404
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_e55b04e172__m8a833c4f",
+        "parent": "gen_e55b04e172",
+        "kind": "mutant",
+        "rewards": [
+          -0.0005187099316242283,
+          -0.002151471516497673,
+          -0.04875501520767263,
+          0.006302921162086909,
+          0.001577676324958234,
+          -0.0019262724969164383
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_e55b04e172__m8eca7f93",
+        "parent": "gen_e55b04e172",
+        "kind": "mutant",
+        "rewards": [
+          -0.0005187099316242283,
+          -0.002151471516497673,
+          -0.04875501520767263,
+          0.006302921162086909,
+          0.001577676324958234,
+          -0.044412325839454606
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_e55b04e172__m79a66795",
+        "parent": "gen_e55b04e172",
+        "kind": "mutant",
+        "rewards": [
+          -0.0005187099316242283,
+          -0.002151471516497673,
+          -0.04875501520767263,
+          0.006302921162086909,
+          0.001577676324958234,
+          0.01179962747715823
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_e55b04e172__m0d04e0ff",
+        "parent": "gen_e55b04e172",
+        "kind": "mutant",
+        "rewards": [
+          -0.0005187099316242283,
+          -0.0020191511525560826,
+          -0.048249825209883856,
+          0.006302921162086909,
+          0.12108009232288776,
+          0.08995229391759678
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_e55b04e172__ma6aa4092",
+        "parent": "gen_e55b04e172",
+        "kind": "mutant",
+        "rewards": [
+          -0.0005187099316242283,
+          -0.002151471516497673,
+          -0.04875501520767263,
+          0.006302921162086909,
+          0.001577676324958234,
+          -0.0035263865063964103
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_e55b04e172__mad7369ba",
+        "parent": "gen_e55b04e172",
+        "kind": "mutant",
+        "rewards": [
+          -0.0005187099316242283,
+          -0.002151471516497673,
+          -0.04875501520767263,
+          0.006302921162086909,
+          0.001577676324958234,
+          0.019404664638361324
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_e55b04e172__mbc592eeb",
+        "parent": "gen_e55b04e172",
+        "kind": "mutant",
+        "rewards": [
+          -0.0008274746282565942,
+          -0.0020909072871377957,
+          -0.04861816812380678,
+          0.001861795740691237,
+          0.0015844066497631218,
+          0.0029044414491041226
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_e55b04e172__m4159380c",
+        "parent": "gen_e55b04e172",
+        "kind": "mutant",
+        "rewards": [
+          -0.015334267696059448,
+          -0.005291414266879051,
+          -0.04848102775635064,
+          -0.03914229304336184,
+          -0.013105307836747947,
+          -0.00585620735363853
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_e55b04e172__m82413611",
+        "parent": "gen_e55b04e172",
+        "kind": "mutant",
+        "rewards": [
+          -0.0005187099316242283,
+          -0.037235628399547985,
+          -0.04875501520767263,
+          0.006266098939977524,
+          0.05188012509276396,
+          0.12617206627160188
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_6cd6536e86",
+        "parent": "gen_6cd6536e86",
+        "kind": "parent",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0012430759546392459
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_6cd6536e86__mbd198c79",
+        "parent": "gen_6cd6536e86",
+        "kind": "mutant",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0012430759546392459
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_6cd6536e86__m7202a96d",
+        "parent": "gen_6cd6536e86",
+        "kind": "mutant",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0012430759546392459
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_6cd6536e86__m63b574b8",
+        "parent": "gen_6cd6536e86",
+        "kind": "mutant",
+        "rewards": [
+          0.019242133880098586,
+          0.0,
+          0.0,
+          -0.017322007201917438,
+          0.0,
+          0.0011032426154142239
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_6cd6536e86__mebe7bbab",
+        "parent": "gen_6cd6536e86",
+        "kind": "mutant",
+        "rewards": [
+          0.019242133880098586,
+          0.0,
+          0.0,
+          -0.017322007201917438,
+          0.0,
+          0.0011032426154142239
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_6cd6536e86__m06d4cd0d",
+        "parent": "gen_6cd6536e86",
+        "kind": "mutant",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0012430759546392459
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_6cd6536e86__m9280378d",
+        "parent": "gen_6cd6536e86",
+        "kind": "mutant",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0012430759546392459
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_6cd6536e86__mb615dd84",
+        "parent": "gen_6cd6536e86",
+        "kind": "mutant",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0012430759546392459
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_6cd6536e86__ma18d69c4",
+        "parent": "gen_6cd6536e86",
+        "kind": "mutant",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0012430759546392459
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_6cd6536e86__md69531be",
+        "parent": "gen_6cd6536e86",
+        "kind": "mutant",
+        "rewards": [
+          -0.01401551323875893,
+          0.0,
+          0.0,
+          -0.014972644232869075,
+          0.0,
+          -0.016687386825295275
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_6cd6536e86__m274fa034",
+        "parent": "gen_6cd6536e86",
+        "kind": "mutant",
+        "rewards": [
+          0.016343193253912716,
+          0.0,
+          0.0,
+          -0.039155655519938486,
+          0.0,
+          0.0012430759546392459
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_81eaa89b15",
+        "parent": "gen_81eaa89b15",
+        "kind": "parent",
+        "rewards": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_81eaa89b15__m92b24029",
+        "parent": "gen_81eaa89b15",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_81eaa89b15__mc3371d8a",
+        "parent": "gen_81eaa89b15",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_81eaa89b15__m5a6f4309",
+        "parent": "gen_81eaa89b15",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_81eaa89b15__mc4b0d60b",
+        "parent": "gen_81eaa89b15",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_81eaa89b15__m5f83c069",
+        "parent": "gen_81eaa89b15",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_81eaa89b15__meba99fad",
+        "parent": "gen_81eaa89b15",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_81eaa89b15__m4ece5416",
+        "parent": "gen_81eaa89b15",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_81eaa89b15__m49bb8412",
+        "parent": "gen_81eaa89b15",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_81eaa89b15__m6a8df4c8",
+        "parent": "gen_81eaa89b15",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_81eaa89b15__m3b958c6a",
+        "parent": "gen_81eaa89b15",
+        "kind": "mutant",
+        "rewards": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_9b2fe595f8",
+        "parent": "gen_9b2fe595f8",
+        "kind": "parent",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_9b2fe595f8__m1cb2f1d7",
+        "parent": "gen_9b2fe595f8",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_9b2fe595f8__maf95eb17",
+        "parent": "gen_9b2fe595f8",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_9b2fe595f8__mf00a5dc1",
+        "parent": "gen_9b2fe595f8",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_9b2fe595f8__m857133c2",
+        "parent": "gen_9b2fe595f8",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_9b2fe595f8__m8c6a7271",
+        "parent": "gen_9b2fe595f8",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_9b2fe595f8__m7bef5d91",
+        "parent": "gen_9b2fe595f8",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_9b2fe595f8__m83d3b247",
+        "parent": "gen_9b2fe595f8",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_9b2fe595f8__m9dd93579",
+        "parent": "gen_9b2fe595f8",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_9b2fe595f8__me9a73928",
+        "parent": "gen_9b2fe595f8",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_9b2fe595f8__md387b293",
+        "parent": "gen_9b2fe595f8",
+        "kind": "mutant",
+        "rewards": [
+          0.002839238728660872,
+          0.009412114240016603,
+          0.008353093502212,
+          0.008965655381207855,
+          0.007486228085627249,
+          0.0028294400638208296
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_d0cee3c696",
+        "parent": "gen_d0cee3c696",
+        "kind": "parent",
+        "rewards": [
+          1.9793741638327728e-05,
+          8.303716770280238e-05,
+          0.0017996023802225765,
+          -0.0013741426505979697,
+          0.00015786769980931023,
+          0.0016562634911143782
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_d0cee3c696__m6a3aff4e",
+        "parent": "gen_d0cee3c696",
+        "kind": "mutant",
+        "rewards": [
+          -0.0009466993841270865,
+          8.303716770280238e-05,
+          0.00024067610984736428,
+          -0.0013741426505979697,
+          0.00022008067974447348,
+          0.001818725100596108
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_d0cee3c696__m8e8f81ab",
+        "parent": "gen_d0cee3c696",
+        "kind": "mutant",
+        "rewards": [
+          1.9793741638327728e-05,
+          8.303716770280238e-05,
+          0.0016723975240473914,
+          -0.0013741426505979697,
+          0.00015786769980931023,
+          0.0016562634911143782
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_d0cee3c696__mb94132be",
+        "parent": "gen_d0cee3c696",
+        "kind": "mutant",
+        "rewards": [
+          1.922244597261577e-05,
+          9.336208673385409e-05,
+          0.0017988531176322507,
+          -0.0013741426505979697,
+          0.00016193172432130316,
+          0.001648033167565949
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_d0cee3c696__mb93bf09f",
+        "parent": "gen_d0cee3c696",
+        "kind": "mutant",
+        "rewards": [
+          -0.001750990071762758,
+          -0.0003956673852357224,
+          0.0018162312202408219,
+          -0.0013741404550732406,
+          -0.0015746602478668732,
+          8.89529164742036e-05
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_d0cee3c696__m80f0b3e3",
+        "parent": "gen_d0cee3c696",
+        "kind": "mutant",
+        "rewards": [
+          1.9793741638327728e-05,
+          8.303716770280238e-05,
+          0.0017996023802225765,
+          -0.0013741426505979697,
+          0.00015786769980931023,
+          0.0016562634911143782
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_d0cee3c696__m8d37e7e8",
+        "parent": "gen_d0cee3c696",
+        "kind": "mutant",
+        "rewards": [
+          5.2902365440891594e-05,
+          0.00013507183648712312,
+          0.0018009529757405714,
+          -0.0008000889876655475,
+          0.00012616827055500837,
+          0.001615290173040674
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_d0cee3c696__m6c84c562",
+        "parent": "gen_d0cee3c696",
+        "kind": "mutant",
+        "rewards": [
+          -0.0005255667030121466,
+          -0.0003956673852357224,
+          0.00024067610984736428,
+          -0.0013741426505979697,
+          -0.0012883271786177514,
+          0.0006015935269747912
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_d0cee3c696__md7cd2e58",
+        "parent": "gen_d0cee3c696",
+        "kind": "mutant",
+        "rewards": [
+          1.9793741638327728e-05,
+          8.303716770280238e-05,
+          0.0017996023802225765,
+          -0.0013741426505979697,
+          0.00015786769980931023,
+          0.0016562634911143782
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_d0cee3c696__mb4b46320",
+        "parent": "gen_d0cee3c696",
+        "kind": "mutant",
+        "rewards": [
+          -6.859623463861819e-06,
+          -6.750547495148855e-05,
+          0.0017995226666070348,
+          -0.0015187352904769639,
+          0.0001158401995218928,
+          0.0016309831760666933
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_d0cee3c696__m56c78ab9",
+        "parent": "gen_d0cee3c696",
+        "kind": "mutant",
+        "rewards": [
+          2.160985439717336e-05,
+          0.00010542883508543946,
+          0.0018000323214261635,
+          -0.0012486671444042457,
+          0.00021908025080134494,
+          0.0016366786041717325
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_e2f3c88f31",
+        "parent": "gen_e2f3c88f31",
+        "kind": "parent",
+        "rewards": [
+          -0.0008637778349778902,
+          -0.000877692438817107,
+          -0.0005633708066009394,
+          -0.001038027981916845,
+          -0.0004606794723001871,
+          0.0018878279059276575
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_e2f3c88f31__mb506b5cf",
+        "parent": "gen_e2f3c88f31",
+        "kind": "mutant",
+        "rewards": [
+          -0.0008637778349778902,
+          -0.0007354703747885303,
+          -0.0005633708066009394,
+          -0.001038027981916845,
+          -0.0004606794723001871,
+          0.0018878279059276575
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_e2f3c88f31__mbe48ec25",
+        "parent": "gen_e2f3c88f31",
+        "kind": "mutant",
+        "rewards": [
+          -0.0008637778349778902,
+          -0.000840151214280169,
+          -0.0005609083731525841,
+          -0.001038027981916845,
+          -0.0004606794723001871,
+          0.001739724760175431
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_e2f3c88f31__m100b9d62",
+        "parent": "gen_e2f3c88f31",
+        "kind": "mutant",
+        "rewards": [
+          -0.0009382051468728621,
+          -0.000877692438817107,
+          -0.0005633708066009394,
+          -0.001038027981916845,
+          -0.0005017364344841319,
+          0.0018878279059276575
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_e2f3c88f31__mb9be76f7",
+        "parent": "gen_e2f3c88f31",
+        "kind": "mutant",
+        "rewards": [
+          -0.0008637778349778902,
+          -0.00013260476290726658,
+          0.00041091641303439563,
+          -0.001038027981916845,
+          -0.0001206359113358757,
+          6.686142788760695e-05
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_e2f3c88f31__md35c46a1",
+        "parent": "gen_e2f3c88f31",
+        "kind": "mutant",
+        "rewards": [
+          -0.0017756706088598966,
+          -0.047282892017846426,
+          0.0012335460619491319,
+          -0.001038027981916845,
+          -0.04256413211708616,
+          0.0008668357511642452
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_e2f3c88f31__m0ce7da75",
+        "parent": "gen_e2f3c88f31",
+        "kind": "mutant",
+        "rewards": [
+          -0.001268255078075535,
+          -0.0017003903335014725,
+          0.0010788650865168094,
+          -0.001038027981916845,
+          -0.0015673233777921958,
+          -0.06164897613299208
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_e2f3c88f31__m285a6ced",
+        "parent": "gen_e2f3c88f31",
+        "kind": "mutant",
+        "rewards": [
+          -0.0008637778349778902,
+          -0.00162242663697117,
+          0.0010249188083166893,
+          -0.001038027981916845,
+          -0.0004606794723001871,
+          0.0006510124391723836
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_e2f3c88f31__m1aa1ff96",
+        "parent": "gen_e2f3c88f31",
+        "kind": "mutant",
+        "rewards": [
+          -0.0008685066702771062,
+          -0.0008790665206490147,
+          -0.0005633708066009394,
+          -0.001038027981916845,
+          -0.0004606794723001871,
+          0.0018878279059276575
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_e2f3c88f31__md2aea898",
+        "parent": "gen_e2f3c88f31",
+        "kind": "mutant",
+        "rewards": [
+          -0.0016993774044987142,
+          -0.0002840805208742473,
+          0.0001735166345566662,
+          -0.0004046978483665635,
+          -0.0014709543365178518,
+          0.00015102624799127363
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_e2f3c88f31__mdcb406cc",
+        "parent": "gen_e2f3c88f31",
+        "kind": "mutant",
+        "rewards": [
+          -0.0008637778349778902,
+          -0.000877692438817107,
+          -0.0005633708066009394,
+          -0.001038027981916845,
+          -0.0004606794723001871,
+          0.0018878279059276575
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_edcabe7a8b",
+        "parent": "gen_edcabe7a8b",
+        "kind": "parent",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_edcabe7a8b__m3045ecd9",
+        "parent": "gen_edcabe7a8b",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_edcabe7a8b__mc1036f88",
+        "parent": "gen_edcabe7a8b",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_edcabe7a8b__m7905ed7d",
+        "parent": "gen_edcabe7a8b",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_edcabe7a8b__mc09b8db1",
+        "parent": "gen_edcabe7a8b",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_edcabe7a8b__m1581709e",
+        "parent": "gen_edcabe7a8b",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_edcabe7a8b__md408231c",
+        "parent": "gen_edcabe7a8b",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_edcabe7a8b__m361e0c76",
+        "parent": "gen_edcabe7a8b",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_edcabe7a8b__m5f37bb54",
+        "parent": "gen_edcabe7a8b",
+        "kind": "mutant",
+        "rewards": [
+          0.009183966115737054,
+          0.00012258118138985113,
+          0.02273731264846219,
+          -0.00038271320918788904,
+          0.011521204587339393,
+          0.023005308547204405
+        ],
+        "kept": true
+      },
+      {
+        "id": "gen_edcabe7a8b__mf97306ea",
+        "parent": "gen_edcabe7a8b",
+        "kind": "mutant",
+        "rewards": [
+          0.011316940108709914,
+          0.0063566592180564,
+          0.02852398126007434,
+          -0.002471070653248461,
+          -0.024867807266022064,
+          -0.036329943259648334
+        ],
+        "kept": false
+      },
+      {
+        "id": "gen_edcabe7a8b__medb16788",
+        "parent": "gen_edcabe7a8b",
+        "kind": "mutant",
+        "rewards": [
+          -0.0048302848675212395,
+          -0.006141043842553852,
+          0.0007481136792601983,
+          -0.0270094438263567,
+          9.116922882355244e-05,
+          0.023005308547204405
+        ],
+        "kept": false
+      }
+    ]
+  },
+  "survivors": 203,
+  "survivor_examples": 1266,
+  "prior_promoted": {
+    "plays": 17,
+    "runs": [
+      1,
+      2,
+      3
+    ],
+    "imitation_examples": 93,
+    "mutant_survivors": 125
+  },
+  "validity": {
+    "validity": 1.0,
+    "sampled": 240,
+    "mean_len": 117.71666666666667
+  },
+  "matched": {
+    "library_mean": 0.009358428571428573,
+    "generated_mean": 0.037052153846153846,
+    "library_plays": 70,
+    "generated_plays": 117,
+    "meets_target": true
+  },
+  "elapsed_s": 2792.3
+}
+== pretrain: done 15:36:00
+saved 10 items to checkpoints/ (19.3 MB)
+push failed; the commit is local and will go with the next push
+== league: start 15:36:31
+  run 4 (opponent pool v3 (5bee276df0d7)): starts from /home/user/SoccerSim/data/models/generator.pt (first run); archive seeded from runs none
+  update 1: 16 games, main rollouts 28, mean generated-play reward -0.0770, generated share 0.37, validity 1.000, Elo main 977, archive {'cells': 15, 'elite_cells': 13, 'plays': 21}, 106.3s
