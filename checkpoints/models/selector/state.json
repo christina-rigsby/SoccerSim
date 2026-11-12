@@ -1,0 +1,31 @@
+{
+ "history": [
+  {
+   "iteration": 0,
+   "fit": {
+    "rows": 60000,
+    "mse": 0.016716569662094116,
+    "baseline_mse": 0.016360480338335037,
+    "mean_mse": 0.017278974875807762
+   },
+   "wall_s": 3217.4
+  },
+  {
+   "iteration": 1,
+   "epsilon": 0.2,
+   "games": 300,
+   "mean_play_reward": 0.0040343309506790555,
+   "shots": 97,
+   "goals_for": 5,
+   "goals_against": 6,
+   "fit": {
+    "rows": 60000,
+    "mse": 0.017966609448194504,
+    "baseline_mse": 0.01707478240132332,
+    "mean_mse": 0.018172767013311386
+   },
+   "wall_s": 1740.4
+  }
+ ],
+ "fitted_on_phase_a": true
+}
