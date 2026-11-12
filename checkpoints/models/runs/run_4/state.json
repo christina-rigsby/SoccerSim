@@ -1,15 +1,18 @@
 {
- "update": 4,
- "snapshots": [],
+ "update": 6,
+ "snapshots": [
+  "main@5"
+ ],
  "elo": {
-  "mid_block": 979.652417316937,
-  "league_exploiter": 1067.3790216765285,
-  "chaotic": 980.8220918704235,
-  "main": 1031.8219749570092,
-  "low_block_counter": 993.1245925617898,
-  "main_exploiter": 959.7015948849219,
-  "high_press": 977.1363283663793,
-  "direct": 1010.361978366011
+  "mid_block": 1006.2139270929018,
+  "league_exploiter": 1027.2497740885585,
+  "chaotic": 995.3672379873049,
+  "main": 1038.5556448131122,
+  "low_block_counter": 1005.8111390520019,
+  "main_exploiter": 945.9462609251123,
+  "high_press": 956.502419173022,
+  "direct": 1036.3328476590789,
+  "main@5": 1015.9228520209916
  },
  "payoff": {
   "league_exploiter": {
@@ -23,23 +26,23 @@
    "chaotic": {
     "w": 4,
     "d": 0,
-    "l": 3,
-    "n": 7,
-    "reward": 0.31868199999999997
+    "l": 4,
+    "n": 8,
+    "reward": 0.264436
    },
    "main": {
-    "w": 4,
-    "d": 3,
-    "l": 3,
-    "n": 10,
-    "reward": -4.267876
+    "w": 6,
+    "d": 5,
+    "l": 6,
+    "n": 17,
+    "reward": -4.374472
    },
    "high_press": {
-    "w": 2,
+    "w": 3,
     "d": 0,
     "l": 0,
-    "n": 2,
-    "reward": 0.16767600000000002
+    "n": 3,
+    "reward": 0.192063
    },
    "low_block_counter": {
     "w": 1,
@@ -54,6 +57,20 @@
     "l": 0,
     "n": 2,
     "reward": 0.041251
+   },
+   "direct": {
+    "w": 0,
+    "d": 0,
+    "l": 2,
+    "n": 2,
+    "reward": -0.15294800000000003
+   },
+   "main@5": {
+    "w": 1,
+    "d": 0,
+    "l": 0,
+    "n": 1,
+    "reward": 0.015206000000000004
    }
   },
   "mid_block": {
@@ -65,20 +82,20 @@
     "reward": -0.140718
    },
    "main": {
-    "w": 1,
+    "w": 3,
     "d": 0,
     "l": 1,
-    "n": 2,
-    "reward": -2.462757
+    "n": 4,
+    "reward": -2.322367
    }
   },
   "chaotic": {
    "league_exploiter": {
-    "w": 3,
+    "w": 4,
     "d": 0,
     "l": 4,
-    "n": 7,
-    "reward": -0.31868199999999997
+    "n": 8,
+    "reward": -0.264436
    },
    "main": {
     "w": 0,
@@ -90,11 +107,11 @@
   },
   "low_block_counter": {
    "main": {
-    "w": 4,
+    "w": 6,
     "d": 0,
-    "l": 3,
-    "n": 7,
-    "reward": 0.494659
+    "l": 4,
+    "n": 10,
+    "reward": 0.46107999999999993
    },
    "league_exploiter": {
     "w": 0,
@@ -106,17 +123,17 @@
   },
   "main": {
    "low_block_counter": {
-    "w": 3,
-    "d": 0,
-    "l": 4,
-    "n": 7,
-    "reward": -0.494659
-   },
-   "main": {
     "w": 4,
     "d": 0,
-    "l": 4,
-    "n": 8,
+    "l": 6,
+    "n": 10,
+    "reward": -0.46107999999999993
+   },
+   "main": {
+    "w": 6,
+    "d": 0,
+    "l": 6,
+    "n": 12,
     "reward": 0.0
    },
    "chaotic": {
@@ -127,32 +144,32 @@
     "reward": 0.098066
    },
    "league_exploiter": {
-    "w": 3,
-    "d": 3,
-    "l": 4,
-    "n": 10,
-    "reward": 4.267876
-   },
-   "main_exploiter": {
-    "w": 9,
-    "d": 2,
+    "w": 6,
+    "d": 5,
     "l": 6,
     "n": 17,
-    "reward": -0.073432
+    "reward": 4.374472
+   },
+   "main_exploiter": {
+    "w": 16,
+    "d": 3,
+    "l": 10,
+    "n": 29,
+    "reward": 0.24386099999999997
    },
    "high_press": {
-    "w": 2,
+    "w": 3,
     "d": 0,
     "l": 2,
-    "n": 4,
-    "reward": -0.18599800000000005
+    "n": 5,
+    "reward": -0.07058200000000003
    },
    "mid_block": {
     "w": 1,
     "d": 0,
-    "l": 1,
-    "n": 2,
-    "reward": 2.462757
+    "l": 3,
+    "n": 4,
+    "reward": 2.322367
    },
    "direct": {
     "w": 2,
@@ -164,11 +181,11 @@
   },
   "main_exploiter": {
    "main": {
-    "w": 6,
-    "d": 2,
-    "l": 9,
-    "n": 17,
-    "reward": 0.073432
+    "w": 10,
+    "d": 3,
+    "l": 16,
+    "n": 29,
+    "reward": -0.24386099999999997
    },
    "league_exploiter": {
     "w": 0,
@@ -182,16 +199,16 @@
    "main": {
     "w": 2,
     "d": 0,
-    "l": 2,
-    "n": 4,
-    "reward": 0.18599800000000005
+    "l": 3,
+    "n": 5,
+    "reward": 0.07058200000000003
    },
    "league_exploiter": {
     "w": 0,
     "d": 0,
-    "l": 2,
-    "n": 2,
-    "reward": -0.16767600000000002
+    "l": 3,
+    "n": 3,
+    "reward": -0.192063
    }
   },
   "direct": {
@@ -201,6 +218,22 @@
     "l": 2,
     "n": 5,
     "reward": -1.818314
+   },
+   "league_exploiter": {
+    "w": 2,
+    "d": 0,
+    "l": 0,
+    "n": 2,
+    "reward": 0.15294800000000003
+   }
+  },
+  "main@5": {
+   "league_exploiter": {
+    "w": 0,
+    "d": 0,
+    "l": 1,
+    "n": 1,
+    "reward": -0.015206000000000004
    }
   }
  },
@@ -467,6 +500,143 @@
     "cells": 46,
     "elite_cells": 24,
     "plays": 91
+   },
+   "refined": 30
+  },
+  {
+   "update": 5,
+   "episodes": 16,
+   "decisions": 168,
+   "wall_s": 103.8,
+   "ppo": {
+    "main": {
+     "loss": 0.010835840056339899,
+     "kl_ref": 0.10873303810755412,
+     "clipfrac": 0.0217441591487393,
+     "ratio": 1.0084372758865356,
+     "n": 23,
+     "mean_reward": -0.0037455647252500057,
+     "mean_adv_raw": 0.0010448164539411664,
+     "mean_play_reward": -0.0018881304347826092
+    },
+    "main_exploiter": {
+     "loss": -0.00048437054889897507,
+     "kl_ref": 0.11104539781808853,
+     "clipfrac": 0.016378100140383715,
+     "ratio": 0.9953823486963908,
+     "n": 16,
+     "mean_reward": 0.007995624095201492,
+     "mean_adv_raw": 0.016707399860024452,
+     "mean_play_reward": -0.004741375
+    },
+    "league_exploiter": {
+     "loss": 0.0011519544447461765,
+     "kl_ref": 0.29418326417605084,
+     "clipfrac": 0.02740303541315346,
+     "ratio": 1.0010147094726562,
+     "n": 19,
+     "mean_reward": -0.0009711055317893624,
+     "mean_adv_raw": 0.0019895704463124275,
+     "mean_play_reward": -0.0032655263157894735
+    }
+   },
+   "main_generated_share": 0.3709677419354839,
+   "validity": 1.0,
+   "sampled": 200,
+   "elo": {
+    "mid_block": 993.0,
+    "league_exploiter": 1046.2,
+    "chaotic": 980.8,
+    "main": 1027.9,
+    "low_block_counter": 1005.8,
+    "main_exploiter": 966.1,
+    "high_press": 956.5,
+    "direct": 1023.7,
+    "main@5": 1027.9
+   },
+   "pfsp": {
+    "main": 0.129,
+    "main_exploiter": 0.09,
+    "league_exploiter": 0.153,
+    "high_press": 0.129,
+    "mid_block": 0.129,
+    "low_block_counter": 0.163,
+    "direct": 0.175,
+    "chaotic": 0.033
+   },
+   "archive": {
+    "cells": 58,
+    "elite_cells": 28,
+    "plays": 127
+   },
+   "refined": 30
+  },
+  {
+   "update": 6,
+   "episodes": 16,
+   "decisions": 153,
+   "wall_s": 76.2,
+   "ppo": {
+    "main": {
+     "loss": 0.09358259787162145,
+     "kl_ref": 0.18702328205108643,
+     "clipfrac": 0.02640019738465334,
+     "ratio": 1.0002910892168682,
+     "n": 19,
+     "mean_reward": -0.00881000142544508,
+     "mean_adv_raw": -0.00011768108379328623,
+     "mean_play_reward": -0.007555736842105263
+    },
+    "main_exploiter": {
+     "loss": 0.0818976213534673,
+     "kl_ref": 0.10854840278625488,
+     "clipfrac": 0.016728624535315987,
+     "ratio": 1.0049739281336467,
+     "n": 13,
+     "mean_reward": -0.007557923439890146,
+     "mean_adv_raw": -0.0022430988028645515,
+     "mean_play_reward": 0.0008596153846153847
+    },
+    "league_exploiter": {
+     "loss": 0.15172097086906433,
+     "kl_ref": 0.3189990123112996,
+     "clipfrac": 0.03221714865550482,
+     "ratio": 0.999042828877767,
+     "n": 9,
+     "mean_reward": 0.001343333045952022,
+     "mean_adv_raw": 0.005428205709904432,
+     "mean_play_reward": -0.004293666666666667
+    }
+   },
+   "main_generated_share": 0.2714285714285714,
+   "validity": 1.0,
+   "sampled": 244,
+   "elo": {
+    "mid_block": 1006.2,
+    "league_exploiter": 1027.2,
+    "chaotic": 995.4,
+    "main": 1038.6,
+    "low_block_counter": 1005.8,
+    "main_exploiter": 945.9,
+    "high_press": 956.5,
+    "direct": 1036.3,
+    "main@5": 1015.9
+   },
+   "pfsp": {
+    "main": 0.111,
+    "main@5": 0.111,
+    "main_exploiter": 0.084,
+    "league_exploiter": 0.111,
+    "high_press": 0.077,
+    "mid_block": 0.173,
+    "low_block_counter": 0.155,
+    "direct": 0.151,
+    "chaotic": 0.028
+   },
+   "archive": {
+    "cells": 64,
+    "elite_cells": 31,
+    "plays": 151
    },
    "refined": 30
   }
