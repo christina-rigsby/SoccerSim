@@ -134,7 +134,7 @@ def plot(res: dict, path: Path) -> None:
         ax.tick_params(colors=muted)
         ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v:g}"))
     axes[0].set_ylabel("skill over per-play average (%)", color=muted)
-    axes[0].legend(frameon=False, fontsize=9, loc="lower right")
+    axes[0].legend(frameon=False, fontsize=9, loc="upper left")
     fig.suptitle("Critic: does more data or a bigger model help?  (best epoch; 0% = no better than "
                  "each play's average)", color=ink, fontsize=11, x=0.01, ha="left")
     fig.tight_layout()
