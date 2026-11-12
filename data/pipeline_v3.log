@@ -210,3 +210,4 @@ opponent pool 5bee276df0d7, league run 4
   response epoch 1: opp-play acc 0.661 (majority 0.343), event BCE 0.1330 (base rate 0.2196)
   response epoch 2: opp-play acc 0.670 (majority 0.343), event BCE 0.1217 (base rate 0.2196)
   response epoch 3: opp-play acc 0.672 (majority 0.343), event BCE 0.1209 (base rate 0.2196)
+  response epoch 4: opp-play acc 0.680 (majority 0.343), event BCE 0.1180 (base rate 0.2196)
