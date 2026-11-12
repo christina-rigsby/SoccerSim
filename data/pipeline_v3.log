@@ -255,3 +255,24 @@ critic A/B {"without_critic": {"mean_play_reward": 0.008733016722408025, "mean_e
   response epoch 2: opp-play acc 0.663 (majority 0.355), event BCE 0.1330 (base rate 0.2211)
   response epoch 3: opp-play acc 0.682 (majority 0.355), event BCE 0.1248 (base rate 0.2211)
   response epoch 4: opp-play acc 0.669 (majority 0.355), event BCE 0.1297 (base rate 0.2211)
+  response epoch 5: opp-play acc 0.684 (majority 0.355), event BCE 0.1225 (base rate 0.2211)
+  response epoch 6: opp-play acc 0.682 (majority 0.355), event BCE 0.1220 (base rate 0.2211)
+  selector iteration 0: value model fitted on Phase A (60000 rows), held-out MSE 0.016717 vs per-play 0.016360
+  critic epoch 1: test MSE 0.017988 vs per-play baseline 0.017075, success acc 0.811
+  critic epoch 2: test MSE 0.017691 vs per-play baseline 0.017075, success acc 0.814
+  critic epoch 3: test MSE 0.017642 vs per-play baseline 0.017075, success acc 0.816
+  critic epoch 4: test MSE 0.017831 vs per-play baseline 0.017075, success acc 0.813
+  critic epoch 5: test MSE 0.017436 vs per-play baseline 0.017075, success acc 0.819
+  critic epoch 6: test MSE 0.017598 vs per-play baseline 0.017075, success acc 0.819
+  critic epoch 7: test MSE 0.017585 vs per-play baseline 0.017075, success acc 0.823
+  critic epoch 8: test MSE 0.017967 vs per-play baseline 0.017075, success acc 0.825
+  response epoch 1: opp-play acc 0.646 (majority 0.357), event BCE 0.1380 (base rate 0.2203)
+  response epoch 2: opp-play acc 0.666 (majority 0.357), event BCE 0.1284 (base rate 0.2203)
+  response epoch 3: opp-play acc 0.677 (majority 0.357), event BCE 0.1254 (base rate 0.2203)
+  response epoch 4: opp-play acc 0.671 (majority 0.357), event BCE 0.1247 (base rate 0.2203)
+  response epoch 5: opp-play acc 0.677 (majority 0.357), event BCE 0.1203 (base rate 0.2203)
+  response epoch 6: opp-play acc 0.676 (majority 0.357), event BCE 0.1207 (base rate 0.2203)
+  saving models (selector iteration 1)
+saved 6 items to checkpoints/ (4.5 MB)
+push failed; the commit is local and will go with the next push
+  selector iteration 1: 300 games (epsilon 0.20), mean play reward +0.0040, goals 5-6, shots 97; refit MSE 0.017967 vs per-play 0.017075
