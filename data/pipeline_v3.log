@@ -5253,3 +5253,270 @@ push failed; the commit is local and will go with the next push
 saved 11 items to checkpoints/ (47.9 MB)
 push failed; the commit is local and will go with the next push
   held-out check: {'train': 0.008438277777777777, 'held_out': 0.00390162962962963, 'relative_drop': 0.5376272585023711, 'flag': True, 'update': 6}
+  validation round-robin: 11 teams, 8 games per pair
+  regression gate: FAILED vs high_press, chaotic
+{
+  "run": 4,
+  "dir": "/home/user/SoccerSim/data/models/runs/run_4",
+  "continued_from": null,
+  "start_reason": "first run",
+  "updates": 6,
+  "held_out": {
+    "train": 0.008438277777777777,
+    "held_out": 0.00390162962962963,
+    "relative_drop": 0.5376272585023711,
+    "flag": true,
+    "update": 6
+  },
+  "evaluation": {
+    "main": {
+      "high_press": {
+        "mean_play_reward": 0.009292228070175438,
+        "goal_diff": 0.0,
+        "shots": 5,
+        "generated_plays": 19,
+        "plays": 57,
+        "held_out": false
+      },
+      "mid_block": {
+        "mean_play_reward": 0.008225468085106382,
+        "goal_diff": 0.0,
+        "shots": 2,
+        "generated_plays": 9,
+        "plays": 47,
+        "held_out": false
+      },
+      "low_block_counter": {
+        "mean_play_reward": 0.006440753623188406,
+        "goal_diff": 0.0,
+        "shots": 6,
+        "generated_plays": 18,
+        "plays": 69,
+        "held_out": false
+      },
+      "possession": {
+        "mean_play_reward": 0.054443741935483875,
+        "goal_diff": 1.0,
+        "shots": 6,
+        "generated_plays": 8,
+        "plays": 31,
+        "held_out": true
+      },
+      "direct": {
+        "mean_play_reward": 0.00433601923076923,
+        "goal_diff": 0.0,
+        "shots": 5,
+        "generated_plays": 12,
+        "plays": 52,
+        "held_out": false
+      },
+      "wing_play": {
+        "mean_play_reward": 0.009364254237288134,
+        "goal_diff": 0.0,
+        "shots": 7,
+        "generated_plays": 24,
+        "plays": 59,
+        "held_out": true
+      },
+      "chaotic": {
+        "mean_play_reward": 0.0032297599999999995,
+        "goal_diff": 0.0,
+        "shots": 4,
+        "generated_plays": 6,
+        "plays": 50,
+        "held_out": false
+      }
+    },
+    "library": {
+      "high_press": {
+        "mean_play_reward": 0.005102500000000001,
+        "goal_diff": 0.0,
+        "shots": 1,
+        "generated_plays": 0,
+        "plays": 58,
+        "held_out": false
+      },
+      "mid_block": {
+        "mean_play_reward": 0.0026162499999999997,
+        "goal_diff": 0.0,
+        "shots": 4,
+        "generated_plays": 0,
+        "plays": 56,
+        "held_out": false
+      },
+      "low_block_counter": {
+        "mean_play_reward": -0.012941513888888888,
+        "goal_diff": -1.0,
+        "shots": 3,
+        "generated_plays": 0,
+        "plays": 72,
+        "held_out": false
+      },
+      "possession": {
+        "mean_play_reward": 0.00047672549019607877,
+        "goal_diff": 0.0,
+        "shots": 1,
+        "generated_plays": 0,
+        "plays": 51,
+        "held_out": true
+      },
+      "direct": {
+        "mean_play_reward": 0.001328555555555556,
+        "goal_diff": 0.0,
+        "shots": 1,
+        "generated_plays": 0,
+        "plays": 54,
+        "held_out": false
+      },
+      "wing_play": {
+        "mean_play_reward": 0.005917476190476189,
+        "goal_diff": 0.0,
+        "shots": 3,
+        "generated_plays": 0,
+        "plays": 63,
+        "held_out": true
+      },
+      "chaotic": {
+        "mean_play_reward": 0.006821666666666666,
+        "goal_diff": 0.0,
+        "shots": 2,
+        "generated_plays": 0,
+        "plays": 63,
+        "held_out": false
+      }
+    },
+    "beats_all_styles": false
+  },
+  "gate": {
+    "styles": {
+      "high_press": {
+        "start": 0.05253833333333333,
+        "final": 0.011854521739130432,
+        "diff": -0.0406838115942029,
+        "allowed_drop": 0.013134583333333333,
+        "ok": false,
+        "held_out": false
+      },
+      "mid_block": {
+        "start": 0.005201302325581395,
+        "final": 0.010141030303030301,
+        "diff": 0.004939727977448906,
+        "allowed_drop": 0.002,
+        "ok": true,
+        "held_out": false
+      },
+      "low_block_counter": {
+        "start": 0.00633140909090909,
+        "final": 0.008968236842105263,
+        "diff": 0.0026368277511961734,
+        "allowed_drop": 0.002,
+        "ok": true,
+        "held_out": false
+      },
+      "possession": {
+        "start": 0.0025383548387096777,
+        "final": 0.014215851851851853,
+        "diff": 0.011677497013142175,
+        "allowed_drop": 0.002,
+        "ok": true,
+        "held_out": true
+      },
+      "direct": {
+        "start": 0.013800055555555555,
+        "final": 0.017951468749999998,
+        "diff": 0.004151413194444443,
+        "allowed_drop": 0.0034500138888888887,
+        "ok": true,
+        "held_out": false
+      },
+      "wing_play": {
+        "start": -0.0242943076923077,
+        "final": -0.024439243243243248,
+        "diff": -0.00014493555093554947,
+        "allowed_drop": 0.006073576923076925,
+        "ok": true,
+        "held_out": true
+      },
+      "chaotic": {
+        "start": 0.00454690243902439,
+        "final": 0.0019781666666666667,
+        "diff": -0.0025687357723577233,
+        "allowed_drop": 0.002,
+        "ok": false,
+        "held_out": false
+      }
+    },
+    "games_per_style": 8,
+    "passed": false,
+    "failed_styles": [
+      "high_press",
+      "chaotic"
+    ]
+  },
+  "archive": {
+    "cells": 64,
+    "elite_cells": 31,
+    "plays": 151
+  },
+  "elo": {
+    "mid_block": 1006.2139270929018,
+    "league_exploiter": 1027.2497740885585,
+    "chaotic": 995.3672379873049,
+    "main": 1038.5556448131122,
+    "low_block_counter": 1005.8111390520019,
+    "main_exploiter": 945.9462609251123,
+    "high_press": 956.502419173022,
+    "direct": 1036.3328476590789,
+    "main@5": 1015.9228520209916
+  },
+  "flags": [
+    "update 6: held-out EPV dropped 54% \u2014 possible sim overfitting",
+    "run 4: regression gate failed against high_press, chaotic; the next run will not continue from this generator"
+  ]
+}
+== league: done 15:58:26
+saved 11 items to checkpoints/ (48.6 MB)
+push failed; the commit is local and will go with the next push
+== promote: start 15:58:57
+{
+  "run": 4,
+  "dir": "/home/user/SoccerSim/plays/generated_and_promoted/run_4",
+  "elites": 31,
+  "promoted": 6,
+  "kept_from_earlier_runs": [],
+  "heldout_medians_from": "/home/user/SoccerSim/data/heldout_reference_pool_v3",
+  "promoted_ids": [
+    "gen_e2f3c88f31",
+    "gen_e55b04e172",
+    "gen_9c1279eb27",
+    "gen_336193263d",
+    "gen_9e38cedbac",
+    "gen_ba9a71b7cc"
+  ]
+}
+== promote: done 16:00:34
+saved 11 items to checkpoints/ (48.7 MB)
+push failed; the commit is local and will go with the next push
+== reports: start 16:01:04
+{
+  "run": 4,
+  "dir": "/home/user/SoccerSim/reports/run_4",
+  "highlights": {
+    "games": 17,
+    "kept": 5,
+    "generated_calls": 54,
+    "shots_agent": 11,
+    "goals_agent": 0
+  },
+  "report": "/home/user/SoccerSim/reports/run_4/selfplay_report.html",
+  "successes": {
+    "successes": 211,
+    "plays": 100,
+    "in_readme": 12,
+    "in_page": 60,
+    "dir": "/home/user/SoccerSim/reports/run_4/generated_successes"
+  },
+  "training_games": "/home/user/SoccerSim/reports/training_games/pool_v3"
+}
+== reports: done 16:04:26
+PIPELINE_DONE
