@@ -325,3 +325,28 @@ push failed; the commit is local and will go with the next push
   response epoch 3: opp-play acc 0.665 (majority 0.334), event BCE 0.1225 (base rate 0.2128)
   response epoch 4: opp-play acc 0.674 (majority 0.334), event BCE 0.1177 (base rate 0.2128)
   response epoch 5: opp-play acc 0.677 (majority 0.334), event BCE 0.1192 (base rate 0.2128)
+  response epoch 6: opp-play acc 0.681 (majority 0.334), event BCE 0.1207 (base rate 0.2128)
+  saving models (selector iteration 4)
+saved 6 items to checkpoints/ (4.6 MB)
+push failed; the commit is local and will go with the next push
+  selector iteration 4: 300 games (epsilon 0.05), mean play reward +0.0056, goals 9-9, shots 101; refit MSE 0.013593 vs per-play 0.013668
+{
+  "iteration": 4,
+  "epsilon": 0.05,
+  "games": 300,
+  "mean_play_reward": 0.005632878624409981,
+  "shots": 101,
+  "goals_for": 9,
+  "goals_against": 9,
+  "fit": {
+    "rows": 60000,
+    "mse": 0.013592705130577087,
+    "baseline_mse": 0.01366847101598978,
+    "mean_mse": 0.014378651045262814
+  },
+  "wall_s": 1879.6
+}
+== selector: done 14:48:54
+saved 6 items to checkpoints/ (4.6 MB)
+push failed; the commit is local and will go with the next push
+== pretrain: start 14:49:24
