@@ -1,0 +1,392 @@
+{
+ "update": 2,
+ "snapshots": [],
+ "elo": {
+  "mid_block": 976.8276146734439,
+  "league_exploiter": 1020.9380991888347,
+  "chaotic": 1010.1911246898811,
+  "main": 1053.1922980555476,
+  "low_block_counter": 1003.3367152147445,
+  "main_exploiter": 960.7109912670152,
+  "high_press": 974.803156910533
+ },
+ "payoff": {
+  "league_exploiter": {
+   "mid_block": {
+    "w": 2,
+    "d": 0,
+    "l": 0,
+    "n": 2,
+    "reward": 0.140718
+   },
+   "chaotic": {
+    "w": 1,
+    "d": 0,
+    "l": 3,
+    "n": 4,
+    "reward": -0.179309
+   },
+   "main": {
+    "w": 0,
+    "d": 2,
+    "l": 0,
+    "n": 2,
+    "reward": -0.003272999999999998
+   },
+   "high_press": {
+    "w": 2,
+    "d": 0,
+    "l": 0,
+    "n": 2,
+    "reward": 0.16767600000000002
+   }
+  },
+  "mid_block": {
+   "league_exploiter": {
+    "w": 0,
+    "d": 0,
+    "l": 2,
+    "n": 2,
+    "reward": -0.140718
+   }
+  },
+  "chaotic": {
+   "league_exploiter": {
+    "w": 3,
+    "d": 0,
+    "l": 1,
+    "n": 4,
+    "reward": 0.179309
+   },
+   "main": {
+    "w": 0,
+    "d": 0,
+    "l": 1,
+    "n": 1,
+    "reward": -0.098066
+   }
+  },
+  "low_block_counter": {
+   "main": {
+    "w": 4,
+    "d": 0,
+    "l": 3,
+    "n": 7,
+    "reward": 0.494659
+   }
+  },
+  "main": {
+   "low_block_counter": {
+    "w": 3,
+    "d": 0,
+    "l": 4,
+    "n": 7,
+    "reward": -0.494659
+   },
+   "main": {
+    "w": 3,
+    "d": 0,
+    "l": 3,
+    "n": 6,
+    "reward": 0.0
+   },
+   "chaotic": {
+    "w": 1,
+    "d": 0,
+    "l": 0,
+    "n": 1,
+    "reward": 0.098066
+   },
+   "league_exploiter": {
+    "w": 0,
+    "d": 2,
+    "l": 0,
+    "n": 2,
+    "reward": 0.003272999999999998
+   },
+   "main_exploiter": {
+    "w": 6,
+    "d": 0,
+    "l": 3,
+    "n": 9,
+    "reward": -0.08410300000000001
+   },
+   "high_press": {
+    "w": 1,
+    "d": 0,
+    "l": 1,
+    "n": 2,
+    "reward": -0.25524800000000003
+   }
+  },
+  "main_exploiter": {
+   "main": {
+    "w": 3,
+    "d": 0,
+    "l": 6,
+    "n": 9,
+    "reward": 0.08410300000000001
+   }
+  },
+  "high_press": {
+   "main": {
+    "w": 1,
+    "d": 0,
+    "l": 1,
+    "n": 2,
+    "reward": 0.25524800000000003
+   },
+   "league_exploiter": {
+    "w": 0,
+    "d": 0,
+    "l": 2,
+    "n": 2,
+    "reward": -0.16767600000000002
+   }
+  }
+ },
+ "history": [
+  {
+   "update": 1,
+   "episodes": 16,
+   "decisions": 175,
+   "wall_s": 106.3,
+   "ppo": {
+    "main": {
+     "loss": 0.01233429554849863,
+     "kl_ref": -0.0010662507321554198,
+     "clipfrac": 0.01045036078626524,
+     "ratio": 1.1060272057851155,
+     "n": 28,
+     "mean_reward": -0.07701746374368668,
+     "mean_adv_raw": -0.07176915556192398,
+     "mean_play_reward": -0.014098964285714288
+    },
+    "main_exploiter": {
+     "loss": 0.0450208509961764,
+     "kl_ref": -0.04105163938335532,
+     "clipfrac": 0.0169606512890095,
+     "ratio": 1.0015836556752522,
+     "n": 10,
+     "mean_reward": -0.011972100473940372,
+     "mean_adv_raw": -0.007621155120432377,
+     "mean_play_reward": -0.0036752
+    },
+    "league_exploiter": {
+     "loss": 0.11643470823764801,
+     "kl_ref": -0.006144556823246254,
+     "clipfrac": 0.006596491228070176,
+     "ratio": 1.0019158124923706,
+     "n": 18,
+     "mean_reward": -0.003302999073639512,
+     "mean_adv_raw": 0.0024766388814896345,
+     "mean_play_reward": -0.002417944444444445
+    }
+   },
+   "main_generated_share": 0.3684210526315789,
+   "validity": 1.0,
+   "sampled": 252,
+   "elo": {
+    "mid_block": 976.8,
+    "league_exploiter": 997.8,
+    "chaotic": 1011.1,
+    "main": 977.2,
+    "low_block_counter": 1034.0,
+    "main_exploiter": 1003.0
+   },
+   "pfsp": {
+    "main": 0.125,
+    "main_exploiter": 0.125,
+    "league_exploiter": 0.125,
+    "high_press": 0.125,
+    "mid_block": 0.125,
+    "low_block_counter": 0.125,
+    "direct": 0.125,
+    "chaotic": 0.125
+   },
+   "archive": {
+    "cells": 15,
+    "elite_cells": 13,
+    "plays": 21
+   },
+   "refined": 30
+  },
+  {
+   "update": 2,
+   "episodes": 16,
+   "decisions": 175,
+   "wall_s": 70.8,
+   "ppo": {
+    "main": {
+     "loss": 0.12743839621543884,
+     "kl_ref": 0.015714343016346295,
+     "clipfrac": 0.01404494382022472,
+     "ratio": 1.0207817554473877,
+     "n": 23,
+     "mean_reward": 0.024786652997136116,
+     "mean_adv_raw": 0.026852581650018692,
+     "mean_play_reward": -0.004209521739130436
+    },
+    "main_exploiter": {
+     "loss": 0.08100750545660655,
+     "kl_ref": -0.0027910344457874694,
+     "clipfrac": 0.012899896800825594,
+     "ratio": 1.0632568995157878,
+     "n": 5,
+     "mean_reward": -0.0004786000063177198,
+     "mean_adv_raw": 0.005237271077930927,
+     "mean_play_reward": -0.0009134
+    },
+    "league_exploiter": {
+     "loss": -0.17145764331022897,
+     "kl_ref": 0.05173927421371142,
+     "clipfrac": 0.023533204384268213,
+     "ratio": 1.0871576070785522,
+     "n": 9,
+     "mean_reward": -0.01077400054782629,
+     "mean_adv_raw": -0.005455601029098034,
+     "mean_play_reward": -0.0003095555555555556
+    }
+   },
+   "main_generated_share": 0.3484848484848485,
+   "validity": 1.0,
+   "sampled": 228,
+   "elo": {
+    "mid_block": 976.8,
+    "league_exploiter": 1020.9,
+    "chaotic": 1010.2,
+    "main": 1053.2,
+    "low_block_counter": 1003.3,
+    "main_exploiter": 960.7,
+    "high_press": 974.8
+   },
+   "pfsp": {
+    "main": 0.103,
+    "main_exploiter": 0.141,
+    "league_exploiter": 0.103,
+    "high_press": 0.103,
+    "mid_block": 0.103,
+    "low_block_counter": 0.316,
+    "direct": 0.103,
+    "chaotic": 0.026
+   },
+   "archive": {
+    "cells": 23,
+    "elite_cells": 17,
+    "plays": 38
+   },
+   "refined": 30
+  }
+ ],
+ "flags": [],
+ "final_eval": {},
+ "run": 4,
+ "promotion_run": 4,
+ "pool": {
+  "scripted_styles": {
+   "high_press": {
+    "favour": {
+     "high_press_sideline_trap": 0.06,
+     "counterpress_five_seconds": 0.06,
+     "direct_counterattack": 0.03,
+     "low_block_box_protection": -0.04,
+     "recycle_possession": -0.03
+    },
+    "temperature": 0.01
+   },
+   "mid_block": {
+    "favour": {
+     "mid_block_compact": 0.06,
+     "recycle_possession": 0.03,
+     "switch_of_play": 0.02,
+     "high_press_sideline_trap": -0.04,
+     "through_ball_behind_high_line": -0.02
+    },
+    "temperature": 0.01
+   },
+   "low_block_counter": {
+    "favour": {
+     "low_block_box_protection": 0.06,
+     "direct_counterattack": 0.06,
+     "recycle_possession": -0.04,
+     "high_press_sideline_trap": -0.04,
+     "build_out_short_goal_kick": -0.03
+    },
+    "temperature": 0.01
+   },
+   "possession": {
+    "favour": {
+     "third_man_combination": 0.04,
+     "switch_of_play": 0.04,
+     "recycle_possession": 0.04,
+     "build_out_short_goal_kick": 0.04,
+     "counterpress_five_seconds": 0.03,
+     "direct_counterattack": -0.04,
+     "through_ball_behind_high_line": -0.03
+    },
+    "temperature": 0.01
+   },
+   "direct": {
+    "favour": {
+     "through_ball_behind_high_line": 0.06,
+     "direct_counterattack": 0.05,
+     "wide_overlap_cross": 0.02,
+     "mid_block_compact": 0.02,
+     "recycle_possession": -0.05,
+     "build_out_short_goal_kick": -0.04,
+     "one_two_wall_pass": -0.02
+    },
+    "temperature": 0.01
+   },
+   "wing_play": {
+    "favour": {
+     "wide_overlap_cross": 0.06,
+     "switch_of_play": 0.05,
+     "counterpress_five_seconds": 0.02,
+     "one_two_wall_pass": -0.03,
+     "third_man_combination": -0.03
+    },
+    "temperature": 0.01
+   },
+   "chaotic": {
+    "favour": {},
+    "temperature": 0.03
+   }
+  },
+  "held_out_styles": [
+   "possession",
+   "wing_play"
+  ],
+  "pfsp_weighting": "squared",
+  "learners": [
+   "main",
+   "main_exploiter",
+   "league_exploiter"
+  ],
+  "snapshot_every": 5,
+  "main_exploiter_reset_every": 20,
+  "pool_version": 3,
+  "formations": [
+   "4-3-3",
+   "4-4-2",
+   "3-5-2"
+  ],
+  "randomise_eval_formations": true,
+  "library": "1b0dbaee1263",
+  "shooting": {
+   "enabled": true,
+   "min_xg": 0.1,
+   "block_range_m": 10.0,
+   "cone_margin_m": 0.5,
+   "settle_s": 0.2
+  }
+ },
+ "pool_fingerprint": "5bee276df0d7",
+ "continued_from": null,
+ "start_from": "/home/user/SoccerSim/data/models/generator.pt",
+ "start_reason": "first run",
+ "seeded_from_runs": [],
+ "seeds_to_evaluate": [],
+ "gate": null,
+ "validation": null
+}
