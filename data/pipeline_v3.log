@@ -5238,3 +5238,16 @@ push failed; the commit is local and will go with the next push
 == league: start 15:36:31
   run 4 (opponent pool v3 (5bee276df0d7)): starts from /home/user/SoccerSim/data/models/generator.pt (first run); archive seeded from runs none
   update 1: 16 games, main rollouts 28, mean generated-play reward -0.0770, generated share 0.37, validity 1.000, Elo main 977, archive {'cells': 15, 'elite_cells': 13, 'plays': 21}, 106.3s
+  update 2: 16 games, main rollouts 23, mean generated-play reward 0.0248, generated share 0.35, validity 1.000, Elo main 1053, archive {'cells': 23, 'elite_cells': 17, 'plays': 38}, 70.8s
+  saving models (run 4, update 2)
+saved 11 items to checkpoints/ (42.8 MB)
+push failed; the commit is local and will go with the next push
+  update 3: 16 games, main rollouts 25, mean generated-play reward 0.1881, generated share 0.39, validity 1.000, Elo main 978, archive {'cells': 38, 'elite_cells': 22, 'plays': 62}, 82.5s
+  update 4: 16 games, main rollouts 28, mean generated-play reward 0.2237, generated share 0.41, validity 1.000, Elo main 1032, archive {'cells': 46, 'elite_cells': 24, 'plays': 91}, 87.3s
+  saving models (run 4, update 4)
+saved 11 items to checkpoints/ (43.2 MB)
+push failed; the commit is local and will go with the next push
+  update 5: 16 games, main rollouts 23, mean generated-play reward -0.0037, generated share 0.37, validity 1.000, Elo main 1028, archive {'cells': 58, 'elite_cells': 28, 'plays': 127}, 103.8s
+  update 6: 16 games, main rollouts 19, mean generated-play reward -0.0088, generated share 0.27, validity 1.000, Elo main 1039, archive {'cells': 64, 'elite_cells': 31, 'plays': 151}, 76.2s
+  saving models (run 4, update 6)
+saved 11 items to checkpoints/ (47.9 MB)
