@@ -49,7 +49,8 @@ OUT = ROOT / "reports" / "critic_learning_curve"
 SIZES = {"small (pipeline)": "quick", "large": "spec"}
 
 
-def train_one(train, test, prof: str, epochs: int, lr: float, batch: int, seed: int, n_ids: int):
+def train_one(train, test, prof: str, epochs: int, lr: float, batch: int, seed: int, n_ids: int,
+              loss_kind: str = "huber"):
     cfg = load_config("training")
     enc, cc = cfg["encoder"][prof], cfg["critic"][prof]
     torch.manual_seed(seed)
@@ -63,7 +64,7 @@ def train_one(train, test, prof: str, epochs: int, lr: float, batch: int, seed: 
     probe = train.subset(probe_idx)
     base_probe = per_play_baseline(train, probe)
     hist = []
-    ck_path = ROOT / "data" / f"critic_lc_ckpt_{prof}_{len(train)}.pt"  # resume a run after a restart
+    ck_path = ROOT / "data" / f"critic_lc_ckpt_{prof}_{loss_kind}_{len(train)}.pt"  # resume a run after a restart
     start = 0
     if ck_path.exists():
         ck = torch.load(ck_path, weights_only=False)
@@ -80,7 +81,8 @@ def train_one(train, test, prof: str, epochs: int, lr: float, batch: int, seed: 
             y = (torch.from_numpy(train.reward[b]) - critic.y_mean) / critic.y_std
             s = torch.from_numpy(train.success[b])
             v, sl = critic(x, h, tk, ident)
-            loss = nn.functional.smooth_l1_loss(v, y) + 0.5 * nn.functional.binary_cross_entropy_with_logits(sl, s)
+            reg = nn.functional.mse_loss if loss_kind == "mse" else nn.functional.smooth_l1_loss
+            loss = reg(v, y) + 0.5 * nn.functional.binary_cross_entropy_with_logits(sl, s)
             opt.zero_grad()
             loss.backward()
             nn.utils.clip_grad_norm_(critic.parameters(), 1.0)
@@ -148,6 +150,8 @@ def main() -> int:
     ap.add_argument("--lr", type=float, default=0.002)
     ap.add_argument("--batch", type=int, default=256)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--loss", choices=["huber", "mse"], default="huber",
+                    help="value loss: huber (the pipeline's, robust to outliers) or mse (predicts the mean)")
     a = ap.parse_args()
 
     root = Path(a.root) if a.root else data_paths(load_config("league"))["selfplay"]
@@ -160,9 +164,11 @@ def main() -> int:
           f"target {learning_target()} ({time.time() - t0:.0f}s)", flush=True)
     order = np.random.default_rng(a.seed).permutation(eps)
     OUT.mkdir(parents=True, exist_ok=True)
-    prev = json.loads((OUT / "results.json").read_text()) if (OUT / "results.json").exists() else None
+    out = OUT if a.loss == "huber" else OUT / f"loss_{a.loss}"
+    out.mkdir(parents=True, exist_ok=True)
+    prev = json.loads((out / "results.json").read_text()) if (out / "results.json").exists() else None
     res = {"target": learning_target(), "decisions": len(ds), "test_games": int(len(np.unique(test.episode))),
-           "test_rows": len(test), "epochs": a.epochs, "lr": a.lr, "runs": {}}
+           "test_rows": len(test), "epochs": a.epochs, "lr": a.lr, "loss": a.loss, "runs": {}}
     for f in sorted(a.fractions):  # both sizes at each fraction, so small runs finish first
         for size in a.sizes:
             res["runs"].setdefault(size, [])
@@ -174,7 +180,7 @@ def main() -> int:
             keep = set(order[: max(1, int(round(f * len(eps))))])  # nested subsets: 10% within 25% ...
             tr = train_all.subset(np.where([e in keep for e in train_all.episode])[0])
             t1 = time.time()
-            hist, params = train_one(tr, test, SIZES[size], a.epochs, a.lr, a.batch, a.seed, len(play_ids(lib)))
+            hist, params = train_one(tr, test, SIZES[size], a.epochs, a.lr, a.batch, a.seed, len(play_ids(lib)), a.loss)
             best = max(hist, key=lambda h: h["test_skill"])
             run = {"fraction": f, "train_games": len(keep), "train_rows": len(tr), "params": params,
                    "best": best, "history": hist, "wall_s": round(time.time() - t1, 1)}
@@ -183,9 +189,9 @@ def main() -> int:
                   f"{100 * best['test_skill']:+.1f}% (epoch {best['epoch']}), training skill "
                   f"{100 * best['train_skill']:+.1f}%, corr {best['test_corr']:.3f}  [{run['wall_s']:.0f}s]",
                   flush=True)
-            (OUT / "results.json").write_text(json.dumps(res, indent=1))
-    plot(res, OUT / "learning_curve.png")
-    print(f"wrote {OUT / 'results.json'} and learning_curve.png")
+            (out / "results.json").write_text(json.dumps(res, indent=1))
+    plot(res, out / "learning_curve.png")
+    print(f"wrote {out / 'results.json'} and learning_curve.png")
     return 0
 
 
