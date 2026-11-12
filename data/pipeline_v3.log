@@ -312,3 +312,16 @@ push failed; the commit is local and will go with the next push
 saved 6 items to checkpoints/ (4.6 MB)
 push failed; the commit is local and will go with the next push
   selector iteration 3: 300 games (epsilon 0.10), mean play reward +0.0037, goals 2-3, shots 74; refit MSE 0.016164 vs per-play 0.016100
+  critic epoch 1: test MSE 0.014104 vs per-play baseline 0.013668, success acc 0.813
+  critic epoch 2: test MSE 0.014121 vs per-play baseline 0.013668, success acc 0.806
+  critic epoch 3: test MSE 0.013785 vs per-play baseline 0.013668, success acc 0.812
+  critic epoch 4: test MSE 0.013948 vs per-play baseline 0.013668, success acc 0.813
+  critic epoch 5: test MSE 0.013770 vs per-play baseline 0.013668, success acc 0.818
+  critic epoch 6: test MSE 0.013858 vs per-play baseline 0.013668, success acc 0.818
+  critic epoch 7: test MSE 0.013742 vs per-play baseline 0.013668, success acc 0.819
+  critic epoch 8: test MSE 0.013593 vs per-play baseline 0.013668, success acc 0.819
+  response epoch 1: opp-play acc 0.626 (majority 0.334), event BCE 0.1376 (base rate 0.2128)
+  response epoch 2: opp-play acc 0.666 (majority 0.334), event BCE 0.1254 (base rate 0.2128)
+  response epoch 3: opp-play acc 0.665 (majority 0.334), event BCE 0.1225 (base rate 0.2128)
+  response epoch 4: opp-play acc 0.674 (majority 0.334), event BCE 0.1177 (base rate 0.2128)
+  response epoch 5: opp-play acc 0.677 (majority 0.334), event BCE 0.1192 (base rate 0.2128)
