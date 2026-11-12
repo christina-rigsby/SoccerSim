@@ -276,3 +276,16 @@ critic A/B {"without_critic": {"mean_play_reward": 0.008733016722408025, "mean_e
 saved 6 items to checkpoints/ (4.5 MB)
 push failed; the commit is local and will go with the next push
   selector iteration 1: 300 games (epsilon 0.20), mean play reward +0.0040, goals 5-6, shots 97; refit MSE 0.017967 vs per-play 0.017075
+  critic epoch 1: test MSE 0.016636 vs per-play baseline 0.015860, success acc 0.810
+  critic epoch 2: test MSE 0.016856 vs per-play baseline 0.015860, success acc 0.819
+  critic epoch 3: test MSE 0.016081 vs per-play baseline 0.015860, success acc 0.815
+  critic epoch 4: test MSE 0.015948 vs per-play baseline 0.015860, success acc 0.820
+  critic epoch 5: test MSE 0.016220 vs per-play baseline 0.015860, success acc 0.824
+  critic epoch 6: test MSE 0.015922 vs per-play baseline 0.015860, success acc 0.825
+  critic epoch 7: test MSE 0.015806 vs per-play baseline 0.015860, success acc 0.826
+  critic epoch 8: test MSE 0.015932 vs per-play baseline 0.015860, success acc 0.826
+  response epoch 1: opp-play acc 0.654 (majority 0.350), event BCE 0.1368 (base rate 0.2220)
+  response epoch 2: opp-play acc 0.665 (majority 0.350), event BCE 0.1268 (base rate 0.2220)
+  response epoch 3: opp-play acc 0.671 (majority 0.350), event BCE 0.1258 (base rate 0.2220)
+  response epoch 4: opp-play acc 0.672 (majority 0.350), event BCE 0.1222 (base rate 0.2220)
+  response epoch 5: opp-play acc 0.674 (majority 0.350), event BCE 0.1225 (base rate 0.2220)
