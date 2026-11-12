@@ -289,3 +289,26 @@ push failed; the commit is local and will go with the next push
   response epoch 3: opp-play acc 0.671 (majority 0.350), event BCE 0.1258 (base rate 0.2220)
   response epoch 4: opp-play acc 0.672 (majority 0.350), event BCE 0.1222 (base rate 0.2220)
   response epoch 5: opp-play acc 0.674 (majority 0.350), event BCE 0.1225 (base rate 0.2220)
+  response epoch 6: opp-play acc 0.686 (majority 0.350), event BCE 0.1190 (base rate 0.2220)
+  saving models (selector iteration 2)
+saved 6 items to checkpoints/ (4.6 MB)
+push failed; the commit is local and will go with the next push
+  selector iteration 2: 300 games (epsilon 0.15), mean play reward +0.0099, goals 7-2, shots 113; refit MSE 0.015932 vs per-play 0.015860
+  critic epoch 1: test MSE 0.016503 vs per-play baseline 0.016100, success acc 0.812
+  critic epoch 2: test MSE 0.016399 vs per-play baseline 0.016100, success acc 0.812
+  critic epoch 3: test MSE 0.015991 vs per-play baseline 0.016100, success acc 0.821
+  critic epoch 4: test MSE 0.016569 vs per-play baseline 0.016100, success acc 0.828
+  critic epoch 5: test MSE 0.016056 vs per-play baseline 0.016100, success acc 0.818
+  critic epoch 6: test MSE 0.016027 vs per-play baseline 0.016100, success acc 0.822
+  critic epoch 7: test MSE 0.015857 vs per-play baseline 0.016100, success acc 0.827
+  critic epoch 8: test MSE 0.016164 vs per-play baseline 0.016100, success acc 0.822
+  response epoch 1: opp-play acc 0.646 (majority 0.350), event BCE 0.1373 (base rate 0.2164)
+  response epoch 2: opp-play acc 0.671 (majority 0.350), event BCE 0.1263 (base rate 0.2164)
+  response epoch 3: opp-play acc 0.677 (majority 0.350), event BCE 0.1241 (base rate 0.2164)
+  response epoch 4: opp-play acc 0.676 (majority 0.350), event BCE 0.1206 (base rate 0.2164)
+  response epoch 5: opp-play acc 0.673 (majority 0.350), event BCE 0.1188 (base rate 0.2164)
+  response epoch 6: opp-play acc 0.691 (majority 0.350), event BCE 0.1198 (base rate 0.2164)
+  saving models (selector iteration 3)
+saved 6 items to checkpoints/ (4.6 MB)
+push failed; the commit is local and will go with the next push
+  selector iteration 3: 300 games (epsilon 0.10), mean play reward +0.0037, goals 2-3, shots 74; refit MSE 0.016164 vs per-play 0.016100
