@@ -1,2 +1,4 @@
 143378 decisions; 12150 training games, 1350 held-out games; target possession_return (47s)
   small (pipeline)    25% ( 3038 games,  32074 rows): held-out skill +0.7% (epoch 5), training skill +0.8%, corr 0.280  [3249s]
+  small (pipeline)   100% (12150 games, 129091 rows): held-out skill -0.1% (epoch 2), training skill -0.1%, corr 0.268  [11974s]
+wrote /home/user/SoccerSim/reports/critic_learning_curve/loss_mse/results.json and learning_curve.png
