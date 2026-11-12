@@ -245,3 +245,13 @@ critic A/B {"without_critic": {"mean_play_reward": 0.008733016722408025, "mean_e
 == selector: start 11:55:16
   critic epoch 1: test MSE 0.017011 vs per-play baseline 0.016360, success acc 0.808
   critic epoch 2: test MSE 0.017126 vs per-play baseline 0.016360, success acc 0.813
+  critic epoch 3: test MSE 0.016721 vs per-play baseline 0.016360, success acc 0.816
+  critic epoch 4: test MSE 0.016764 vs per-play baseline 0.016360, success acc 0.817
+  critic epoch 5: test MSE 0.016729 vs per-play baseline 0.016360, success acc 0.815
+  critic epoch 6: test MSE 0.016672 vs per-play baseline 0.016360, success acc 0.810
+  critic epoch 7: test MSE 0.016654 vs per-play baseline 0.016360, success acc 0.819
+  critic epoch 8: test MSE 0.016717 vs per-play baseline 0.016360, success acc 0.816
+  response epoch 1: opp-play acc 0.666 (majority 0.355), event BCE 0.1378 (base rate 0.2211)
+  response epoch 2: opp-play acc 0.663 (majority 0.355), event BCE 0.1330 (base rate 0.2211)
+  response epoch 3: opp-play acc 0.682 (majority 0.355), event BCE 0.1248 (base rate 0.2211)
+  response epoch 4: opp-play acc 0.669 (majority 0.355), event BCE 0.1297 (base rate 0.2211)
