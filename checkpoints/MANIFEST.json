@@ -1,0 +1,12 @@
+{
+  "saved": "2026-11-12 11:54 UTC",
+  "files": [
+    "models/critic.pt",
+    "models/response.pt",
+    "models/meta.json",
+    "models/critic_metrics.json",
+    "pipeline_state/"
+  ],
+  "pool_fingerprint": "5bee276df0d7",
+  "latest_run": null
+}
