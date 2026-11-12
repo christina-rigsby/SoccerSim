@@ -5252,3 +5252,4 @@ push failed; the commit is local and will go with the next push
   saving models (run 4, update 6)
 saved 11 items to checkpoints/ (47.9 MB)
 push failed; the commit is local and will go with the next push
+  held-out check: {'train': 0.008438277777777777, 'held_out': 0.00390162962962963, 'relative_drop': 0.5376272585023711, 'flag': True, 'update': 6}
