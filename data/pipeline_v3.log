@@ -5251,3 +5251,4 @@ push failed; the commit is local and will go with the next push
   update 6: 16 games, main rollouts 19, mean generated-play reward -0.0088, generated share 0.27, validity 1.000, Elo main 1039, archive {'cells': 64, 'elite_cells': 31, 'plays': 151}, 76.2s
   saving models (run 4, update 6)
 saved 11 items to checkpoints/ (47.9 MB)
+push failed; the commit is local and will go with the next push
