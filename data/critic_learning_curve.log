@@ -5,3 +5,4 @@
   small (pipeline)    25% ( 3038 games,  32074 rows): held-out skill -1.9% (epoch 4), training skill -0.4%, corr 0.232  [3312s]
 143378 decisions; 12150 training games, 1350 held-out games; target possession_return (34s)
   large               25% ( 3038 games,  32074 rows): held-out skill -4.5% (epoch 6), training skill -2.2%, corr 0.170  [5500s]
+  small (pipeline)    50% ( 6075 games,  64674 rows): held-out skill -0.4% (epoch 6), training skill -0.1%, corr 0.259  [5987s]
