@@ -4,9 +4,12 @@ At each real decision (a play ended, possession changed, a restart, the start), 
 
 1. ranks the library as usual and keeps the ``top_k`` feasible plays by the hand-written score;
 2. for each of them, copies the game exactly as it is (:meth:`MatchEnv.fork`), starts that play
-   in the copy, and plays ``horizon_s`` seconds forward, ``rollouts`` times with different random
-   seeds. The opponent keeps playing as it normally would (a copy of its own policy), and after
-   the tried play ends our team carries on with the plain library ranking;
+   in the copy, and plays ``horizon_s`` seconds forward with different random seeds: ``screen``
+   times for every candidate, then up to ``rollouts`` times for the ``finalists`` best of them
+   (one trial varies about three times as much as the gap between the best two plays, so a
+   single trial picks the best play only about half the time; 8 trials, about 80%). The
+   opponent keeps playing as it normally would (a copy of its own policy), and after the tried
+   play ends our team carries on with the plain library ranking;
 3. scores each trial from our side: change in EPV (expected-goal value of the position) over
    the horizon, plus 1 per goal for (minus 1 per goal against), plus ``shot_xg`` x the xG of
    our shots (minus theirs) — the same terms as a play's reward (``configs/training.yaml``);
@@ -80,11 +83,13 @@ class _TryThenLibrary:
 
 class LookaheadPolicy(RankingPolicy):
     def __init__(self, library: dict[str, Play], rng: np.random.Generator | None = None, top_k: int = 6,
-                 rollouts: int = 4, horizon_s: float = 6.0, temperature: float = 0.01, name: str = "lookahead",
-                 **kw) -> None:
+                 rollouts: int = 8, horizon_s: float = 6.0, temperature: float = 0.01, name: str = "lookahead",
+                 screen: int = 2, finalists: int = 3, **kw) -> None:
         super().__init__(library, rng=rng, temperature=temperature, name=name, **kw)
         self.top_k = int(top_k)
         self.rollouts = int(rollouts)
+        self.screen = int(screen)  # trials per candidate in the first round (0: every candidate gets all)
+        self.finalists = int(finalists)
         self.horizon_s = float(horizon_s)
         rc = load_config("training")["rewards"]
         self.w_goal, self.w_xg = float(rc["goal"]), float(rc.get("shot_xg", 0.0))
@@ -129,7 +134,14 @@ class LookaheadPolicy(RankingPolicy):
             return super().decide(obs, reason)
         top = feasible[: self.top_k]
         seeds = [int(s) for s in self.rng.integers(1 << 31, size=self.rollouts)]  # shared by every candidate
-        trials = {c.play.id: [self._trial(c, s) for s in seeds] for c in top}
+        # Screen every candidate with a few trials, then give the finalists the full number.
+        n_screen = min(self.screen, self.rollouts) if self.screen else self.rollouts
+        trials = {c.play.id: [self._trial(c, s) for s in seeds[:n_screen]] for c in top}
+        if n_screen < self.rollouts:
+            finalists = sorted(top, key=lambda c: -float(np.mean(trials[c.play.id])))[: self.finalists]
+            for c in finalists:
+                trials[c.play.id] += [self._trial(c, s) for s in seeds[n_screen:]]
+            top = finalists
         means = {pid: float(np.mean(v)) for pid, v in trials.items()}
         best = max(top, key=lambda c: means[c.play.id])
         record: dict[str, Any] = {

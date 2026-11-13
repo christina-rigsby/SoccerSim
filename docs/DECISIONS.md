@@ -1208,9 +1208,15 @@ standard deviation of about 0.35, so a few hundred games per team resolve about 
 restart, the start; periodic re-checks use the plain ranking), the policy keeps the top 6
 feasible plays by the hand-written score, and for each copies the game (`MatchEnv.fork`, made
 possible by splitting `MatchEnv.run` into `begin` / `step` / `finish`), starts that play, and
-plays 6 seconds forward several times with seeds shared by every candidate (common random
+plays 6 seconds forward with seeds shared by every candidate (common random
 numbers), scoring EPV change + goals ± 1 + 0.5 × shot xG for minus against. It calls the play
 with the best average and records every trial (`last_decision["lookahead"]`) as training data for
 a critic. The opponent in the trials is a copy of the real opponent's policy, which a real team
 could not know, so this team measures the headroom of better play selection rather than being a
 fair competitor. Evaluation name: `lookahead`, or `lookahead_<trials>x<top_k>_<horizon>s`.
+
+**How many trials per play.** Measured over 231 decisions with 16 trials per candidate: one
+trial varies by about 0.012 while the best and second-best play differ by about 0.004, so one
+trial picks the 16-trial best only 50% of the time (2: 57%, 4: 67%, 8: 80%). The policy
+therefore screens every candidate with 2 trials and gives the 3 best 8 trials each (30 trials
+per decision instead of 48).

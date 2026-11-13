@@ -51,7 +51,7 @@ def test_run_is_unchanged_by_the_begin_step_finish_split():
 
 def test_the_lookahead_team_tries_each_candidate_with_the_same_seeds():
     env = _env()
-    la = LookaheadPolicy(LIB, rng=np.random.default_rng(0), top_k=2, rollouts=2, horizon_s=1.0)
+    la = LookaheadPolicy(LIB, rng=np.random.default_rng(0), top_k=2, rollouts=2, horizon_s=1.0, screen=0)
     res = env.run(la, RankingPolicy(LIB, rng=np.random.default_rng(1)), max_time_s=4, stop_on_goal=False,
                   stop_on_turnover=False)
     decs = [d for d in res.decisions if d.get("lookahead")]
@@ -62,3 +62,15 @@ def test_the_lookahead_team_tries_each_candidate_with_the_same_seeds():
     best = max(d["lookahead"], key=lambda p: d["lookahead"][p]["mean"])
     assert d["chosen"] == best
     assert la.n_trials >= 2
+
+
+def test_screening_gives_the_finalists_the_full_number_of_trials():
+    env = _env()
+    la = LookaheadPolicy(LIB, rng=np.random.default_rng(0), top_k=4, rollouts=3, horizon_s=1.0, screen=1,
+                         finalists=2)
+    res = env.run(la, RankingPolicy(LIB, rng=np.random.default_rng(1)), max_time_s=4, stop_on_goal=False,
+                  stop_on_turnover=False)
+    d = next(d for d in res.decisions if d.get("lookahead"))
+    counts = sorted(len(v["values"]) for v in d["lookahead"].values())
+    assert counts[-1] == 3 or len(counts) <= 2
+    assert d["lookahead"][d["chosen"]]["values"] and len(d["lookahead"][d["chosen"]]["values"]) == max(counts)

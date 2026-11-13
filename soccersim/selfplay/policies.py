@@ -6,7 +6,7 @@ A spec is a plain dict so it can cross a ``multiprocessing`` boundary:
 - ``{"id": "high_press", "kind": "style", "style": "high_press", "temperature": 0.01}`` — a
   scripted league opponent with fixed play preferences from ``configs/league.yaml`` (spec §11);
   build it with :func:`style_spec` so the style's own temperature is used.
-- ``{"id": "lookahead", "kind": "lookahead", "top_k": 6, "rollouts": 4, "horizon_s": 6}`` — tries each
+- ``{"id": "lookahead", "kind": "lookahead", "top_k": 6, "rollouts": 8, "horizon_s": 6}`` — tries each
   candidate play in copies of the game before calling one (soccersim/ranking/lookahead.py).
 - ``{"id": "main@12", "kind": "agent", "checkpoint": "<dir>", "generator": true, "critic": true}`` —
   the learning agent: critic in the ranking score, generated plays in the candidate set.
@@ -73,8 +73,9 @@ def _make_policy(spec: dict[str, Any], library: dict[str, Play], rng: np.random.
     if kind == "lookahead":
         from ..ranking.lookahead import LookaheadPolicy
 
-        return LookaheadPolicy(library, rng=rng, top_k=spec.get("top_k", 6), rollouts=spec.get("rollouts", 4),
+        return LookaheadPolicy(library, rng=rng, top_k=spec.get("top_k", 6), rollouts=spec.get("rollouts", 8),
                                horizon_s=spec.get("horizon_s", 6.0), temperature=temp if temp is not None else 0.01,
+                               screen=spec.get("screen", 2), finalists=spec.get("finalists", 3),
                                name=spec.get("id", "lookahead"))
     if kind == "agent":
         from ..generator.agent import make_agent_policy
