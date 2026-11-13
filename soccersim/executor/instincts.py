@@ -53,10 +53,13 @@ def _value_us(view: TeamView, pts: np.ndarray) -> np.ndarray:
 
 
 def enabled_for(view: TeamView, part: str) -> bool:
-    """Whether this team uses an instinct (``carrier`` / ``off_ball``); a team can opt out with
-    ``state.memo[("no_instincts", team)]`` (set from a policy spec's ``instincts: false``)."""
-    return not view.state.memo.get(("no_instincts", view.team)) and bool(
-        (instincts_config().get(part) or {}).get("enabled", False))
+    """Whether this team uses an instinct (``carrier`` / ``off_ball``). A team opts out of some or
+    all of them through ``state.memo[("no_instincts", team)]``: True (all) or a set of parts,
+    set from a policy spec's ``instincts`` (false, or the list of parts it keeps)."""
+    off = view.state.memo.get(("no_instincts", view.team))
+    if off is True or (off and part in off):
+        return False
+    return bool((instincts_config().get(part) or {}).get("enabled", False))
 
 
 def _memo(view: TeamView, key: str) -> dict:

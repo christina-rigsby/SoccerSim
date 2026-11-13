@@ -48,10 +48,12 @@ def latest_run_dir(models_dir: str | Path) -> Path | None:
 def team_spec(name: str, models_dir: str | Path = "data/models") -> dict[str, Any]:
     """Policy spec of a team, as it plays in evaluation (no exploration).
 
-    A ``_noinst`` suffix gives the same team without player instincts (e.g. ``library_noinst``).
+    Suffixes: ``_noinst`` plays without player instincts (e.g. ``library_noinst``),
+    ``_carrieronly`` / ``_offballonly`` with only that instinct.
     """
-    if name.endswith("_noinst"):
-        return {**team_spec(name[: -len("_noinst")], models_dir), "id": name, "instincts": False}
+    for suffix, keep in (("_noinst", False), ("_carrieronly", ["carrier"]), ("_offballonly", ["off_ball"])):
+        if name.endswith(suffix):
+            return {**team_spec(name[: -len(suffix)], models_dir), "id": name, "instincts": keep}
     lcfg = load_config("league")
     if name in lcfg["scripted_styles"]:
         return style_spec(name, lcfg)

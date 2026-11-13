@@ -140,8 +140,9 @@ class MatchEnv:
             if hasattr(p, "reset"):
                 p.reset()
         for team, p in enumerate(policies):
-            if getattr(p, "instincts", True) is False:
-                state.memo[("no_instincts", team)] = True  # this team plays without player instincts
+            keep = getattr(p, "instincts", True)
+            if keep is not True:  # False: no player instincts; a list: only those instincts
+                state.memo[("no_instincts", team)] = True if keep is False else {"carrier", "off_ball"} - set(keep)
             if hasattr(p, "attach"):
                 p.attach(self, team)  # e.g. the look-ahead policy, which forks this env to try plays
         result = EpisodeResult(self.seed, self.scenario.to_dict(), list(state.score), 0.0, "time_limit",

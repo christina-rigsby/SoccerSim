@@ -57,8 +57,9 @@ def check_styles(league_cfg: dict, library: dict[str, Play]) -> None:
 
 def make_policy(spec: dict[str, Any], library: dict[str, Play], rng: np.random.Generator) -> RankingPolicy:
     pol = _make_policy(spec, library, rng)
-    if spec.get("instincts") is False:
-        pol.instincts = False  # this team plays without player instincts (soccersim/executor/instincts.py)
+    if spec.get("instincts", True) is not True:
+        # False: no player instincts; a list: only those (soccersim/executor/instincts.py)
+        pol.instincts = spec["instincts"]
     return pol
 
 
