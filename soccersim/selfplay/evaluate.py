@@ -18,7 +18,8 @@ mostly decided by a reward tie-break because goals are rare; its scores were onl
   about 2 SE is unlikely to be luck.
 
 Teams: ``library`` (hand-written ranking), every scripted style by name, ``lookahead`` (tries
-each candidate play in copies of the game; ``lookahead_<rollouts>x<top_k>_<horizon>s`` sets its
+each candidate play in copies of the game; ``lookahead_fair`` does so against a generic opponent
+instead of a copy of the real one; ``lookahead_<rollouts>x<top_k>_<horizon>s`` sets its
 parameters), and the learned teams ``library_critic`` (library plus the critic of the latest league run), ``selector``
 (the library-only learned selector) and ``main`` (the latest run's critic + generator).
 """
@@ -60,10 +61,14 @@ def team_spec(name: str, models_dir: str | Path = "data/models") -> dict[str, An
     if name == "library":
         return {"id": "library", "kind": "library", "temperature": 0.01}
     if name == "lookahead" or name.startswith("lookahead_"):
-        # lookahead, or lookahead_<rollouts>x<top_k>_<horizon>s, e.g. lookahead_8x6_6s
+        # lookahead[_fair][_<rollouts>x<top_k>_<horizon>s], e.g. lookahead_fair or lookahead_8x6_6s
         spec = {"id": name, "kind": "lookahead", "temperature": 0.01}
-        if name != "lookahead":
-            r, rest = name[len("lookahead_"):].split("x")
+        rest_name = name[len("lookahead"):]
+        if rest_name.startswith("_fair"):
+            spec["opponent_model"] = "library"
+            rest_name = rest_name[len("_fair"):]
+        if rest_name:
+            r, rest = rest_name[1:].split("x")
             k, h = rest.split("_")
             spec.update(rollouts=int(r), top_k=int(k), horizon_s=float(h.rstrip("s")))
         return spec

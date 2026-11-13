@@ -23,9 +23,14 @@ Periodic re-checks (``interrupt``, every 2 s) use the plain ranking, with its us
 rule, to keep the cost down. The trials of every decision are kept in ``last_decision`` under
 ``lookahead`` (per play: mean, standard deviation, values), as training data for a critic.
 
-The opponent in the trials is a copy of the real opponent's policy, which a real team could
-not know: this team is an upper bound on what better play selection can achieve, not a fair
-competitor.
+**Who the opponent is in the trials** (``opponent_model``):
+
+- ``copy`` (default): a copy of the real opponent's policy. A real team could not know it, so
+  this is an upper bound on what better play selection can achieve, not a fair competitor.
+- ``library``: a generic opponent, the plain library ranking. The look-ahead team then knows
+  only what it can see (where everyone is, and the opponent's play already in progress, which
+  carries on in the trial) and nothing about how the real opponent will choose its next plays.
+  This is the fair version (evaluation name ``lookahead_fair``).
 """
 
 from __future__ import annotations
@@ -84,8 +89,13 @@ class _TryThenLibrary:
 class LookaheadPolicy(RankingPolicy):
     def __init__(self, library: dict[str, Play], rng: np.random.Generator | None = None, top_k: int = 6,
                  rollouts: int = 8, horizon_s: float = 6.0, temperature: float = 0.01, name: str = "lookahead",
-                 screen: int = 2, finalists: int = 3, **kw) -> None:
+                 screen: int = 2, finalists: int = 3, opponent_model: str = "copy", record_state: bool = False,
+                 **kw) -> None:
         super().__init__(library, rng=rng, temperature=temperature, name=name, **kw)
+        if opponent_model not in ("copy", "library"):
+            raise ValueError(f"opponent_model must be 'copy' or 'library', not {opponent_model!r}")
+        self.opponent_model = opponent_model  # who the opponent is in the trials (see the module docstring)
+        self.record_state = bool(record_state)  # keep the situation in each decision record (training data)
         self.top_k = int(top_k)
         self.rollouts = int(rollouts)
         self.screen = int(screen)  # trials per candidate in the first round (0: every candidate gets all)
@@ -108,7 +118,11 @@ class LookaheadPolicy(RankingPolicy):
                              temperature=self.temperature, name="library")
         base.cooldowns = dict(self.cooldowns)
         ours = _TryThenLibrary(cand, base)
-        opp = fork_policy(env.loop.policies[1 - team], seed + 2)
+        if self.opponent_model == "copy":
+            opp = fork_policy(env.loop.policies[1 - team], seed + 2)
+        else:  # a generic opponent: the plain library ranking, knowing nothing of the real opponent's choices
+            opp = RankingPolicy(self.library, rng=np.random.default_rng(seed + 2), cfg=self.cfg,
+                                temperature=self.temperature, name="library")
         pols = (ours, opp) if team == 0 else (opp, ours)
         f = env.fork(*pols, seed=seed, horizon_s=self.horizon_s, drop_active=(team,))
         v0 = TeamView(f.state, team, f.ctx).epv()
@@ -152,6 +166,9 @@ class LookaheadPolicy(RankingPolicy):
             "lookahead": {pid: {"mean": round(means[pid], 5), "sd": round(float(np.std(v)), 5),
                                 "values": [round(x, 5) for x in v]} for pid, v in trials.items()},
         }
+        if self.record_state:
+            record["state"] = obs.compact()
+            record["sides"] = {c.play.id: c.side for c in top}
         record["decision_id"] = f"{obs.team}-la-{self.n_trials}"
         self.last_decision = record
         active = obs.active_plays.get(obs.team)

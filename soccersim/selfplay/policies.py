@@ -77,7 +77,8 @@ def _make_policy(spec: dict[str, Any], library: dict[str, Play], rng: np.random.
         return LookaheadPolicy(library, rng=rng, top_k=spec.get("top_k", 6), rollouts=spec.get("rollouts", 8),
                                horizon_s=spec.get("horizon_s", 6.0), temperature=temp if temp is not None else 0.01,
                                screen=spec.get("screen", 2), finalists=spec.get("finalists", 3),
-                               name=spec.get("id", "lookahead"))
+                               opponent_model=spec.get("opponent_model", "copy"),
+                               record_state=spec.get("record_state", False), name=spec.get("id", "lookahead"))
     if kind == "agent":
         from ..generator.agent import make_agent_policy
 

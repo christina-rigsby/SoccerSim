@@ -74,3 +74,29 @@ def test_screening_gives_the_finalists_the_full_number_of_trials():
     counts = sorted(len(v["values"]) for v in d["lookahead"].values())
     assert counts[-1] == 3 or len(counts) <= 2
     assert d["lookahead"][d["chosen"]]["values"] and len(d["lookahead"][d["chosen"]]["values"]) == max(counts)
+
+
+def _spy_calls(opponent_model: str) -> tuple[int, int]:
+    """(calls to the real opponent's decide, decisions it made in the real game)."""
+    calls = []
+
+    class Spy(RankingPolicy):
+        def decide(self, obs, reason):
+            calls.append(1)
+            return super().decide(obs, reason)
+
+    env = _env()
+    la = LookaheadPolicy(LIB, rng=np.random.default_rng(0), top_k=3, rollouts=2, horizon_s=1.0, screen=0,
+                         opponent_model=opponent_model, record_state=True)
+    res = env.run(la, Spy(LIB, rng=np.random.default_rng(1)), max_time_s=4, stop_on_goal=False,
+                  stop_on_turnover=False)
+    d = next(d for d in res.decisions if d.get("lookahead"))
+    assert "state" in d and set(d["sides"]) == set(d["lookahead"])
+    return len(calls), sum(1 for x in res.decisions if x["team"] == 1)
+
+
+def test_the_fair_lookahead_never_consults_the_real_opponent():
+    calls, real = _spy_calls("library")
+    assert calls == real  # every call came from the real game, none from the trials
+    calls, real = _spy_calls("copy")
+    assert calls > real  # the upper-bound version does ask (copies of) the real opponent
