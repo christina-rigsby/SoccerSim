@@ -89,6 +89,13 @@ def pool_definition(league_cfg: dict) -> dict[str, Any]:
         shooting = load_config("ranking").get("shooting")
         if shooting:
             out["shooting"] = shooting
+    if league_cfg.get("pool_version", 1) >= 4:
+        # And how players outside a play behave (soccersim/executor/instincts.py).
+        from ..config import load_config
+
+        instincts = load_config("ranking").get("instincts")
+        if instincts:
+            out["instincts"] = instincts
     return out
 
 

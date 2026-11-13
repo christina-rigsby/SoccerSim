@@ -25,7 +25,8 @@ def run_job(job: dict[str, Any]) -> dict[str, Any]:
     """Run one episode described by ``job`` and return its log rows.
 
     ``job`` keys: episode_id, seed, scenario (dict), home, away (policy specs), randomise,
-    max_time_s, save_tracking, sim_overrides (optional dict merged into the sim config).
+    max_time_s, save_tracking, sim_overrides (optional dict merged into the sim config),
+    stop_on_goal / stop_on_turnover (default true; false for continuous evaluation games).
     """
     lib = _library()
     seed = int(job["seed"])
@@ -38,7 +39,8 @@ def run_job(job: dict[str, Any]) -> dict[str, Any]:
     rng = np.random.default_rng(seed + 7919)
     home = make_policy(job["home"], lib, np.random.default_rng(rng.integers(1 << 31)))
     away = make_policy(job["away"], lib, np.random.default_rng(rng.integers(1 << 31)))
-    res = env.run(home, away, max_time_s=job.get("max_time_s"))
+    res = env.run(home, away, max_time_s=job.get("max_time_s"), stop_on_goal=job.get("stop_on_goal", True),
+                  stop_on_turnover=job.get("stop_on_turnover", True))
     for pol in (home, away):
         bundle = getattr(pol, "bundle", None)
         if bundle is not None:

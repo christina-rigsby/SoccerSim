@@ -1167,3 +1167,50 @@ scorer's play that took the shot (and so into its possession return), and each o
 the defending play running at the time. Check on 400 games: 18 goals, 18 credited, 18 conceded.
 Rewards are computed when games are logged, so the pool-v3 Phase A data was discarded and is
 being regenerated.
+
+## D-049 · Player instincts: the ball carrier acts by value, off-ball players seek space (pool v4)
+
+Plays direct 2–4 players for a few seconds. Outside them, a ball carrier stood still shielding
+the ball and every other player held the team shape, which is more scripted than soccer.
+`soccersim/executor/instincts.py` (settings: `configs/ranking.yaml: instincts`) adds two
+instincts, used only by players the active play does not direct:
+
+- **Ball carrier** outside the play: every 0.4 s it compares holding (with a tackle risk that
+  grows as the nearest opponent closes in), passing to each onside teammate (pass success at
+  least 0.55) and carrying 6 m in one of seven mostly forward directions, all valued with the
+  same measure, `V(p) = control(p) x xT(p) - (1 - control(p)) x xT_them(p)`, and does the best
+  one, with margins against dithering. A carrier the play holds on to (bound but idle in this
+  step) still shields, as the play's author expects.
+- **Off-ball players** in possession, outside the play, except the keeper and the two deepest
+  outfield players (rest defence): every 0.5 s each moves to the spot within 9 m of its place in
+  the shape with the best `control x (xT + 0.01)`, onside and spread out from teammates.
+
+A team can play without them (policy spec `instincts: false`, team name suffix `_noinst` in
+evaluation), so their effect can be measured team against team. Because they change how every
+team plays, the opponent pool fingerprint now includes them: pool v4. Models trained before
+(pool v3) still run but were trained on different behaviour.
+
+## D-050 · Reliable team evaluation: paired, continuous games with standard errors
+
+The validation round-robin (8 short games per pair, win/draw/loss mostly decided by a reward
+tie-break) was only good to about ±0.06 in score, too coarse to tell improvements from luck.
+`scripts/evaluate_teams.py` (`soccersim/selfplay/evaluate.py`) plays every team against every
+opponent on the same fixed scenarios (situation, formations, capabilities, seed), once from each
+side, in continuous 2-minute games that do not stop at a turnover or a goal, and reports per game
+the xG difference (headline: less noisy than goals and still rewards making and denying chances),
+goal difference and shot difference, each with its standard error, overall and per opponent,
+plus each team's paired difference from a baseline team. The per-game xG difference has a
+standard deviation of about 0.35, so a few hundred games per team resolve about 0.05 xG per game.
+
+## D-051 · The look-ahead team: try every candidate play from the same moment
+
+`soccersim/ranking/lookahead.py`. At each real decision (a play ended, possession changed, a
+restart, the start; periodic re-checks use the plain ranking), the policy keeps the top 6
+feasible plays by the hand-written score, and for each copies the game (`MatchEnv.fork`, made
+possible by splitting `MatchEnv.run` into `begin` / `step` / `finish`), starts that play, and
+plays 6 seconds forward several times with seeds shared by every candidate (common random
+numbers), scoring EPV change + goals ± 1 + 0.5 × shot xG for minus against. It calls the play
+with the best average and records every trial (`last_decision["lookahead"]`) as training data for
+a critic. The opponent in the trials is a copy of the real opponent's policy, which a real team
+could not know, so this team measures the headroom of better play selection rather than being a
+fair competitor. Evaluation name: `lookahead`, or `lookahead_<trials>x<top_k>_<horizon>s`.

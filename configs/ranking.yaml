@@ -81,3 +81,27 @@ shooting:
   block_range_m: 10.0
   cone_margin_m: 0.5
   settle_s: 0.2
+
+# Player instincts (soccersim/executor/instincts.py): what players do when no play directs them.
+instincts:
+  carrier:                 # a ball carrier outside any play: pass, carry or hold, by value
+    enabled: true
+    decide_every_s: 0.4    # re-evaluate this often (a chosen carry is kept in between)
+    settle_s: 0.3          # no instinct pass in the first moments after receiving
+    min_pass_p: 0.55       # passes less likely than this to arrive are not considered
+    pass_margin: 0.004     # a pass must beat holding the ball by this much value
+    carry_margin: 0.002    # a carry must beat holding the ball by this much value
+    hold_risk: 0.5         # chance of losing the ball by holding still with an opponent 1 m away
+    press_scale_m: 2.0     # ... falling off with distance on this scale
+    carry_dist_m: 6.0
+    carry_angles_deg: [-75, -45, -20, 0, 20, 45, 75]
+  off_ball:                # in possession, players outside the play look for space
+    enabled: true
+    every_s: 0.5
+    radius_m: 9.0          # how far from their place in the team shape they may roam
+    rings_m: [4.0, 9.0]
+    spacing_m: 7.0         # stay at least this far from teammates' chosen spots
+    rest_defence: 2        # the deepest outfield players keep shape (cover against a turnover)
+    w_value: 1.0           # weight of control x (threat + open_base) at the spot
+    open_base: 0.01        # value of simply being open to receive (xT is 0.004 deep, ~0.26 at the box)
+    w_shape: 0.0005        # cost per metre from the place in the shape (keeps the structure)

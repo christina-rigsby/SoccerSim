@@ -9,7 +9,9 @@ Priority, highest first:
 4. The active play's directives for bound players.
 5. Shoot when on: a carrier with a good, clear chance shoots (:mod:`.shooting`).
 6. Defaults: the keeper covers the goal, the nearest free defender engages the carrier,
-   a ball carrier with nothing to do shields, and everyone else holds shape (spec §7.4).
+   a ball carrier outside the play passes, carries or holds by value, players outside the
+   play look for space while we have the ball (:mod:`.instincts`), and everyone else holds
+   shape (spec §7.4).
 """
 
 from __future__ import annotations
@@ -21,6 +23,7 @@ from ..controllers.base import FrameBallCommand
 from ..controllers.shape import shape_targets
 from ..dashboard.team_state import TeamView
 from .instance import PlayInstance
+from .instincts import carrier_instinct, off_ball_targets
 from .shooting import shot_is_on
 
 
@@ -56,8 +59,15 @@ def team_directives(view: TeamView, active: PlayInstance | None) -> dict[int, Di
         dist = float(np.hypot(*to_ball))
         pt = np.array([-52.5, 0.0]) + to_ball / max(dist, 1e-6) * min(5.0, max(dist * 0.25, 1.0))
         out[gk] = Directive(pt, 0.8, label="set_position")
+    # Off-ball players outside the play look for space while we have the ball.
+    for p, pt in off_ball_targets(view, {int(q): shape[k] for k, q in enumerate(view.us)}, set(bound)).items():
+        far = float(np.hypot(*(pt - view.pos[p]))) > 6.0
+        out[p] = Directive(pt, 0.8 if far else 0.6, label="find_space")
     if view.holder >= 0 and view.holder not in play_dirs:
-        out[view.holder] = Directive(view.pos[view.holder].copy(), 0.0, protect=True, label="shield")
+        # A carrier outside the play passes, carries or holds by value (instinct). A carrier the
+        # play holds on to (bound, but idle in this step) shields, as the play's author expects.
+        inst = carrier_instinct(view) if view.holder not in bound else None
+        out[view.holder] = inst or Directive(view.pos[view.holder].copy(), 0.0, protect=True, label="shield")
     # Shoot when on: a good, clear chance overrides whatever the carrier was doing.
     if shot_is_on(view):
         h = view.holder

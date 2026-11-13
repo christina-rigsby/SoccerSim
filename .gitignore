@@ -17,3 +17,5 @@ data/selfplay_pool_v3/
 data/heldout_reference_pool_v3/
 data/critic_lc_ckpt_*.pt
 data/selfplay_pool_v3/
+data/selfplay_pool_v4/
+data/heldout_reference_pool_v4/

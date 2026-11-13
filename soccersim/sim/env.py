@@ -72,6 +72,27 @@ def held_out_sim(cfg: dict) -> dict:
     return cfg
 
 
+@dataclass
+class _Loop:
+    """The bookkeeping of an episode in progress (see :meth:`MatchEnv.begin`)."""
+
+    policies: tuple
+    active: dict
+    last_decide: list
+    next_try: list
+    prev_poss: int | None
+    start_poss: int | None
+    turnover_t: float | None
+    result: EpisodeResult
+    n_events_logged: int
+    max_time: float
+    grace: float
+    stop_on_goal: bool
+    stop_on_turnover: bool
+    end_cause: str = "time_limit"
+    done: bool = False
+
+
 class MatchEnv:
     def __init__(self, sim_cfg: dict | None = None, ctx: Context | None = None, randomise: bool = False,
                  record_frames: bool = True, rerank_interval_s: float | None = None) -> None:
@@ -103,136 +124,192 @@ class MatchEnv:
 
     def run(self, home: Policy, away: Policy, max_time_s: float | None = None,
             stop_on_goal: bool = True, stop_on_turnover: bool = True) -> EpisodeResult:
+        self.begin(home, away, max_time_s, stop_on_goal, stop_on_turnover)
+        while self.step():
+            pass
+        return self.finish()
+
+    def begin(self, home: Policy, away: Policy, max_time_s: float | None = None,
+              stop_on_goal: bool = True, stop_on_turnover: bool = True) -> None:
+        """Start an episode; advance it with :meth:`step` and close it with :meth:`finish`."""
         assert self.state is not None, "call reset() first"
         state = self.state
         cfg = self.cfg
-        dt = cfg["tick_s"]
-        max_time = max_time_s or cfg["episode"]["max_time_s"]
-        grace = cfg["episode"]["possession_change_grace_s"]
         policies = (home, away)
         for p in policies:
             if hasattr(p, "reset"):
                 p.reset()
-        active: dict[int, PlayInstance | None] = {0: None, 1: None}
-        last_decide = [-1e9, -1e9]
-        next_try = [0.0, 0.0]
-        prev_poss = state.possession
-        start_poss = state.possession
-        turnover_t: float | None = None
+        for team, p in enumerate(policies):
+            if getattr(p, "instincts", True) is False:
+                state.memo[("no_instincts", team)] = True  # this team plays without player instincts
+            if hasattr(p, "attach"):
+                p.attach(self, team)  # e.g. the look-ahead policy, which forks this env to try plays
         result = EpisodeResult(self.seed, self.scenario.to_dict(), list(state.score), 0.0, "time_limit",
                                sim_config_hash=config_hash(cfg), caps=np.round(state.caps, 3).tolist(),
                                kinds=list(state.kinds))
-        n_events_logged = 0
+        self.loop = _Loop(policies=policies, active={0: None, 1: None}, last_decide=[-1e9, -1e9],
+                          next_try=[0.0, 0.0], prev_poss=state.possession, start_poss=state.possession,
+                          turnover_t=None, result=result, n_events_logged=0,
+                          max_time=max_time_s or cfg["episode"]["max_time_s"],
+                          grace=cfg["episode"]["possession_change_grace_s"],
+                          stop_on_goal=stop_on_goal, stop_on_turnover=stop_on_turnover)
+
+    def step(self) -> bool:
+        """One tick. Returns False once the episode has ended (time limit, goal or turnover)."""
+        L = self.loop
+        state = self.state
+        cfg = self.cfg
+        dt = cfg["tick_s"]
+        if L.done or state.t >= L.max_time - 1e-9:
+            L.done = True
+            return False
+        policies, active, result = L.policies, L.active, L.result
+
+        # 1. Restarts.
         restart_fired = False
-        end_cause = "time_limit"
+        if state.restart is not None and state.t >= state.restart.ready_t:
+            execute_restart(state, cfg)
+            restart_fired = True
 
-        while state.t < max_time - 1e-9:
-            # 1. Restarts.
-            restart_fired = False
-            if state.restart is not None and state.t >= state.restart.ready_t:
-                execute_restart(state, cfg)
-                restart_fired = True
+        views = {tm: TeamView(state, tm, self.ctx, active_plays=active) for tm in (0, 1)}
 
-            views = {tm: TeamView(state, tm, self.ctx, active_plays=active) for tm in (0, 1)}
+        # 2. Close finished plays; decide.
+        for tm in (0, 1):
+            inst = active[tm]
+            reason = ""
+            if inst is None or inst.ended:
+                reason = "play_end" if inst is not None else "start"
+            if state.possession != L.prev_poss and state.possession is not None:
+                reason = "possession_change"
+            if restart_fired:
+                reason = "restart"
+            if not reason and state.t - L.last_decide[tm] >= self.rerank_interval - 1e-9:
+                reason = "interrupt"
+            if not reason or state.restart is not None:
+                continue
+            if reason in ("start", "play_end") and state.t < L.next_try[tm]:
+                continue
+            new = policies[tm].decide(views[tm], reason)
+            L.last_decide[tm] = state.t
+            rec = getattr(policies[tm], "last_decision", None)
+            if rec is not None:
+                result.decisions.append(rec)
+            if new is not None:
+                if inst is not None and not inst.ended:
+                    inst.end("preempted", views[tm])
+                    self._close(inst, policies[tm], result, views[tm])
+                new.decision = rec
+                new.state_compact = views[tm].compact()
+                new.opp_play_at_start = active[1 - tm].play.id if active[1 - tm] else None
+                active[tm] = new
+            elif inst is None or inst.ended:
+                L.next_try[tm] = state.t + 0.5
 
-            # 2. Close finished plays; decide.
-            for tm in (0, 1):
-                inst = active[tm]
-                reason = ""
-                if inst is None or inst.ended:
-                    reason = "play_end" if inst is not None else "start"
-                if state.possession != prev_poss and state.possession is not None:
-                    reason = "possession_change"
-                if restart_fired:
-                    reason = "restart"
-                if not reason and state.t - last_decide[tm] >= self.rerank_interval - 1e-9:
-                    reason = "interrupt"
-                if not reason or state.restart is not None:
-                    continue
-                if reason in ("start", "play_end") and state.t < next_try[tm]:
-                    continue
-                new = policies[tm].decide(views[tm], reason)
-                last_decide[tm] = state.t
-                rec = getattr(policies[tm], "last_decision", None)
-                if rec is not None:
-                    result.decisions.append(rec)
-                if new is not None:
-                    if inst is not None and not inst.ended:
-                        inst.end("preempted", views[tm])
-                        self._close(inst, policies[tm], result, views[tm])
-                    new.decision = rec
-                    new.state_compact = views[tm].compact()
-                    new.opp_play_at_start = active[1 - tm].play.id if active[1 - tm] else None
-                    active[tm] = new
-                elif inst is None or inst.ended:
-                    next_try[tm] = state.t + 0.5
+        L.prev_poss = state.possession
 
-            prev_poss = state.possession
-
-            # 3. Directives.
-            targets = state.pos.copy()
-            speeds = np.zeros(22)
-            modes = ["default"] * 22
-            protect = np.zeros(22, dtype=bool)
-            ball_cmd: BallCommand | None = None
-            for tm in (0, 1):
-                v = views[tm]
-                dirs = team_directives(v, active[tm])
-                if active[tm] is not None and active[tm].ended:
-                    self._close(active[tm], policies[tm], result, v)
-                    active[tm] = None
-                d = DIRECTION[tm]
-                for p, dv in dirs.items():
-                    targets[p] = d * dv.target
-                    speeds[p] = dv.speed
-                    modes[p] = dv.mode
-                    protect[p] = dv.protect
-                    if dv.ball is not None and state.ball.owner == p and ball_cmd is None:
-                        ball_cmd = BallCommand(dv.ball.kind, d * dv.ball.target, dv.ball.style, dv.ball.receiver,
-                                               dv.ball.placement)
-                if self.record_frames:
-                    self._frame_labels = getattr(self, "_frame_labels", {})
-                    self._frame_labels[tm] = dirs
-
-            # 4. Ball commands, movement, ball, duels.
-            if ball_cmd is not None and state.restart is None:
-                release(state, ball_cmd, cfg, self.rng)
-            step_players(state, targets, np.where(protect, speeds * 0.7, speeds), cfg, dt)
-            step_ball(state, cfg, self.rng, dt)
-            if state.restart is None and state.ball.owner >= 0:
-                self._tackles(state, modes, protect, cfg, dt)
-
+        # 3. Directives.
+        targets = state.pos.copy()
+        speeds = np.zeros(22)
+        modes = ["default"] * 22
+        protect = np.zeros(22, dtype=bool)
+        ball_cmd: BallCommand | None = None
+        for tm in (0, 1):
+            v = views[tm]
+            dirs = team_directives(v, active[tm])
+            if active[tm] is not None and active[tm].ended:
+                self._close(active[tm], policies[tm], result, v)
+                active[tm] = None
+            d = DIRECTION[tm]
+            for p, dv in dirs.items():
+                targets[p] = d * dv.target
+                speeds[p] = dv.speed
+                modes[p] = dv.mode
+                protect[p] = dv.protect
+                if dv.ball is not None and state.ball.owner == p and ball_cmd is None:
+                    ball_cmd = BallCommand(dv.ball.kind, d * dv.ball.target, dv.ball.style, dv.ball.receiver,
+                                           dv.ball.placement)
             if self.record_frames:
-                self._record_frame(result, active)
-            for ev in state.events.events[n_events_logged:]:
-                result.events.append(ev.to_dict())
-            n_events_logged = len(state.events)
+                self._frame_labels = getattr(self, "_frame_labels", {})
+                self._frame_labels[tm] = dirs
 
-            state.t = round(state.t + dt, 10)
-            state.tick += 1
+        # 4. Ball commands, movement, ball, duels.
+        if ball_cmd is not None and state.restart is None:
+            release(state, ball_cmd, cfg, self.rng)
+        step_players(state, targets, np.where(protect, speeds * 0.7, speeds), cfg, dt)
+        step_ball(state, cfg, self.rng, dt)
+        if state.restart is None and state.ball.owner >= 0:
+            self._tackles(state, modes, protect, cfg, dt)
 
-            # 5. Termination.
-            if stop_on_goal and any(e["type"] == "goal" for e in result.events[-4:]) and any(
-                    e["type"] == "goal" and e["t"] >= state.t - dt - 1e-6 for e in result.events[-4:]):
-                end_cause = "goal"
-                break
-            if state.possession is not None and start_poss is not None and state.possession != start_poss \
-                    and turnover_t is None:
-                turnover_t = state.t
-            if stop_on_turnover and turnover_t is not None and state.t - turnover_t >= grace:
-                end_cause = "possession_change"
-                break
+        if self.record_frames:
+            self._record_frame(result, active)
+        for ev in state.events.events[L.n_events_logged:]:
+            result.events.append(ev.to_dict())
+        L.n_events_logged = len(state.events)
 
+        state.t = round(state.t + dt, 10)
+        state.tick += 1
+
+        # 5. Termination.
+        if L.stop_on_goal and any(e["type"] == "goal" for e in result.events[-4:]) and any(
+                e["type"] == "goal" and e["t"] >= state.t - dt - 1e-6 for e in result.events[-4:]):
+            L.end_cause, L.done = "goal", True
+            return False
+        if state.possession is not None and L.start_poss is not None and state.possession != L.start_poss \
+                and L.turnover_t is None:
+            L.turnover_t = state.t
+        if L.stop_on_turnover and L.turnover_t is not None and state.t - L.turnover_t >= L.grace:
+            L.end_cause, L.done = "possession_change", True
+            return False
+        return True  # the time limit is checked at the start of the next step
+
+    def finish(self) -> EpisodeResult:
+        """Close the plays still running and return the episode result."""
+        L = self.loop
+        state = self.state
+        active, policies, result = L.active, L.policies, L.result
         views = {tm: TeamView(state, tm, self.ctx, active_plays=active) for tm in (0, 1)}
         for tm in (0, 1):
             if active[tm] is not None and not active[tm].ended:
-                active[tm].end("timeout" if end_cause == "time_limit" else end_cause_to_reason(end_cause),
+                active[tm].end("timeout" if L.end_cause == "time_limit" else end_cause_to_reason(L.end_cause),
                                views[tm])
                 self._close(active[tm], policies[tm], result, views[tm])
         result.score = list(state.score)
         result.duration_s = round(state.t, 2)
-        result.end_cause = end_cause
+        result.end_cause = L.end_cause
         return result
+
+    def fork(self, home: Policy, away: Policy, seed: int, horizon_s: float, stop_on_goal: bool = True,
+             drop_active: tuple[int, ...] = ()) -> MatchEnv:
+        """A copy of this game at this moment, to play forward without touching the original.
+
+        The copy shares the configuration and context, has its own deep copy of the match state
+        and of the plays in progress, its own random stream (``seed``), and runs for ``horizon_s``
+        more seconds with ``home`` and ``away`` deciding. Plays of the teams in ``drop_active``
+        are dropped, so those teams decide afresh on the first tick. Frames are not recorded,
+        and the copy's result only holds what happens from now on.
+        """
+        L = self.loop
+        f = MatchEnv.__new__(MatchEnv)
+        f.__dict__.update(self.__dict__)
+        f.record_frames = False
+        f.state = self.state.copy()
+        f.rng = np.random.default_rng(seed)
+        memo: dict[int, Any] = {}
+        for inst in L.active.values():
+            if inst is not None:
+                memo[id(inst.play)] = inst.play  # plays are immutable: share them, copy only the progress
+                for k in ("decision", "state_compact"):
+                    if hasattr(inst, k):
+                        memo[id(getattr(inst, k))] = getattr(inst, k)
+        active = {tm: (None if tm in drop_active or L.active[tm] is None else copy.deepcopy(L.active[tm], memo))
+                  for tm in (0, 1)}
+        result = EpisodeResult(seed, L.result.scenario, list(f.state.score), 0.0, "time_limit")
+        f.loop = _Loop(policies=(home, away), active=active, last_decide=list(L.last_decide),
+                       next_try=[0.0 if tm in drop_active else L.next_try[tm] for tm in (0, 1)],
+                       prev_poss=L.prev_poss, start_poss=f.state.possession, turnover_t=None, result=result,
+                       n_events_logged=len(f.state.events), max_time=f.state.t + horizon_s, grace=L.grace,
+                       stop_on_goal=stop_on_goal, stop_on_turnover=False)
+        return f
 
     # -- internals -------------------------------------------------------------------------
 

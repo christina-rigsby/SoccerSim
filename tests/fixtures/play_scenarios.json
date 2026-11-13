@@ -102,12 +102,12 @@
         0
       ]
     },
-    "end_reason": "completed"
+    "end_reason": "preempted"
   },
   "long_ball_to_target": {
-    "seed": 2,
+    "seed": 4,
     "scenario": {
-      "type": "transition_win",
+      "type": "mid_progression",
       "attacking_team": 0,
       "home_formation": "4-3-3",
       "away_formation": "4-3-3",
@@ -117,7 +117,7 @@
         0
       ]
     },
-    "end_reason": "step_timeout_abort"
+    "end_reason": "preempted"
   },
   "low_block_box_protection": {
     "seed": 0,
@@ -147,7 +147,7 @@
         0
       ]
     },
-    "end_reason": "preempted"
+    "end_reason": "abort"
   },
   "one_two_wall_pass": {
     "seed": 3,
@@ -165,9 +165,9 @@
     "end_reason": "preempted"
   },
   "pivot_drop_back_three": {
-    "seed": 29,
+    "seed": 14,
     "scenario": {
-      "type": "mid_progression",
+      "type": "build_up",
       "attacking_team": 0,
       "home_formation": "4-3-3",
       "away_formation": "4-3-3",
@@ -177,7 +177,7 @@
         0
       ]
     },
-    "end_reason": "timeout"
+    "end_reason": "preempted"
   },
   "recycle_possession": {
     "seed": 0,
@@ -210,9 +210,9 @@
     "end_reason": "success"
   },
   "switch_through_keeper": {
-    "seed": 4,
+    "seed": 21,
     "scenario": {
-      "type": "build_up",
+      "type": "mid_progression",
       "attacking_team": 0,
       "home_formation": "4-3-3",
       "away_formation": "4-3-3",
@@ -222,7 +222,7 @@
         0
       ]
     },
-    "end_reason": "timeout"
+    "end_reason": "step_timeout_abort"
   },
   "third_man_combination": {
     "seed": 0,
@@ -240,7 +240,7 @@
     "end_reason": "abort"
   },
   "through_ball_behind_high_line": {
-    "seed": 4,
+    "seed": 7,
     "scenario": {
       "type": "transition_win",
       "attacking_team": 0,
@@ -252,12 +252,12 @@
         0
       ]
     },
-    "end_reason": "preempted"
+    "end_reason": "step_timeout_abort"
   },
   "wide_overlap_cross": {
-    "seed": 5,
+    "seed": 1,
     "scenario": {
-      "type": "random_open_play",
+      "type": "mid_progression",
       "attacking_team": 0,
       "home_formation": "4-3-3",
       "away_formation": "4-3-3",
@@ -267,7 +267,7 @@
         0
       ]
     },
-    "end_reason": "step_timeout_abort"
+    "end_reason": "abort"
   },
   "winger_checks_short": {
     "seed": 0,

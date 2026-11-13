@@ -6,6 +6,8 @@ A spec is a plain dict so it can cross a ``multiprocessing`` boundary:
 - ``{"id": "high_press", "kind": "style", "style": "high_press", "temperature": 0.01}`` — a
   scripted league opponent with fixed play preferences from ``configs/league.yaml`` (spec §11);
   build it with :func:`style_spec` so the style's own temperature is used.
+- ``{"id": "lookahead", "kind": "lookahead", "top_k": 6, "rollouts": 4, "horizon_s": 6}`` — tries each
+  candidate play in copies of the game before calling one (soccersim/ranking/lookahead.py).
 - ``{"id": "main@12", "kind": "agent", "checkpoint": "<dir>", "generator": true, "critic": true}`` —
   the learning agent: critic in the ranking score, generated plays in the candidate set.
 """
@@ -54,6 +56,13 @@ def check_styles(league_cfg: dict, library: dict[str, Play]) -> None:
 
 
 def make_policy(spec: dict[str, Any], library: dict[str, Play], rng: np.random.Generator) -> RankingPolicy:
+    pol = _make_policy(spec, library, rng)
+    if spec.get("instincts") is False:
+        pol.instincts = False  # this team plays without player instincts (soccersim/executor/instincts.py)
+    return pol
+
+
+def _make_policy(spec: dict[str, Any], library: dict[str, Play], rng: np.random.Generator) -> RankingPolicy:
     kind = spec.get("kind", "library")
     temp = spec.get("temperature")
     if kind == "library":
@@ -61,6 +70,12 @@ def make_policy(spec: dict[str, Any], library: dict[str, Play], rng: np.random.G
     if kind == "style":
         return RankingPolicy(library, rng=rng, temperature=temp, style=style_bonus(spec["style"]),
                              name=spec.get("id", spec["style"]))
+    if kind == "lookahead":
+        from ..ranking.lookahead import LookaheadPolicy
+
+        return LookaheadPolicy(library, rng=rng, top_k=spec.get("top_k", 6), rollouts=spec.get("rollouts", 4),
+                               horizon_s=spec.get("horizon_s", 6.0), temperature=temp if temp is not None else 0.01,
+                               name=spec.get("id", "lookahead"))
     if kind == "agent":
         from ..generator.agent import make_agent_policy
 

@@ -95,6 +95,7 @@ class MatchState:
     tackle_cooldown: np.ndarray = field(default_factory=lambda: np.zeros(22))
     stun_until: np.ndarray = field(default_factory=lambda: np.zeros(22))
     touch_cooldown: np.ndarray = field(default_factory=lambda: np.zeros(22))
+    memo: dict = field(default_factory=dict)  # per-team instinct decisions (soccersim/executor/instincts.py)
 
     @property
     def minute(self) -> float:

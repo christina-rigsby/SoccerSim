@@ -48,6 +48,16 @@ per generator, and a wrong style estimate picks the wrong one).
 bonus to a few library plays, and in run 1 three styles gave identical evaluation results;
 pool v2 (D-045) gives each style preferences, aversions and its own predictability, with
 formations random for every style so a style estimate cannot just read the formation.
+
+### Q-038 · Do shorter plays with more branches play better than the current plays? · `open` (deferred by choice)
+Current plays run a fixed sequence of 2–4 steps and can only branch where their author wrote
+a branch; otherwise they continue or abort. Shorter plays (one or two actions) with more
+branches, re-decided more often, would make play closer to how soccer adapts moment to
+moment. *Task, once evaluation is reliable (reliable team evaluation, then a pipeline whose
+results are clearly better than the library):* write shorter, branchier versions of the
+library plays and compare them against the current plays with that evaluation, against
+every scripted style including the held-out ones. Deferred because, until then, we cannot
+tell a real improvement from noise.
 *Evidence to collect:* per-style regression-gate and evaluation results for conditioned vs
 unconditioned generators trained on the same opponent pool.
 
