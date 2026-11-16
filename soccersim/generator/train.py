@@ -114,7 +114,8 @@ def train_critic_and_response(root: str | Path | list, out_dir: str | Path, prof
             y = (torch.from_numpy(train.reward[b]) - critic.y_mean) / critic.y_std
             s = torch.from_numpy(train.success[b])
             v, sl = critic(x, h, tk, ident)
-            loss = nn.functional.smooth_l1_loss(v, y) + 0.5 * nn.functional.binary_cross_entropy_with_logits(sl, s)
+            reg = nn.functional.mse_loss if cc.get("loss", "huber") == "mse" else nn.functional.smooth_l1_loss
+            loss = reg(v, y) + 0.5 * nn.functional.binary_cross_entropy_with_logits(sl, s)
             opt.zero_grad()
             loss.backward()
             nn.utils.clip_grad_norm_(critic.parameters(), 1.0)

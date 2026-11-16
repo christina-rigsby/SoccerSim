@@ -1220,3 +1220,22 @@ trial varies by about 0.012 while the best and second-best play differ by about 
 trial picks the 16-trial best only 50% of the time (2: 57%, 4: 67%, 8: 80%). The policy
 therefore screens every candidate with 2 trials and gives the 3 best 8 trials each (30 trials
 per decision instead of 48).
+
+## D-052 · Selection has reached a ceiling; work moves to the plays (pool v4 plan)
+
+Evaluated on the same 20 scenarios against the 7 styles (`reports/evaluation/*_pool_v4`), every
+strong team gains about +0.10 xG per 2-minute game over the plain library: the run 4 selector
+(+0.106 ± 0.022), the main agent (+0.101), the look-ahead team that copies the real opponent in
+its trials (+0.119), the fair look-ahead with a generic opponent (+0.106; only 0.014 ± 0.012
+below the copying one) and a look-ahead built on the selector (+0.095; −0.011 ± 0.021 against
+the selector itself). Trying every candidate play from the same moment does not choose better
+than the selector, so a critic trained on those trials would at best match it. The limit is
+now the plays: several attacking plays almost never complete (one-two 4%, third-man 3%, wide
+overlap 0%, through ball 0%, four promoted plays 0–2%), and defence has only four plays.
+
+Plan, approved by the user: (1) a 12-second look-ahead check that the ceiling is not
+short-sightedness; (2) play variants tried per team (`plays/variants/`: `defensive_plus`,
+`branchy` per Q-038, `prune_failing`), adopted into the library if they win; (3) retrain for
+pool v4 with the instincts, the adopted plays, squared-error critic loss (`critic.quick.loss:
+mse`, which beat the robust loss in the learning-curve experiment) and a longer league (30
+updates instead of 6).
