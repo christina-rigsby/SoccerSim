@@ -77,6 +77,11 @@ def team_spec(name: str, models_dir: str | Path = "data/models") -> dict[str, An
             k, h = rest.split("_")
             spec.update(rollouts=int(r), top_k=int(k), horizon_s=float(h.rstrip("s")))
         return spec
+    if name == "trial_critic":
+        from .trial_critic import model_dir
+
+        return {"id": name, "kind": "agent", "checkpoint": str(model_dir(models_dir)), "generator": False,
+                "critic": True, "score_mode": "learned", "temperature": 0.0}
     if name == "selector":
         from .selector import selector_spec
 
