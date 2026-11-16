@@ -51,8 +51,13 @@ def team_spec(name: str, models_dir: str | Path = "data/models") -> dict[str, An
     """Policy spec of a team, as it plays in evaluation (no exploration).
 
     Suffixes: ``_noinst`` plays without player instincts (e.g. ``library_noinst``),
-    ``_carrieronly`` / ``_offballonly`` with only that instinct.
+    ``_carrieronly`` / ``_offballonly`` with only that instinct; ``+<variant>`` with a play
+    variant from ``plays/variants/<variant>/`` (e.g. ``library+defensive_plus``).
     """
+    if "+" in name:
+        # <team>+<variant>: the team with a play variant (plays/variants/<variant>/) applied.
+        team, variant = name.split("+", 1)
+        return {**team_spec(team, models_dir), "id": name, "plays_variant": variant}
     for suffix, keep in (("_noinst", False), ("_carrieronly", ["carrier"]), ("_offballonly", ["off_ball"])):
         if name.endswith(suffix):
             return {**team_spec(name[: -len(suffix)], models_dir), "id": name, "instincts": keep}

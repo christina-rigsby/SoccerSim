@@ -55,7 +55,18 @@ def check_styles(league_cfg: dict, library: dict[str, Play]) -> None:
         raise ValueError("every scripted style is held out; nothing left to train against")
 
 
+_VARIANTS: dict[str, dict[str, Play]] = {}
+
+
 def make_policy(spec: dict[str, Any], library: dict[str, Play], rng: np.random.Generator) -> RankingPolicy:
+    if spec.get("plays_variant"):
+        # This team plays with a variant of the library (plays/variants/<name>/ added or replacing).
+        from ..schema.loader import load_variant_library
+
+        name = spec["plays_variant"]
+        if name not in _VARIANTS:
+            _VARIANTS[name] = load_variant_library(name, library)
+        library = _VARIANTS[name]
     pol = _make_policy(spec, library, rng)
     if spec.get("instincts", True) is not True:
         # False: no player instincts; a list: only those (soccersim/executor/instincts.py)

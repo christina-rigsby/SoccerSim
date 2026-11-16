@@ -1,0 +1,6 @@
+# Variant (prune_failing): promoted generated plays that are called often but almost never
+# complete (pool v3 Phase A: share of attacking calls, completed or successful).
+gen_263419283b   # 2.9% of calls, 0% completed (step timeout)
+gen_dcd5c3003a   # 2.3%, 0%
+gen_67c4d0530b   # 1.8%, 0%
+gen_e55b04e172   # 1.8%, 2%

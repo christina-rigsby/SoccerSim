@@ -1,0 +1,51 @@
+# Variant play (defensive_plus): after losing the ball in our own half, delay and get back.
+id: delay_and_recover
+name: Delay the counterattack and recover shape
+version: 1
+phase: transition_defense
+objective: protect_goal
+strategy: counterpress
+roles:
+  - id: D1
+    desc: Nearest player delays the carrier without diving in
+    hints: [CM, DM, CB_near, FB_near, AM]
+  - id: C1
+    desc: Covers behind the delaying player
+    hints: [CB_near, DM, CB_far]
+  - id: R
+    desc: Everyone else sprints back goal-side
+    hints: [CB_far, FB_far, FB_near, CM, W_far]
+    group: {count: 4}
+triggers:
+  all:
+    - event: {type: possession_lost, within_s: 1.5}
+    - ball_in_zone: ["mid_own.*", "own_third.*"]
+steps:
+  - id: s1
+    actions:
+      - {role: D1, type: jockey, target: {opponent: ball_carrier}}
+      - {role: C1, type: cover, behind: D1, depth: 6}
+      - {role: R, type: recover, speed: max}
+    done_when: {any: [{event: possession_won}, {event: ball_out_them_last}]}
+    timeout_s: 4
+    on_timeout: next
+  - id: s2
+    choose:
+      - when: {ball_in_zone: [own_box, own_box_edge]}
+        actions:
+          - {role: D1, type: press, target: {opponent: ball_carrier}, curve: force_outside, intensity: 1.0}
+          - {role: C1, type: block_shot}
+      - when: always
+        actions:
+          - {role: D1, type: press, target: {opponent: ball_carrier}, curve: force_outside, intensity: 0.8}
+          - {role: C1, type: cover, behind: D1, depth: 5}
+    done_when: {any: [{event: possession_won}, {event: ball_out_them_last}]}
+    timeout_s: 4
+    on_timeout: abort
+success:
+  any: [{event: possession_won}, {event: ball_out_them_last}]
+abort:
+  any: [{event: goal_conceded}]
+max_duration_s: 8
+cooldown_s: 0
+soft_hints: {risk: 0.2, chain_depth: 1, tempo: fast}

@@ -1,0 +1,53 @@
+# Variant play (defensive_plus): press the opponent building up through the middle of their third.
+id: press_build_up_central
+name: Press a central build-up
+version: 1
+phase: out_of_possession
+objective: regain_possession
+strategy: high_press
+roles:
+  - id: P1
+    desc: Striker presses the carrier, curving to force it wide
+    hints: [ST, AM]
+    requires: {stamina: 0.5}
+    prefers: {pace: 0.7}
+  - id: P2
+    desc: Cover shadow on the pivot
+    hints: [AM, CM]
+    requires: {stamina: 0.4}
+  - id: W1
+    desc: Near winger marks the near full-back
+    hints: [W_near]
+  - id: W2
+    desc: Far winger marks the far full-back
+    hints: [W_far]
+  - id: B
+    desc: Back line steps up behind the press
+    hints: [CB_near, CB_far, FB_near, FB_far]
+    group: {count: 4}
+triggers:
+  all:
+    - possession: them
+    - ball_in_zone: [final_third.center, final_third.near_halfspace, final_third.far_halfspace]
+    - teammates_near: {ref: ball, radius: 25, ge: 2}
+hard_constraints:
+  - game: {minute: {lt: 88}}
+steps:
+  - id: s1
+    actions:
+      - {role: P1, type: press, target: {opponent: ball_carrier}, curve: force_outside, intensity: 1.0}
+      - {role: P2, type: block_lane, from: ball_carrier, to: nearest_receiver}
+      - {role: W1, type: mark, target: {opponent: "in_zone:final_third.near_wing"}, tightness: 3, goal_side: true}
+      - {role: W2, type: mark, target: {opponent: "in_zone:final_third.far_wing"}, tightness: 4, goal_side: true}
+      - {role: B, type: hold_line, height: 45, step_up_on: possession_won}
+    done_when:
+      any: [{event: possession_won}, {event: ball_out_them_last}, {ball_behind_line: {line: our_first_line}}]
+    timeout_s: 7
+    on_timeout: abort
+success:
+  any: [{event: possession_won}, {event: ball_out_them_last}]
+abort:
+  any: [{ball_behind_line: {line: our_second_line}}, {event: goal_conceded}]
+max_duration_s: 8
+cooldown_s: 6
+soft_hints: {risk: 0.6, chain_depth: 1, tempo: fast}

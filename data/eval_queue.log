@@ -56,3 +56,7 @@ wrote reports/evaluation/lookahead_fair_pool_v4 (3048s)
 wrote reports/evaluation/lookahead_on_selector_pool_v4 (4843s)
 == reports/evaluation/lookahead_on_selector_pool_v4: done 22:15:42
 EVAL_QUEUE_DONE
+--- queue relaunched 23:29:57 (12-second look-ahead added)
+== reports/evaluation/lookahead_fair_pool_v4: already done
+== reports/evaluation/lookahead_on_selector_pool_v4: already done
+== reports/evaluation/lookahead_12s_pool_v4: start 23:29:57

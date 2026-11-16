@@ -98,3 +98,30 @@ def play_to_dict(play: Play) -> dict[str, Any]:
 
 def play_to_yaml(play: Play) -> str:
     return yaml.safe_dump(play_to_dict(play), sort_keys=False, default_flow_style=None, width=110)
+
+
+VARIANTS_SUBDIR = "variants"
+
+
+def load_variant_library(variant: str, base: dict[str, Play] | None = None) -> dict[str, Play]:
+    """The library with play variants applied (``a+b`` applies ``a`` then ``b``): every play in
+    ``plays/variants/<variant>/`` is added, replacing a library play with the same id, and the
+    ids listed in that folder's ``_remove.txt`` (one per line, ``#`` comments) are removed.
+    Variants are candidate changes tried by one team in evaluation (``<team>+<variant>``)
+    before anything joins the library itself."""
+    lib = dict(base if base is not None else load_library())
+    for name in variant.split("+"):
+        folder = PLAYS_DIR / VARIANTS_SUBDIR / name
+        paths = sorted(folder.glob("*.yaml"))
+        remove = folder / "_remove.txt"
+        if not paths and not remove.exists():
+            raise FileNotFoundError(f"no plays in {folder}")
+        for path in paths:
+            play = load_play_file(path)
+            lib[play.id] = play
+        if remove.exists():
+            for line in remove.read_text().splitlines():
+                pid = line.split("#", 1)[0].strip()
+                if pid:
+                    lib.pop(pid, None)
+    return lib
