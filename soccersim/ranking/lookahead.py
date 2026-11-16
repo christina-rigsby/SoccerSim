@@ -23,6 +23,10 @@ Periodic re-checks (``interrupt``, every 2 s) use the plain ranking, with its us
 rule, to keep the cost down. The trials of every decision are kept in ``last_decision`` under
 ``lookahead`` (per play: mean, standard deviation, values), as training data for a critic.
 
+**Built on another team** (``make_policy`` spec ``base``, e.g. ``"selector"``): the base team's
+ranking (for the selector: its learned critic alone) picks the ``top_k`` candidates, makes the
+periodic re-checks, and plays on in the trials after the tried play.
+
 **Who the opponent is in the trials** (``opponent_model``):
 
 - ``copy`` (default): a copy of the real opponent's policy. A real team could not know it, so
@@ -114,15 +118,17 @@ class LookaheadPolicy(RankingPolicy):
 
     def _trial(self, cand: Candidate, seed: int) -> float:
         env, team = self.env, self.team
+        # After the tried play, our team carries on with its own ranking (the plain library, or the
+        # base team's critic when built on one, e.g. the learned selector).
         base = RankingPolicy(self.library, rng=np.random.default_rng(seed + 1), cfg=self.cfg,
-                             temperature=self.temperature, name="library")
+                             temperature=self.temperature, critic=self.critic, name="base")
         base.cooldowns = dict(self.cooldowns)
         ours = _TryThenLibrary(cand, base)
         if self.opponent_model == "copy":
             opp = fork_policy(env.loop.policies[1 - team], seed + 2)
         else:  # a generic opponent: the plain library ranking, knowing nothing of the real opponent's choices
-            opp = RankingPolicy(self.library, rng=np.random.default_rng(seed + 2), cfg=self.cfg,
-                                temperature=self.temperature, name="library")
+            opp = RankingPolicy(self.library, rng=np.random.default_rng(seed + 2),
+                                temperature=self.temperature, name="library")  # default config, no critic
         pols = (ours, opp) if team == 0 else (opp, ours)
         f = env.fork(*pols, seed=seed, horizon_s=self.horizon_s, drop_active=(team,))
         v0 = TeamView(f.state, team, f.ctx).epv()

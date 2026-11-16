@@ -20,8 +20,9 @@ mostly decided by a reward tie-break because goals are rare; its scores were onl
 Teams: ``library`` (hand-written ranking), every scripted style by name, ``lookahead`` (tries
 each candidate play in copies of the game; ``lookahead_fair`` does so against a generic opponent
 instead of a copy of the real one; ``lookahead_<rollouts>x<top_k>_<horizon>s`` sets its
-parameters), and the learned teams ``library_critic`` (library plus the critic of the latest league run), ``selector``
-(the library-only learned selector) and ``main`` (the latest run's critic + generator).
+parameters; an ``_on_selector`` suffix builds it on the learned selector), and the learned
+teams ``library_critic`` (library plus the critic of the latest league run), ``selector`` (the
+library-only learned selector) and ``main`` (the latest run's critic + generator).
 """
 
 from __future__ import annotations
@@ -60,6 +61,10 @@ def team_spec(name: str, models_dir: str | Path = "data/models") -> dict[str, An
         return style_spec(name, lcfg)
     if name == "library":
         return {"id": "library", "kind": "library", "temperature": 0.01}
+    if name.startswith("lookahead") and name.endswith("_on_selector"):
+        # A look-ahead team built on the learned selector (its critic ranks and plays on in the trials).
+        return {**team_spec(name[: -len("_on_selector")], models_dir), "id": name,
+                "base": team_spec("selector", models_dir)}
     if name == "lookahead" or name.startswith("lookahead_"):
         # lookahead[_fair][_<rollouts>x<top_k>_<horizon>s], e.g. lookahead_fair or lookahead_8x6_6s
         spec = {"id": name, "kind": "lookahead", "temperature": 0.01}

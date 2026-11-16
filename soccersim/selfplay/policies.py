@@ -74,11 +74,16 @@ def _make_policy(spec: dict[str, Any], library: dict[str, Play], rng: np.random.
     if kind == "lookahead":
         from ..ranking.lookahead import LookaheadPolicy
 
+        kw: dict[str, Any] = {}
+        if spec.get("base"):
+            # Built on another team: borrow its ranking configuration and critic (e.g. the learned selector).
+            base = _make_policy(spec["base"], library, rng)
+            kw = {"cfg": base.cfg, "critic": base.critic}
         return LookaheadPolicy(library, rng=rng, top_k=spec.get("top_k", 6), rollouts=spec.get("rollouts", 8),
                                horizon_s=spec.get("horizon_s", 6.0), temperature=temp if temp is not None else 0.01,
                                screen=spec.get("screen", 2), finalists=spec.get("finalists", 3),
                                opponent_model=spec.get("opponent_model", "copy"),
-                               record_state=spec.get("record_state", False), name=spec.get("id", "lookahead"))
+                               record_state=spec.get("record_state", False), name=spec.get("id", "lookahead"), **kw)
     if kind == "agent":
         from ..generator.agent import make_agent_policy
 
