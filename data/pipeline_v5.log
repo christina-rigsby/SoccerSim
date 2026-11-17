@@ -6291,3 +6291,25 @@ committed and pushed to claude/friendly-gates-4kjgu7
 saved 11 items to checkpoints/ (80.1 MB)
 committed and pushed to claude/friendly-gates-4kjgu7
 == reports: start 10:25:20
+{
+  "run": 5,
+  "dir": "/home/user/SoccerSim/reports/run_5",
+  "highlights": {
+    "games": 17,
+    "kept": 5,
+    "generated_calls": 30,
+    "shots_agent": 6,
+    "goals_agent": 2
+  },
+  "report": "/home/user/SoccerSim/reports/run_5/selfplay_report.html",
+  "successes": {
+    "successes": 856,
+    "plays": 665,
+    "in_readme": 12,
+    "in_page": 60,
+    "dir": "/home/user/SoccerSim/reports/run_5/generated_successes"
+  },
+  "training_games": "/home/user/SoccerSim/reports/training_games/pool_v5"
+}
+== reports: done 10:30:32
+== trial_data: start 10:30:32
