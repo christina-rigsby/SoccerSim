@@ -1,0 +1,5 @@
+saved models are for opponent pool e72d5071eb0e, not the current one; nothing restored
+opponent pool 47acc80e75d0, league run 6
+== phase_a: start 23:15:48
+  200/13500 episodes, 1999 decisions, 27s wall, 159x real time
+  400/13500 episodes, 4007 decisions, 52s wall, 165x real time
