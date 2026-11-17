@@ -2,3 +2,140 @@ saved models are for opponent pool 5bee276df0d7, not the current one; nothing re
 opponent pool e72d5071eb0e, league run 5
 == phase_a: start 03:54:45
   200/13500 episodes, 2025 decisions, 25s wall, 168x real time
+  400/13500 episodes, 4117 decisions, 50s wall, 169x real time
+  600/13500 episodes, 6193 decisions, 77s wall, 164x real time
+  800/13500 episodes, 8418 decisions, 105s wall, 164x real time
+  1000/13500 episodes, 10543 decisions, 132s wall, 165x real time
+  1200/13500 episodes, 12678 decisions, 157s wall, 166x real time
+  1400/13500 episodes, 14869 decisions, 185s wall, 166x real time
+  1600/13500 episodes, 16918 decisions, 210s wall, 167x real time
+  1800/13500 episodes, 18840 decisions, 232s wall, 168x real time
+  2000/13500 episodes, 20878 decisions, 256s wall, 169x real time
+  2200/13500 episodes, 22973 decisions, 282s wall, 170x real time
+  2400/13500 episodes, 25045 decisions, 308s wall, 170x real time
+  2600/13500 episodes, 27142 decisions, 333s wall, 171x real time
+  2800/13500 episodes, 29118 decisions, 356s wall, 171x real time
+  3000/13500 episodes, 31298 decisions, 383s wall, 171x real time
+  3200/13500 episodes, 33269 decisions, 407s wall, 171x real time
+  3400/13500 episodes, 35407 decisions, 433s wall, 171x real time
+  3600/13500 episodes, 37487 decisions, 458s wall, 172x real time
+  3800/13500 episodes, 39574 decisions, 484s wall, 172x real time
+  4000/13500 episodes, 41725 decisions, 509s wall, 172x real time
+  4200/13500 episodes, 43867 decisions, 534s wall, 173x real time
+  4400/13500 episodes, 45873 decisions, 558s wall, 173x real time
+  4600/13500 episodes, 47939 decisions, 582s wall, 173x real time
+  4800/13500 episodes, 49982 decisions, 606s wall, 173x real time
+  5000/13500 episodes, 52087 decisions, 628s wall, 174x real time
+  5200/13500 episodes, 54196 decisions, 654s wall, 174x real time
+  5400/13500 episodes, 56220 decisions, 679s wall, 174x real time
+  5600/13500 episodes, 58269 decisions, 704s wall, 174x real time
+  5800/13500 episodes, 60392 decisions, 729s wall, 174x real time
+  6000/13500 episodes, 62480 decisions, 754s wall, 174x real time
+  6200/13500 episodes, 64639 decisions, 780s wall, 174x real time
+  6400/13500 episodes, 66857 decisions, 807s wall, 174x real time
+  6600/13500 episodes, 68944 decisions, 831s wall, 174x real time
+  6800/13500 episodes, 71024 decisions, 857s wall, 174x real time
+  7000/13500 episodes, 73127 decisions, 883s wall, 174x real time
+  7200/13500 episodes, 75354 decisions, 909s wall, 174x real time
+  7400/13500 episodes, 77531 decisions, 936s wall, 174x real time
+  7600/13500 episodes, 79669 decisions, 963s wall, 174x real time
+  7800/13500 episodes, 81721 decisions, 988s wall, 174x real time
+  8000/13500 episodes, 83787 decisions, 1012s wall, 174x real time
+  8200/13500 episodes, 85696 decisions, 1036s wall, 174x real time
+  8400/13500 episodes, 87825 decisions, 1062s wall, 174x real time
+  8600/13500 episodes, 89877 decisions, 1086s wall, 174x real time
+  8800/13500 episodes, 91860 decisions, 1110s wall, 174x real time
+  9000/13500 episodes, 93928 decisions, 1135s wall, 175x real time
+  9200/13500 episodes, 95986 decisions, 1160s wall, 175x real time
+  9400/13500 episodes, 98091 decisions, 1185s wall, 175x real time
+  9600/13500 episodes, 100198 decisions, 1209s wall, 175x real time
+  9800/13500 episodes, 102285 decisions, 1234s wall, 175x real time
+  10000/13500 episodes, 104423 decisions, 1262s wall, 175x real time
+  10200/13500 episodes, 106549 decisions, 1287s wall, 175x real time
+  10400/13500 episodes, 108661 decisions, 1314s wall, 175x real time
+  10600/13500 episodes, 110785 decisions, 1339s wall, 175x real time
+  10800/13500 episodes, 112837 decisions, 1364s wall, 175x real time
+  11000/13500 episodes, 114855 decisions, 1390s wall, 174x real time
+  11200/13500 episodes, 116918 decisions, 1415s wall, 174x real time
+  11400/13500 episodes, 118993 decisions, 1440s wall, 174x real time
+  11600/13500 episodes, 121118 decisions, 1467s wall, 174x real time
+  11800/13500 episodes, 123217 decisions, 1492s wall, 174x real time
+  12000/13500 episodes, 125387 decisions, 1517s wall, 175x real time
+  12200/13500 episodes, 127470 decisions, 1541s wall, 175x real time
+  12400/13500 episodes, 129652 decisions, 1567s wall, 175x real time
+  12600/13500 episodes, 131738 decisions, 1591s wall, 175x real time
+  12800/13500 episodes, 133877 decisions, 1617s wall, 175x real time
+  13000/13500 episodes, 135981 decisions, 1643s wall, 175x real time
+  13200/13500 episodes, 138022 decisions, 1668s wall, 174x real time
+  13400/13500 episodes, 140005 decisions, 1695s wall, 174x real time
+{
+  "run_id": "phase_a",
+  "episodes": 13500,
+  "decisions": 141000,
+  "wall_s": 1706.4538893699646,
+  "dir": "/home/user/SoccerSim/data/selfplay_pool_v5/run=phase_a/date=2026-11-17"
+}
+== phase_a: done 04:23:13
+== heldout_ref: start 04:23:13
+  200/1500 episodes, 2136 decisions, 30s wall, 153x real time
+  400/1500 episodes, 4237 decisions, 59s wall, 158x real time
+  600/1500 episodes, 6350 decisions, 87s wall, 163x real time
+  800/1500 episodes, 8397 decisions, 113s wall, 165x real time
+  1000/1500 episodes, 10416 decisions, 139s wall, 168x real time
+  1200/1500 episodes, 12585 decisions, 167s wall, 168x real time
+  1400/1500 episodes, 14560 decisions, 193s wall, 168x real time
+{
+  "run_id": "heldout_ref",
+  "episodes": 1500,
+  "decisions": 15611,
+  "wall_s": 207.2334578037262,
+  "dir": "/home/user/SoccerSim/data/heldout_reference_pool_v5/run=heldout_ref/date=2026-11-17"
+}
+== heldout_ref: done 04:26:41
+== stats: start 04:26:41
+13500 episodes · 141000 decisions · 4954 sim-minutes · 4406 shots · 386 goals
+library gaps: 118439 · generator consulted: 0 · generated plays chosen: 0
+
+play                                    n  share  success   reward
+recycle_possession                  34668  24.6%    74.4%  -0.0034
+mid_block_compact                   24349  17.3%    10.4%   0.0132
+low_block_box_protection            11957   8.5%    32.3%  -0.0045
+counterpress_five_seconds            6889   4.9%     0.0%   0.0043
+long_ball_to_target                  6539   4.6%    24.4%  -0.0101
+fullback_outlet_bounce               5903   4.2%    56.4%  -0.0052
+winger_checks_short                  5801   4.1%    45.5%  -0.0053
+switch_of_play                       5659   4.0%    62.1%  -0.0063
+build_out_short_goal_kick            4393   3.1%    52.1%  -0.0108
+cb_carry_into_midfield               3942   2.8%    70.0%  -0.0012
+high_press_sideline_trap             3333   2.4%    29.3%   0.0099
+edge_of_box_shot                     3288   2.3%    88.3%   0.1142
+gen_cf5c9636cf                       3087   2.2%    99.3%  -0.0000
+direct_counterattack                 3021   2.1%    19.5%   0.0093
+third_man_combination                2573   1.8%    54.6%  -0.0049
+one_two_wall_pass                    2163   1.5%    30.7%  -0.0058
+gen_d0cee3c696                       2028   1.4%    80.7%  -0.0007
+wide_overlap_cross                   1973   1.4%     6.3%  -0.0103
+gen_e2f3c88f31                       1593   1.1%    66.3%  -0.0036
+pivot_drop_back_three                1259   0.9%    27.7%  -0.0056
+through_ball_behind_high_line        1248   0.9%    70.8%  -0.0007
+gen_692b502c31                        866   0.6%     0.0%  -0.0161
+gen_6cd6536e86                        852   0.6%    69.4%   0.0027
+gen_7ae398e5e4                        655   0.5%    30.7%   0.0086
+gen_81eaa89b15                        523   0.4%   100.0%   0.0172
+switch_through_keeper                 462   0.3%    44.2%  -0.0020
+gen_7ed866b92a                        460   0.3%     1.7%   0.0061
+gen_64c5493589                        429   0.3%     0.0%   0.0043
+gen_edcabe7a8b                        407   0.3%     1.5%   0.0073
+gen_9b2fe595f8                        304   0.2%     0.0%   0.0022
+gen_a20edbb411                        239   0.2%    66.1%   0.3874
+gen_5fa1f3645f                        137   0.1%    46.0%  -0.0053
+== stats: done 04:26:43
+== critic: start 04:26:43
+  critic epoch 1: test MSE 0.012858 vs per-play baseline 0.012559, success acc 0.753
+  critic epoch 2: test MSE 0.012758 vs per-play baseline 0.012559, success acc 0.753
+  critic epoch 3: test MSE 0.012728 vs per-play baseline 0.012559, success acc 0.753
+  critic epoch 4: test MSE 0.012701 vs per-play baseline 0.012559, success acc 0.752
+  critic epoch 5: test MSE 0.012726 vs per-play baseline 0.012559, success acc 0.752
+  critic epoch 6: test MSE 0.012701 vs per-play baseline 0.012559, success acc 0.749
+  critic epoch 7: test MSE 0.012659 vs per-play baseline 0.012559, success acc 0.753
+  critic epoch 8: test MSE 0.012780 vs per-play baseline 0.012559, success acc 0.753
