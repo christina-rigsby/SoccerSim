@@ -186,19 +186,43 @@ def game_record(res: dict[str, Any], team_side: int) -> dict[str, float]:
 
 def run_evaluation(teams: list[str], opponents: list[str], n: int, workers: int = 4, seed: int = 2024,
                    max_time_s: float = 120.0, models_dir: str | Path = "data/models",
-                   progress_every: int = 500) -> dict[str, Any]:
+                   progress_every: int = 500, partial: str | Path | None = None) -> dict[str, Any]:
+    """Play the evaluation. With ``partial`` (a JSONL file), every finished game is appended to it as
+    it finishes and games already in it are not played again, so an interrupted evaluation resumes."""
+    import json
+
     from .runner import run_jobs
 
     jobs = build_jobs(teams, opponents, n, seed, max_time_s, models_dir)
     tags = {j["episode_id"]: j["eval"] for j in jobs}
     games: list[dict[str, Any]] = []
+    done: set[str] = set()
+    if partial is not None and Path(partial).exists():
+        for line in Path(partial).read_text().splitlines():
+            if line.strip():
+                g = json.loads(line)
+                if g.get("episode_id") in tags:
+                    games.append(g)
+                    done.add(g["episode_id"])
+        print(f"  resuming: {len(done)} of {len(jobs)} games already played", flush=True)
+    fh = open(partial, "a") if partial is not None else None  # noqa: SIM115
 
     def on_result(res: dict) -> None:
-        tag = tags[res["episode"]["episode_id"]]
+        eid = res["episode"]["episode_id"]
+        tag = tags[eid]
         side = tag["side"]  # the evaluated team is home when side == 0
-        games.append({**tag, **game_record(res, side)})
+        g = {**tag, **game_record(res, side), "episode_id": eid}
+        games.append(g)
+        if fh is not None:
+            fh.write(json.dumps(g) + "\n")
+            fh.flush()
 
-    run_jobs(jobs, None, workers=workers, on_result=on_result, progress_every=progress_every)
+    try:
+        run_jobs([j for j in jobs if j["episode_id"] not in done], None, workers=workers, on_result=on_result,
+                 progress_every=progress_every)
+    finally:
+        if fh is not None:
+            fh.close()
     return {"teams": teams, "opponents": opponents, "scenarios": n, "seed": seed, "max_time_s": max_time_s,
             "games": games}
 

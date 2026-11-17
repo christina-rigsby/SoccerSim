@@ -8,7 +8,8 @@
 training) or ``held_out`` (styles never trained against). ``--baseline`` (default: the first
 team) is the team every other team is compared with game by game. See
 ``soccersim/selfplay/evaluate.py`` for the design and measures. Writes ``README.md`` (tables),
-``summary.json`` and ``games.json`` to ``--out``.
+``summary.json`` and ``games.json`` to ``--out``. An interrupted evaluation resumes from
+``--out``/games.partial.jsonl when run again with the same arguments.
 """
 
 from __future__ import annotations
@@ -52,9 +53,13 @@ def main() -> int:
     print(f"{len(teams)} teams x {len(opps)} opponents x {a.scenarios} scenarios x 2 sides = {n_games} games",
           flush=True)
     t0 = time.time()
-    ev = run_evaluation(teams, opps, a.scenarios, a.workers, a.seed, a.max_time, a.models)
+    out_dir = Path(a.out or ROOT / "reports" / "evaluation" / time.strftime("%Y%m%d-%H%M"))
+    out_dir.mkdir(parents=True, exist_ok=True)
+    partial = out_dir / "games.partial.jsonl"  # resumes an interrupted evaluation
+    ev = run_evaluation(teams, opps, a.scenarios, a.workers, a.seed, a.max_time, a.models, partial=partial)
     summ = summarise(ev, a.baseline or teams[0])
-    out = save(ev, summ, a.out or ROOT / "reports" / "evaluation" / time.strftime("%Y%m%d-%H%M"))
+    out = save(ev, summ, out_dir)
+    partial.unlink(missing_ok=True)
     print(markdown(ev, summ))
     print(f"wrote {out} ({time.time() - t0:.0f}s)")
     return 0
