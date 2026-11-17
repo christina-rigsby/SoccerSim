@@ -139,3 +139,39 @@ gen_5fa1f3645f                        137   0.1%    46.0%  -0.0053
   critic epoch 6: test MSE 0.012701 vs per-play baseline 0.012559, success acc 0.749
   critic epoch 7: test MSE 0.012659 vs per-play baseline 0.012559, success acc 0.753
   critic epoch 8: test MSE 0.012780 vs per-play baseline 0.012559, success acc 0.753
+  response epoch 1: opp-play acc 0.646 (majority 0.342), event BCE 0.1258 (base rate 0.2189)
+  response epoch 2: opp-play acc 0.654 (majority 0.342), event BCE 0.1199 (base rate 0.2189)
+  response epoch 3: opp-play acc 0.666 (majority 0.342), event BCE 0.1166 (base rate 0.2189)
+  response epoch 4: opp-play acc 0.659 (majority 0.342), event BCE 0.1153 (base rate 0.2189)
+  response epoch 5: opp-play acc 0.668 (majority 0.342), event BCE 0.1140 (base rate 0.2189)
+  response epoch 6: opp-play acc 0.676 (majority 0.342), event BCE 0.1137 (base rate 0.2189)
+{
+  "rows": 141000,
+  "train": 126949,
+  "test": 14051,
+  "dataset_build_s": 38.4,
+  "critic": {
+    "mse": 0.012780481949448586,
+    "baseline_mse": 0.012559066526591778,
+    "mean_mse": 0.01362233329564333,
+    "success_acc": 0.752828980143762,
+    "corr": 0.2643001505207925,
+    "epoch": 8,
+    "train_loss": 1.1897022095882248
+  },
+  "response": {
+    "opp_acc": 0.6760372927193794,
+    "opp_majority": 0.34225322041135864,
+    "event_bce": 0.11368581652641296,
+    "event_base_bce": 0.2188797891139984,
+    "epoch": 6
+  },
+  "critic_beats_baseline": false
+}
+== critic: done 05:16:57
+saved 5 items to checkpoints/ (2.3 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+== critic_ab: start 05:17:01
+critic A/B {"without_critic": {"mean_play_reward": 0.009395470817120622, "mean_epv_delta": 0.0034888678643333307, "plays": 257, "shots": 10}, "with_critic": {"mean_play_reward": 0.009417583333333333, "mean_epv_delta": 0.0034052928889387202, "plays": 252, "shots": 10}, "improves": true}
+== critic_ab: done 05:17:20
+== selector: start 05:17:20
