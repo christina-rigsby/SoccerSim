@@ -2556,10 +2556,140 @@
     "plays": 1155
    },
    "refined": 30
+  },
+  {
+   "update": 30,
+   "held_out": {
+    "train": 0.004434966666666667,
+    "held_out": 0.00929325925925926,
+    "relative_drop": -1.0954518844769807,
+    "flag": false,
+    "update": 30
+   }
   }
  ],
- "flags": [],
- "final_eval": {},
+ "flags": [
+  "run 5: regression gate failed against high_press, chaotic; the next run will not continue from this generator"
+ ],
+ "final_eval": {
+  "main": {
+   "high_press": {
+    "mean_play_reward": 0.011488333333333333,
+    "goal_diff": 0.0,
+    "shots": 3,
+    "generated_plays": 11,
+    "plays": 60,
+    "held_out": false
+   },
+   "mid_block": {
+    "mean_play_reward": 0.03002556140350877,
+    "goal_diff": 1.0,
+    "shots": 7,
+    "generated_plays": 21,
+    "plays": 57,
+    "held_out": false
+   },
+   "low_block_counter": {
+    "mean_play_reward": -0.03390922222222222,
+    "goal_diff": -2.0,
+    "shots": 2,
+    "generated_plays": 9,
+    "plays": 54,
+    "held_out": false
+   },
+   "possession": {
+    "mean_play_reward": 0.0023502553191489368,
+    "goal_diff": 0.0,
+    "shots": 0,
+    "generated_plays": 3,
+    "plays": 47,
+    "held_out": true
+   },
+   "direct": {
+    "mean_play_reward": 0.0034619029126213593,
+    "goal_diff": 0.0,
+    "shots": 5,
+    "generated_plays": 64,
+    "plays": 103,
+    "held_out": false
+   },
+   "wing_play": {
+    "mean_play_reward": 0.0034471585365853665,
+    "goal_diff": 0.0,
+    "shots": 4,
+    "generated_plays": 24,
+    "plays": 82,
+    "held_out": true
+   },
+   "chaotic": {
+    "mean_play_reward": 0.0027336285714285712,
+    "goal_diff": 0.0,
+    "shots": 1,
+    "generated_plays": 13,
+    "plays": 70,
+    "held_out": false
+   }
+  },
+  "library": {
+   "high_press": {
+    "mean_play_reward": 0.004635745762711865,
+    "goal_diff": 0.0,
+    "shots": 1,
+    "generated_plays": 0,
+    "plays": 59,
+    "held_out": false
+   },
+   "mid_block": {
+    "mean_play_reward": 0.003817517241379309,
+    "goal_diff": 0.0,
+    "shots": 5,
+    "generated_plays": 0,
+    "plays": 58,
+    "held_out": false
+   },
+   "low_block_counter": {
+    "mean_play_reward": 0.002870070422535212,
+    "goal_diff": 0.0,
+    "shots": 1,
+    "generated_plays": 0,
+    "plays": 71,
+    "held_out": false
+   },
+   "possession": {
+    "mean_play_reward": 0.002774183673469388,
+    "goal_diff": 0.0,
+    "shots": 0,
+    "generated_plays": 0,
+    "plays": 49,
+    "held_out": true
+   },
+   "direct": {
+    "mean_play_reward": 0.0030712784810126583,
+    "goal_diff": 0.0,
+    "shots": 2,
+    "generated_plays": 0,
+    "plays": 79,
+    "held_out": false
+   },
+   "wing_play": {
+    "mean_play_reward": 0.0023719420289855077,
+    "goal_diff": 0.0,
+    "shots": 4,
+    "generated_plays": 0,
+    "plays": 69,
+    "held_out": true
+   },
+   "chaotic": {
+    "mean_play_reward": 0.003526742424242425,
+    "goal_diff": 0.0,
+    "shots": 2,
+    "generated_plays": 0,
+    "plays": 66,
+    "held_out": false
+   }
+  },
+  "beats_all_styles": false
+ },
  "run": 5,
  "promotion_run": 5,
  "pool": {
@@ -2707,6 +2837,1018 @@
   4
  ],
  "seeds_to_evaluate": [],
- "gate": null,
- "validation": null
+ "gate": {
+  "styles": {
+   "high_press": {
+    "start": 0.005806111111111111,
+    "final": 0.003105897959183673,
+    "diff": -0.002700213151927438,
+    "allowed_drop": 0.002,
+    "ok": false,
+    "held_out": false
+   },
+   "mid_block": {
+    "start": 0.006484724137931034,
+    "final": 0.004873725,
+    "diff": -0.001610999137931034,
+    "allowed_drop": 0.002,
+    "ok": true,
+    "held_out": false
+   },
+   "low_block_counter": {
+    "start": 0.005390102564102564,
+    "final": 0.003724575757575758,
+    "diff": -0.001665526806526806,
+    "allowed_drop": 0.002,
+    "ok": true,
+    "held_out": false
+   },
+   "possession": {
+    "start": 0.0017836086956521738,
+    "final": 0.00021833333333333302,
+    "diff": -0.0015652753623188408,
+    "allowed_drop": 0.002,
+    "ok": true,
+    "held_out": true
+   },
+   "direct": {
+    "start": 0.010071026315789475,
+    "final": 0.009123215686274508,
+    "diff": -0.0009478106295149665,
+    "allowed_drop": 0.0025177565789473687,
+    "ok": true,
+    "held_out": false
+   },
+   "wing_play": {
+    "start": -0.041010758620689654,
+    "final": -0.035643454545454555,
+    "diff": 0.005367304075235099,
+    "allowed_drop": 0.010252689655172413,
+    "ok": true,
+    "held_out": true
+   },
+   "chaotic": {
+    "start": 0.031387333333333337,
+    "final": 0.0027239772727272724,
+    "diff": -0.028663356060606063,
+    "allowed_drop": 0.007846833333333334,
+    "ok": false,
+    "held_out": false
+   }
+  },
+  "games_per_style": 8,
+  "passed": false,
+  "failed_styles": [
+   "high_press",
+   "chaotic"
+  ]
+ },
+ "validation": {
+  "teams": [
+   "main",
+   "selector",
+   "library",
+   "library_critic",
+   "high_press",
+   "mid_block",
+   "low_block_counter",
+   "possession",
+   "direct",
+   "wing_play",
+   "chaotic"
+  ],
+  "games_per_pair": 8,
+  "held_out": [
+   "possession",
+   "wing_play"
+  ],
+  "payoff": {
+   "main": {
+    "selector": {
+     "w": 3,
+     "d": 1,
+     "l": 4,
+     "n": 8,
+     "reward": -0.06037000000000001
+    },
+    "library": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": -1.3647699999999996
+    },
+    "library_critic": {
+     "w": 2,
+     "d": 2,
+     "l": 4,
+     "n": 8,
+     "reward": -0.494361
+    },
+    "high_press": {
+     "w": 2,
+     "d": 0,
+     "l": 6,
+     "n": 8,
+     "reward": -0.45461499999999994
+    },
+    "mid_block": {
+     "w": 5,
+     "d": 0,
+     "l": 3,
+     "n": 8,
+     "reward": 4.049688
+    },
+    "low_block_counter": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": -0.08469399999999998
+    },
+    "possession": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": -1.0173890000000003
+    },
+    "direct": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": 2.465098
+    },
+    "chaotic": {
+     "w": 6,
+     "d": 0,
+     "l": 2,
+     "n": 8,
+     "reward": 0.19122200000000003
+    },
+    "wing_play": {
+     "w": 5,
+     "d": 0,
+     "l": 3,
+     "n": 8,
+     "reward": 0.1866439999999998
+    }
+   },
+   "selector": {
+    "main": {
+     "w": 4,
+     "d": 1,
+     "l": 3,
+     "n": 8,
+     "reward": 0.06037000000000001
+    },
+    "library": {
+     "w": 7,
+     "d": 0,
+     "l": 1,
+     "n": 8,
+     "reward": 1.090273
+    },
+    "library_critic": {
+     "w": 1,
+     "d": 0,
+     "l": 7,
+     "n": 8,
+     "reward": -2.5192620000000003
+    },
+    "high_press": {
+     "w": 3,
+     "d": 1,
+     "l": 4,
+     "n": 8,
+     "reward": -2.116139
+    },
+    "mid_block": {
+     "w": 7,
+     "d": 0,
+     "l": 1,
+     "n": 8,
+     "reward": 0.666705
+    },
+    "low_block_counter": {
+     "w": 5,
+     "d": 0,
+     "l": 3,
+     "n": 8,
+     "reward": -1.887583
+    },
+    "possession": {
+     "w": 2,
+     "d": 2,
+     "l": 4,
+     "n": 8,
+     "reward": -0.23261699999999996
+    },
+    "direct": {
+     "w": 5,
+     "d": 2,
+     "l": 1,
+     "n": 8,
+     "reward": 0.22559599999999996
+    },
+    "wing_play": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": 2.477328
+    },
+    "chaotic": {
+     "w": 5,
+     "d": 0,
+     "l": 3,
+     "n": 8,
+     "reward": 0.14315
+    }
+   },
+   "library": {
+    "main": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": 1.3647699999999996
+    },
+    "selector": {
+     "w": 1,
+     "d": 0,
+     "l": 7,
+     "n": 8,
+     "reward": -1.090273
+    },
+    "library_critic": {
+     "w": 3,
+     "d": 0,
+     "l": 5,
+     "n": 8,
+     "reward": 0.390228
+    },
+    "high_press": {
+     "w": 3,
+     "d": 1,
+     "l": 4,
+     "n": 8,
+     "reward": -1.9394719999999999
+    },
+    "mid_block": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": -1.2598890000000003
+    },
+    "low_block_counter": {
+     "w": 3,
+     "d": 0,
+     "l": 5,
+     "n": 8,
+     "reward": -0.012848000000000019
+    },
+    "possession": {
+     "w": 3,
+     "d": 1,
+     "l": 4,
+     "n": 8,
+     "reward": -0.13376000000000002
+    },
+    "direct": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": -0.007530999999999996
+    },
+    "wing_play": {
+     "w": 2,
+     "d": 2,
+     "l": 4,
+     "n": 8,
+     "reward": -0.09833900000000001
+    },
+    "chaotic": {
+     "w": 3,
+     "d": 1,
+     "l": 4,
+     "n": 8,
+     "reward": 0.015491000000000005
+    }
+   },
+   "library_critic": {
+    "main": {
+     "w": 4,
+     "d": 2,
+     "l": 2,
+     "n": 8,
+     "reward": 0.494361
+    },
+    "selector": {
+     "w": 7,
+     "d": 0,
+     "l": 1,
+     "n": 8,
+     "reward": 2.5192620000000003
+    },
+    "library": {
+     "w": 5,
+     "d": 0,
+     "l": 3,
+     "n": 8,
+     "reward": -0.390228
+    },
+    "high_press": {
+     "w": 4,
+     "d": 1,
+     "l": 3,
+     "n": 8,
+     "reward": 0.04447300000000001
+    },
+    "mid_block": {
+     "w": 3,
+     "d": 3,
+     "l": 2,
+     "n": 8,
+     "reward": 0.05041999999999998
+    },
+    "low_block_counter": {
+     "w": 5,
+     "d": 0,
+     "l": 3,
+     "n": 8,
+     "reward": -2.1297149999999996
+    },
+    "direct": {
+     "w": 2,
+     "d": 1,
+     "l": 5,
+     "n": 8,
+     "reward": -0.29071699999999995
+    },
+    "possession": {
+     "w": 3,
+     "d": 2,
+     "l": 3,
+     "n": 8,
+     "reward": 0.010610000000000015
+    },
+    "wing_play": {
+     "w": 4,
+     "d": 1,
+     "l": 3,
+     "n": 8,
+     "reward": 0.131063
+    },
+    "chaotic": {
+     "w": 5,
+     "d": 2,
+     "l": 1,
+     "n": 8,
+     "reward": 0.162763
+    }
+   },
+   "high_press": {
+    "main": {
+     "w": 6,
+     "d": 0,
+     "l": 2,
+     "n": 8,
+     "reward": 0.45461499999999994
+    },
+    "selector": {
+     "w": 4,
+     "d": 1,
+     "l": 3,
+     "n": 8,
+     "reward": 2.116139
+    },
+    "library": {
+     "w": 4,
+     "d": 1,
+     "l": 3,
+     "n": 8,
+     "reward": 1.9394719999999999
+    },
+    "library_critic": {
+     "w": 3,
+     "d": 1,
+     "l": 4,
+     "n": 8,
+     "reward": -0.04447300000000001
+    },
+    "mid_block": {
+     "w": 6,
+     "d": 0,
+     "l": 2,
+     "n": 8,
+     "reward": 0.161
+    },
+    "low_block_counter": {
+     "w": 2,
+     "d": 2,
+     "l": 4,
+     "n": 8,
+     "reward": -0.17506900000000003
+    },
+    "possession": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": 0.5429300000000001
+    },
+    "direct": {
+     "w": 4,
+     "d": 1,
+     "l": 3,
+     "n": 8,
+     "reward": -0.21571600000000007
+    },
+    "wing_play": {
+     "w": 4,
+     "d": 2,
+     "l": 2,
+     "n": 8,
+     "reward": 0.21409799999999996
+    },
+    "chaotic": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": 0.09775399999999998
+    }
+   },
+   "mid_block": {
+    "main": {
+     "w": 3,
+     "d": 0,
+     "l": 5,
+     "n": 8,
+     "reward": -4.049688
+    },
+    "selector": {
+     "w": 1,
+     "d": 0,
+     "l": 7,
+     "n": 8,
+     "reward": -0.666705
+    },
+    "library": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": 1.2598890000000003
+    },
+    "library_critic": {
+     "w": 2,
+     "d": 3,
+     "l": 3,
+     "n": 8,
+     "reward": -0.05041999999999998
+    },
+    "high_press": {
+     "w": 2,
+     "d": 0,
+     "l": 6,
+     "n": 8,
+     "reward": -0.161
+    },
+    "low_block_counter": {
+     "w": 3,
+     "d": 1,
+     "l": 4,
+     "n": 8,
+     "reward": 0.07424700000000001
+    },
+    "possession": {
+     "w": 3,
+     "d": 1,
+     "l": 4,
+     "n": 8,
+     "reward": -0.06798500000000002
+    },
+    "wing_play": {
+     "w": 2,
+     "d": 0,
+     "l": 6,
+     "n": 8,
+     "reward": -2.1973019999999996
+    },
+    "direct": {
+     "w": 3,
+     "d": 0,
+     "l": 5,
+     "n": 8,
+     "reward": 0.10386999999999995
+    },
+    "chaotic": {
+     "w": 4,
+     "d": 1,
+     "l": 3,
+     "n": 8,
+     "reward": 0.032773999999999984
+    }
+   },
+   "low_block_counter": {
+    "main": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": 0.08469399999999998
+    },
+    "selector": {
+     "w": 3,
+     "d": 0,
+     "l": 5,
+     "n": 8,
+     "reward": 1.887583
+    },
+    "library": {
+     "w": 5,
+     "d": 0,
+     "l": 3,
+     "n": 8,
+     "reward": 0.012848000000000019
+    },
+    "library_critic": {
+     "w": 3,
+     "d": 0,
+     "l": 5,
+     "n": 8,
+     "reward": 2.1297149999999996
+    },
+    "high_press": {
+     "w": 4,
+     "d": 2,
+     "l": 2,
+     "n": 8,
+     "reward": 0.17506900000000003
+    },
+    "mid_block": {
+     "w": 4,
+     "d": 1,
+     "l": 3,
+     "n": 8,
+     "reward": -0.07424700000000001
+    },
+    "possession": {
+     "w": 3,
+     "d": 1,
+     "l": 4,
+     "n": 8,
+     "reward": -0.123242
+    },
+    "direct": {
+     "w": 2,
+     "d": 0,
+     "l": 6,
+     "n": 8,
+     "reward": -2.394463
+    },
+    "wing_play": {
+     "w": 3,
+     "d": 1,
+     "l": 4,
+     "n": 8,
+     "reward": 1.7923790000000002
+    },
+    "chaotic": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": -0.02112900000000001
+    }
+   },
+   "possession": {
+    "main": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": 1.0173890000000003
+    },
+    "selector": {
+     "w": 4,
+     "d": 2,
+     "l": 2,
+     "n": 8,
+     "reward": 0.23261699999999996
+    },
+    "library": {
+     "w": 4,
+     "d": 1,
+     "l": 3,
+     "n": 8,
+     "reward": 0.13376000000000002
+    },
+    "library_critic": {
+     "w": 3,
+     "d": 2,
+     "l": 3,
+     "n": 8,
+     "reward": -0.010610000000000015
+    },
+    "high_press": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": -0.5429300000000001
+    },
+    "mid_block": {
+     "w": 4,
+     "d": 1,
+     "l": 3,
+     "n": 8,
+     "reward": 0.06798500000000002
+    },
+    "low_block_counter": {
+     "w": 4,
+     "d": 1,
+     "l": 3,
+     "n": 8,
+     "reward": 0.123242
+    },
+    "direct": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": -2.013648
+    },
+    "chaotic": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": 0.07324999999999997
+    },
+    "wing_play": {
+     "w": 2,
+     "d": 0,
+     "l": 6,
+     "n": 8,
+     "reward": 1.8739480000000002
+    }
+   },
+   "direct": {
+    "main": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": -2.465098
+    },
+    "selector": {
+     "w": 1,
+     "d": 2,
+     "l": 5,
+     "n": 8,
+     "reward": -0.22559599999999996
+    },
+    "library": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": 0.007530999999999996
+    },
+    "library_critic": {
+     "w": 5,
+     "d": 1,
+     "l": 2,
+     "n": 8,
+     "reward": 0.29071699999999995
+    },
+    "high_press": {
+     "w": 3,
+     "d": 1,
+     "l": 4,
+     "n": 8,
+     "reward": 0.21571600000000007
+    },
+    "mid_block": {
+     "w": 5,
+     "d": 0,
+     "l": 3,
+     "n": 8,
+     "reward": -0.10386999999999995
+    },
+    "low_block_counter": {
+     "w": 6,
+     "d": 0,
+     "l": 2,
+     "n": 8,
+     "reward": 2.394463
+    },
+    "possession": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": 2.013648
+    },
+    "wing_play": {
+     "w": 4,
+     "d": 1,
+     "l": 3,
+     "n": 8,
+     "reward": 0.030814
+    },
+    "chaotic": {
+     "w": 1,
+     "d": 2,
+     "l": 5,
+     "n": 8,
+     "reward": -0.267449
+    }
+   },
+   "chaotic": {
+    "main": {
+     "w": 2,
+     "d": 0,
+     "l": 6,
+     "n": 8,
+     "reward": -0.19122200000000003
+    },
+    "selector": {
+     "w": 3,
+     "d": 0,
+     "l": 5,
+     "n": 8,
+     "reward": -0.14315
+    },
+    "library": {
+     "w": 4,
+     "d": 1,
+     "l": 3,
+     "n": 8,
+     "reward": -0.015491000000000005
+    },
+    "library_critic": {
+     "w": 1,
+     "d": 2,
+     "l": 5,
+     "n": 8,
+     "reward": -0.162763
+    },
+    "high_press": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": -0.09775399999999998
+    },
+    "mid_block": {
+     "w": 3,
+     "d": 1,
+     "l": 4,
+     "n": 8,
+     "reward": -0.032773999999999984
+    },
+    "low_block_counter": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": 0.02112900000000001
+    },
+    "possession": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": -0.07324999999999997
+    },
+    "direct": {
+     "w": 5,
+     "d": 2,
+     "l": 1,
+     "n": 8,
+     "reward": 0.267449
+    },
+    "wing_play": {
+     "w": 3,
+     "d": 0,
+     "l": 5,
+     "n": 8,
+     "reward": -0.08407399999999998
+    }
+   },
+   "wing_play": {
+    "main": {
+     "w": 3,
+     "d": 0,
+     "l": 5,
+     "n": 8,
+     "reward": -0.1866439999999998
+    },
+    "selector": {
+     "w": 4,
+     "d": 0,
+     "l": 4,
+     "n": 8,
+     "reward": -2.477328
+    },
+    "library": {
+     "w": 4,
+     "d": 2,
+     "l": 2,
+     "n": 8,
+     "reward": 0.09833900000000001
+    },
+    "library_critic": {
+     "w": 3,
+     "d": 1,
+     "l": 4,
+     "n": 8,
+     "reward": -0.131063
+    },
+    "high_press": {
+     "w": 2,
+     "d": 2,
+     "l": 4,
+     "n": 8,
+     "reward": -0.21409799999999996
+    },
+    "mid_block": {
+     "w": 6,
+     "d": 0,
+     "l": 2,
+     "n": 8,
+     "reward": 2.1973019999999996
+    },
+    "low_block_counter": {
+     "w": 4,
+     "d": 1,
+     "l": 3,
+     "n": 8,
+     "reward": -1.7923790000000002
+    },
+    "possession": {
+     "w": 6,
+     "d": 0,
+     "l": 2,
+     "n": 8,
+     "reward": -1.8739480000000002
+    },
+    "direct": {
+     "w": 3,
+     "d": 1,
+     "l": 4,
+     "n": 8,
+     "reward": -0.030814
+    },
+    "chaotic": {
+     "w": 5,
+     "d": 0,
+     "l": 3,
+     "n": 8,
+     "reward": 0.08407399999999998
+    }
+   }
+  },
+  "mean_play_reward": {
+   "main": {
+    "selector": 0.001675953488372094,
+    "library": -0.008165753623188408,
+    "library_critic": -0.0008826595744680855,
+    "high_press": -0.0011099777777777776,
+    "mid_block": 0.04756478723404255,
+    "low_block_counter": 0.002682095238095238,
+    "possession": -0.018174688888888884,
+    "direct": 0.02482459016393443,
+    "chaotic": 0.008391257142857144,
+    "wing_play": 0.0037214444444444417
+   },
+   "selector": {
+    "main": 0.0035793513513513514,
+    "library": 0.0219836,
+    "library_critic": -0.02657360526315789,
+    "high_press": -0.025469529411764703,
+    "mid_block": 0.01598166666666667,
+    "low_block_counter": -0.0281788275862069,
+    "possession": -0.00389864,
+    "direct": 0.005808999999999998,
+    "wing_play": 0.0337165909090909,
+    "chaotic": 0.004566692307692308
+   },
+   "library": {
+    "main": 0.027632172413793107,
+    "selector": -0.0064169399999999994,
+    "library_critic": 0.008769127659574468,
+    "high_press": -0.02036326829268293,
+    "mid_block": -0.026422928571428576,
+    "low_block_counter": 0.0027395686274509804,
+    "possession": -0.0007482352941176468,
+    "direct": 0.0060828157894736844,
+    "wing_play": 0.003423148148148148,
+    "chaotic": 0.0033894999999999993
+   },
+   "library_critic": {
+    "main": 0.009845130434782608,
+    "selector": 0.04869241935483872,
+    "library": 0.0004982045454545454,
+    "high_press": 0.006209062500000001,
+    "mid_block": 0.0035920370370370372,
+    "low_block_counter": -0.018725317073170728,
+    "direct": -0.001213698113207547,
+    "possession": 0.004104366666666668,
+    "wing_play": 0.005318205128205128,
+    "chaotic": 0.0034016734693877557
+   },
+   "high_press": {
+    "main": 0.008797086956521738,
+    "selector": 0.0250035,
+    "library": 0.01781577419354839,
+    "library_critic": 0.003504931818181818,
+    "mid_block": 0.01046,
+    "low_block_counter": 0.003168697674418604,
+    "possession": 0.007124923076923076,
+    "direct": 0.0004970833333333342,
+    "wing_play": 0.005095851851851851,
+    "chaotic": 0.0046530689655172415
+   },
+   "mid_block": {
+    "main": -0.05039286111111111,
+    "selector": -0.0037935483870967742,
+    "library": 0.003950684210526316,
+    "library_critic": 0.0006847794117647062,
+    "high_press": 0.002576923076923077,
+    "low_block_counter": 0.001670547169811321,
+    "possession": -0.00041364444444444475,
+    "wing_play": -0.020739229166666664,
+    "direct": 0.001604978723404255,
+    "chaotic": 0.0033337826086956525
+   },
+   "low_block_counter": {
+    "main": 0.0061669375,
+    "selector": 0.0248929534883721,
+    "library": 0.004921483870967742,
+    "library_critic": 0.03242802380952381,
+    "high_press": 0.007982641025641026,
+    "mid_block": 0.0003402857142857143,
+    "possession": 0.0028272333333333333,
+    "direct": -0.037165857142857146,
+    "wing_play": 0.028840378378378377,
+    "chaotic": 0.005095863636363636
+   },
+   "possession": {
+    "main": 0.004640186046511628,
+    "selector": 0.0017107721518987344,
+    "library": 0.002927567567567567,
+    "library_critic": 0.0019071355932203389,
+    "high_press": -0.003448679999999999,
+    "mid_block": 0.0014960909090909092,
+    "low_block_counter": 0.004728613636363636,
+    "direct": -0.024146947368421056,
+    "chaotic": 0.0028525833333333333,
+    "wing_play": 0.015342718750000001
+   },
+   "direct": {
+    "main": -0.023769949999999995,
+    "selector": 0.001205,
+    "library": 0.006629944444444445,
+    "library_critic": 0.006118675675675675,
+    "high_press": 0.0053093409090909085,
+    "mid_block": -0.00056872,
+    "low_block_counter": 0.04230684375,
+    "possession": 0.02435697777777777,
+    "wing_play": 0.0033125151515151522,
+    "chaotic": -0.0004421230769230773
+   },
+   "chaotic": {
+    "main": 0.0026966315789473685,
+    "selector": 0.0008737749999999992,
+    "library": 0.002137924528301887,
+    "library_critic": 8.906818181818217e-05,
+    "high_press": 0.0044134358974358984,
+    "mid_block": 0.0024116000000000003,
+    "low_block_counter": 0.005841595238095239,
+    "possession": 0.0016326666666666662,
+    "direct": 0.006120794871794872,
+    "wing_play": 0.001565913043478261
+   },
+   "wing_play": {
+    "main": 0.000493586206896542,
+    "selector": -0.018069054545454544,
+    "library": 0.0039742499999999995,
+    "library_critic": 0.002245500000000001,
+    "high_press": 0.001607315789473684,
+    "mid_block": 0.04807276,
+    "low_block_counter": -0.01543159574468085,
+    "possession": -0.04955633333333334,
+    "direct": 0.00148111320754717,
+    "chaotic": 0.004002717948717948
+   }
+  }
+ }
 }
