@@ -5970,3 +5970,44 @@ committed and pushed to claude/friendly-gates-4kjgu7
 saved 11 items to checkpoints/ (56.0 MB)
 committed and pushed to claude/friendly-gates-4kjgu7
   update 15: 16 games, main rollouts 25, mean generated-play reward 0.0072, generated share 0.31, validity 1.000, Elo main 1000, archive {'cells': 147, 'elite_cells': 82, 'plays': 499}, 167.5s
+  update 16: 16 games, main rollouts 23, mean generated-play reward -0.0076, generated share 0.34, validity 1.000, Elo main 1068, archive {'cells': 159, 'elite_cells': 86, 'plays': 556}, 166.4s
+  saving models (run 5, update 16)
+saved 11 items to checkpoints/ (60.8 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  update 17: 16 games, main rollouts 23, mean generated-play reward 0.0079, generated share 0.29, validity 1.000, Elo main 1051, archive {'cells': 165, 'elite_cells': 89, 'plays': 592}, 170.8s
+  update 18: 16 games, main rollouts 20, mean generated-play reward 0.0479, generated share 0.31, validity 1.000, Elo main 1080, archive {'cells': 170, 'elite_cells': 91, 'plays': 630}, 115.8s
+  saving models (run 5, update 18)
+saved 11 items to checkpoints/ (61.3 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  update 19: 16 games, main rollouts 23, mean generated-play reward 0.0395, generated share 0.36, validity 1.000, Elo main 1104, archive {'cells': 175, 'elite_cells': 93, 'plays': 663}, 132.9s
+  update 20: 16 games, main rollouts 21, mean generated-play reward 0.0830, generated share 0.26, validity 1.000, Elo main 1045, archive {'cells': 180, 'elite_cells': 98, 'plays': 701}, 191.9s
+  held-out check: {'train': 0.005066826086956521, 'held_out': 0.008373866666666667, 'relative_drop': -0.6526848411520235, 'flag': False, 'update': 20}
+  saving models (run 5, update 20)
+saved 11 items to checkpoints/ (65.9 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  update 21: 16 games, main rollouts 18, mean generated-play reward -0.0083, generated share 0.24, validity 1.000, Elo main 1024, archive {'cells': 186, 'elite_cells': 101, 'plays': 740}, 167.4s
+  update 22: 16 games, main rollouts 12, mean generated-play reward -0.0237, generated share 0.17, validity 1.000, Elo main 1019, archive {'cells': 187, 'elite_cells': 105, 'plays': 761}, 180.0s
+  saving models (run 5, update 22)
+saved 11 items to checkpoints/ (66.5 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  update 23: 16 games, main rollouts 27, mean generated-play reward 0.0003, generated share 0.34, validity 1.000, Elo main 1046, archive {'cells': 194, 'elite_cells': 108, 'plays': 812}, 134.9s
+  update 24: 16 games, main rollouts 30, mean generated-play reward 0.0097, generated share 0.30, validity 1.000, Elo main 1034, archive {'cells': 202, 'elite_cells': 112, 'plays': 861}, 239.4s
+  saving models (run 5, update 24)
+saved 11 items to checkpoints/ (67.3 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  update 25: 16 games, main rollouts 28, mean generated-play reward 0.0105, generated share 0.37, validity 1.000, Elo main 1082, archive {'cells': 205, 'elite_cells': 115, 'plays': 903}, 185.7s
+  update 26: 16 games, main rollouts 26, mean generated-play reward -0.0109, generated share 0.29, validity 1.000, Elo main 1052, archive {'cells': 212, 'elite_cells': 117, 'plays': 975}, 262.1s
+  saving models (run 5, update 26)
+saved 11 items to checkpoints/ (72.3 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  update 27: 16 games, main rollouts 22, mean generated-play reward 0.0901, generated share 0.24, validity 1.000, Elo main 1049, archive {'cells': 214, 'elite_cells': 120, 'plays': 1038}, 262.9s
+  update 28: 16 games, main rollouts 21, mean generated-play reward 0.0035, generated share 0.26, validity 1.000, Elo main 995, archive {'cells': 216, 'elite_cells': 123, 'plays': 1091}, 190.0s
+  saving models (run 5, update 28)
+saved 11 items to checkpoints/ (73.3 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  update 29: 16 games, main rollouts 24, mean generated-play reward -0.0073, generated share 0.30, validity 1.000, Elo main 1031, archive {'cells': 219, 'elite_cells': 125, 'plays': 1128}, 187.2s
+  update 30: 16 games, main rollouts 14, mean generated-play reward 0.0359, generated share 0.25, validity 1.000, Elo main 1045, archive {'cells': 223, 'elite_cells': 128, 'plays': 1155}, 129.4s
+  saving models (run 5, update 30)
+saved 11 items to checkpoints/ (77.9 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  held-out check: {'train': 0.004434966666666667, 'held_out': 0.00929325925925926, 'relative_drop': -1.0954518844769807, 'flag': False, 'update': 30}
