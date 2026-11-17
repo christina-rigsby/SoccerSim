@@ -1272,3 +1272,17 @@ because trial values from 8 trials are themselves noisy. The main agent's drop g
 league (generated plays up to half of its calls; regression gate failed again against high_press
 and chaotic). Best teams so far: the 12-second fair look-ahead (+0.140, slow) and run 4's selector
 (+0.106, archived in `data/models_archive/pool_v3/`).
+
+## D-055 · Models only work with the library they were trained on; best models per library
+
+The critic, selector and generator identify library plays by their position in the sorted list
+of play ids (`play_ids`), so removing plays from the library shifts the identities of every play
+after them. In the pool v5 library (four promoted plays removed, D-053) run 4's selector scores
+−0.018 ± 0.014 xG per game against the plain library, against +0.078 ± 0.018 for run 5's selector,
+which was trained on that library; run 4's main agent drops from +0.101 to +0.046
+(`reports/evaluation/best_models_pool_v5`). D-054's comparison of run 5 with run 4 therefore mixed
+two libraries: within the current library, run 5's selector is the best selector. The teams
+`selector` / `main` use `configs/best_models.yaml` (run 5's selector, run 4's main for now);
+`selector_latest` / `main_latest` use the newest models. The league is back to 6 updates and the
+generator is on hold. Follow-up: give models play identities that survive library changes
+(e.g. map by play id, not position).
