@@ -137,5 +137,20 @@
       "epoch": 6
     }
   ],
-  "critic_beats_baseline": false
+  "critic_beats_baseline": false,
+  "ranking_ab": {
+    "without_critic": {
+      "mean_play_reward": 0.009395470817120622,
+      "mean_epv_delta": 0.0034888678643333307,
+      "plays": 257,
+      "shots": 10
+    },
+    "with_critic": {
+      "mean_play_reward": 0.009417583333333333,
+      "mean_epv_delta": 0.0034052928889387202,
+      "plays": 252,
+      "shots": 10
+    },
+    "improves": true
+  }
 }
