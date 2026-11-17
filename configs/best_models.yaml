@@ -1,0 +1,9 @@
+# The best trained models so far: what the evaluation team names `selector` and `main` play with
+# (soccersim/selfplay/evaluate.py). `selector_latest` / `main_latest` use the newest models in
+# data/models instead. Update this when a newly trained model beats the one listed here in a
+# paired evaluation (scripts/evaluate_teams.py).
+#
+# Both are run 4's (pool v3; D-054): run 5's selector (+0.078 xG per game over the library) and
+# main agent (+0.020) did worse than run 4's (+0.106, +0.101) on the same paired scenarios.
+selector: models_best/selector   # run 4's library-only learned selector
+main: models_best/main           # run 4's main agent (critic + response model + main.pt generator)

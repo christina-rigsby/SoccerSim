@@ -27,6 +27,11 @@ rule, to keep the cost down. The trials of every decision are kept in ``last_dec
 ranking (for the selector: its learned critic alone) picks the ``top_k`` candidates, makes the
 periodic re-checks, and plays on in the trials after the tried play.
 
+**Speed settings.** ``trial_continue="library"`` makes our team carry on with the plain library
+ranking inside trials (instead of the base team's critic, a network call per decision), and
+``key_x`` restricts trials to decisions with the ball within the final thirds at either end
+(``|x| >= key_x``), where goals are made and conceded; elsewhere the base ranking decides.
+
 **Who the opponent is in the trials** (``opponent_model``):
 
 - ``copy`` (default): a copy of the real opponent's policy. A real team could not know it, so
@@ -94,12 +99,21 @@ class LookaheadPolicy(RankingPolicy):
     def __init__(self, library: dict[str, Play], rng: np.random.Generator | None = None, top_k: int = 6,
                  rollouts: int = 8, horizon_s: float = 6.0, temperature: float = 0.01, name: str = "lookahead",
                  screen: int = 2, finalists: int = 3, opponent_model: str = "copy", record_state: bool = False,
+                 trial_continue: str = "base", key_x: float | None = None,
                  **kw) -> None:
         super().__init__(library, rng=rng, temperature=temperature, name=name, **kw)
         if opponent_model not in ("copy", "library"):
             raise ValueError(f"opponent_model must be 'copy' or 'library', not {opponent_model!r}")
         self.opponent_model = opponent_model  # who the opponent is in the trials (see the module docstring)
         self.record_state = bool(record_state)  # keep the situation in each decision record (training data)
+        # After the tried play: "base" carries on with this team's ranking (its critic, if any);
+        # "library" with the plain library ranking, much cheaper when the critic is a network.
+        if trial_continue not in ("base", "library"):
+            raise ValueError(f"trial_continue must be 'base' or 'library', not {trial_continue!r}")
+        self.trial_continue = trial_continue
+        # Only simulate when the ball is within key_x metres of either goal line's third (|x| >= key_x,
+        # i.e. near either goal, where chances are made and conceded); elsewhere rank as usual.
+        self.key_x = key_x
         self.top_k = int(top_k)
         self.rollouts = int(rollouts)
         self.screen = int(screen)  # trials per candidate in the first round (0: every candidate gets all)
@@ -120,8 +134,12 @@ class LookaheadPolicy(RankingPolicy):
         env, team = self.env, self.team
         # After the tried play, our team carries on with its own ranking (the plain library, or the
         # base team's critic when built on one, e.g. the learned selector).
-        base = RankingPolicy(self.library, rng=np.random.default_rng(seed + 1), cfg=self.cfg,
-                             temperature=self.temperature, critic=self.critic, name="base")
+        if self.trial_continue == "base":
+            base = RankingPolicy(self.library, rng=np.random.default_rng(seed + 1), cfg=self.cfg,
+                                 temperature=self.temperature, critic=self.critic, name="base")
+        else:
+            base = RankingPolicy(self.library, rng=np.random.default_rng(seed + 1), temperature=self.temperature,
+                                 name="library")
         base.cooldowns = dict(self.cooldowns)
         ours = _TryThenLibrary(cand, base)
         if self.opponent_model == "copy":
@@ -148,6 +166,8 @@ class LookaheadPolicy(RankingPolicy):
     def decide(self, obs: TeamView, reason: str) -> PlayInstance | None:
         if self.env is None or reason not in REAL_DECISIONS:
             return super().decide(obs, reason)
+        if self.key_x is not None and abs(float(obs.ball[0])) < self.key_x:
+            return super().decide(obs, reason)  # not a key decision: rank as usual, no trials
         cands = self.rank(obs, list(self.library.values()))
         feasible = sorted((c for c in cands if c.feasible), key=lambda c: -c.score)
         if len(feasible) <= 1:

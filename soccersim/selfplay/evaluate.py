@@ -22,7 +22,8 @@ each candidate play in copies of the game; ``lookahead_fair`` does so against a 
 instead of a copy of the real one; ``lookahead_<rollouts>x<top_k>_<horizon>s`` sets its
 parameters; an ``_on_selector`` suffix builds it on the learned selector), and the learned
 teams ``library_critic`` (library plus the critic of the latest league run), ``selector`` (the
-library-only learned selector) and ``main`` (the latest run's critic + generator).
+library-only learned selector) and ``main`` (critic + generator); ``selector`` and ``main`` use the
+best models so far (``configs/best_models.yaml``), ``selector_latest`` / ``main_latest`` the newest.
 """
 
 from __future__ import annotations
@@ -39,6 +40,19 @@ from ..sim.scenarios import SCENARIO_TYPES, sample_scenario
 from .policies import style_spec
 
 LEARNED = ("library_critic", "selector", "main")
+
+
+ROOT = Path(__file__).resolve().parent.parent.parent
+
+
+def best_models() -> dict[str, str]:
+    """``configs/best_models.yaml``: the models the team names ``selector`` and ``main`` use."""
+    path = ROOT / "configs" / "best_models.yaml"
+    if not path.exists():
+        return {}
+    import yaml
+
+    return dict(yaml.safe_load(path.read_text()) or {})
 
 
 def latest_run_dir(models_dir: str | Path) -> Path | None:
@@ -66,6 +80,16 @@ def team_spec(name: str, models_dir: str | Path = "data/models") -> dict[str, An
         return style_spec(name, lcfg)
     if name == "library":
         return {"id": "library", "kind": "library", "temperature": 0.01}
+    if name in ("lookahead_fast", "lookahead_fast_key"):
+        # Fast look-ahead on the best selector: its top 3 plays, 4 trials each of 12 s against a generic
+        # opponent, our team carrying on with the plain library in the trials; _key: trials only with
+        # the ball in either final third.
+        spec = {"id": name, "kind": "lookahead", "temperature": 0.01, "opponent_model": "library",
+                "top_k": 3, "rollouts": 4, "screen": 0, "horizon_s": 12.0, "trial_continue": "library",
+                "base": team_spec("selector", models_dir)}
+        if name == "lookahead_fast_key":
+            spec["key_x"] = 17.5
+        return spec
     if name.startswith("lookahead") and name.endswith("_on_selector"):
         # A look-ahead team built on the learned selector (its critic ranks and plays on in the trials).
         return {**team_spec(name[: -len("_on_selector")], models_dir), "id": name,
@@ -87,17 +111,24 @@ def team_spec(name: str, models_dir: str | Path = "data/models") -> dict[str, An
 
         return {"id": name, "kind": "agent", "checkpoint": str(model_dir(models_dir)), "generator": False,
                 "critic": True, "score_mode": "learned", "temperature": 0.0}
-    if name == "selector":
+    best = best_models()
+    if name in ("selector", "selector_latest"):
         from .selector import selector_spec
 
-        return selector_spec(models_dir)
-    if name in ("library_critic", "main"):
-        run = latest_run_dir(models_dir)
+        spec = selector_spec(models_dir, pid=name)
+        if name == "selector" and best.get("selector"):
+            spec["checkpoint"] = str(ROOT / best["selector"])
+        return spec
+    if name in ("library_critic", "main", "main_latest"):
+        if name == "main" and best.get("main"):
+            run = ROOT / best["main"]
+        else:
+            run = latest_run_dir(models_dir)
         if run is None:
             raise ValueError(f"team {name!r} needs a league run in {models_dir}/runs")
         spec = {"id": name, "kind": "agent", "checkpoint": str(run), "generator_file": "main.pt", "k": 4,
                 "critic": True, "temperature": 0.01, "learner": None}
-        if name == "main":
+        if name in ("main", "main_latest"):
             return {**spec, "activation": "on_gap", "gen_temperature": 0.7}
         return {**spec, "generator": False}
     raise ValueError(f"unknown team {name!r}")
