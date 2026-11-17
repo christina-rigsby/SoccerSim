@@ -1258,3 +1258,17 @@ pipeline now ends by training a critic on 12-second look-ahead trials and evalua
 selector, main and that critic on paired scenarios. Pool v3 models are archived in
 `data/models_archive/pool_v3/`; `scripts/checkpoints.py restore` no longer restores models saved
 for a different pool.
+
+## D-054 · Pool v5 retraining did not improve the learned teams
+
+Run 5 (pool v5: instincts, branchy plays, pruned promoted plays, squared-error critic loss, 30
+league updates) evaluated on the same 20 scenarios as pool v4 (`reports/evaluation/run_5_teams`),
+xG difference per game paired against the library: selector +0.078 ± 0.018, trial critic (12-second
+look-ahead trials) +0.046 ± 0.017, main +0.020 ± 0.017. Against the run 4 teams (trained on pool
+v3, played with instincts): selector −0.028 ± 0.024 xG (−0.071 ± 0.035 goals), main −0.081 ± 0.020
+xG. The library itself is unchanged by the play changes (+0.000 ± 0.019). The trial critic barely
+learned to rank plays (it picks the trials' best play 37–41% of the time against 37.5% by chance),
+because trial values from 8 trials are themselves noisy. The main agent's drop goes with the longer
+league (generated plays up to half of its calls; regression gate failed again against high_press
+and chaotic). Best teams so far: the 12-second fair look-ahead (+0.140, slow) and run 4's selector
+(+0.106, archived in `data/models_archive/pool_v3/`).
