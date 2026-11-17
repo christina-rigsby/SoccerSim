@@ -5935,3 +5935,38 @@ committed and pushed to claude/friendly-gates-4kjgu7
   run 5 (opponent pool v5 (e72d5071eb0e)): starts from /home/user/SoccerSim/data/models/generator.pt (first run); archive seeded from runs [1, 2, 4]
   re-evaluated 9 archive seeds from a different opponent pool against high_press, mid_block, low_block_counter, direct, chaotic
   update 1: 16 games, main rollouts 23, mean generated-play reward -0.0088, generated share 0.41, validity 1.000, Elo main 946, archive {'cells': 22, 'elite_cells': 15, 'plays': 29}, 89.8s
+  update 2: 16 games, main rollouts 21, mean generated-play reward 0.1063, generated share 0.38, validity 1.000, Elo main 1017, archive {'cells': 26, 'elite_cells': 21, 'plays': 39}, 77.7s
+  saving models (run 5, update 2)
+saved 11 items to checkpoints/ (44.2 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  update 3: 16 games, main rollouts 28, mean generated-play reward 0.0078, generated share 0.43, validity 1.000, Elo main 1010, archive {'cells': 42, 'elite_cells': 28, 'plays': 61}, 126.0s
+  update 4: 16 games, main rollouts 27, mean generated-play reward 0.0111, generated share 0.41, validity 1.000, Elo main 1086, archive {'cells': 55, 'elite_cells': 33, 'plays': 88}, 127.2s
+  saving models (run 5, update 4)
+saved 11 items to checkpoints/ (44.8 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  update 5: 16 games, main rollouts 25, mean generated-play reward -0.0112, generated share 0.40, validity 1.000, Elo main 1025, archive {'cells': 68, 'elite_cells': 38, 'plays': 112}, 146.2s
+  update 6: 16 games, main rollouts 28, mean generated-play reward -0.0059, generated share 0.47, validity 1.000, Elo main 990, archive {'cells': 75, 'elite_cells': 41, 'plays': 132}, 152.8s
+  saving models (run 5, update 6)
+saved 11 items to checkpoints/ (49.4 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  update 7: 16 games, main rollouts 22, mean generated-play reward 0.0090, generated share 0.36, validity 1.000, Elo main 1035, archive {'cells': 81, 'elite_cells': 45, 'plays': 157}, 121.9s
+  update 8: 16 games, main rollouts 35, mean generated-play reward 0.0070, generated share 0.42, validity 1.000, Elo main 1002, archive {'cells': 88, 'elite_cells': 50, 'plays': 182}, 134.6s
+  saving models (run 5, update 8)
+saved 11 items to checkpoints/ (49.9 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  update 9: 16 games, main rollouts 32, mean generated-play reward 0.0080, generated share 0.51, validity 1.000, Elo main 1063, archive {'cells': 102, 'elite_cells': 54, 'plays': 225}, 122.9s
+  update 10: 16 games, main rollouts 28, mean generated-play reward -0.0084, generated share 0.37, validity 1.000, Elo main 1039, archive {'cells': 116, 'elite_cells': 60, 'plays': 263}, 141.6s
+  saving models (run 5, update 10)
+saved 11 items to checkpoints/ (54.8 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  update 11: 16 games, main rollouts 38, mean generated-play reward -0.0013, generated share 0.47, validity 1.000, Elo main 1002, archive {'cells': 130, 'elite_cells': 65, 'plays': 329}, 206.7s
+  update 12: 16 games, main rollouts 19, mean generated-play reward -0.0052, generated share 0.34, validity 1.000, Elo main 988, archive {'cells': 136, 'elite_cells': 69, 'plays': 366}, 174.3s
+  saving models (run 5, update 12)
+saved 11 items to checkpoints/ (55.5 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  update 13: 16 games, main rollouts 14, mean generated-play reward -0.0038, generated share 0.22, validity 1.000, Elo main 968, archive {'cells': 142, 'elite_cells': 74, 'plays': 393}, 121.5s
+  update 14: 16 games, main rollouts 38, mean generated-play reward 0.0093, generated share 0.45, validity 1.000, Elo main 966, archive {'cells': 146, 'elite_cells': 77, 'plays': 442}, 159.7s
+  saving models (run 5, update 14)
+saved 11 items to checkpoints/ (56.0 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  update 15: 16 games, main rollouts 25, mean generated-play reward 0.0072, generated share 0.31, validity 1.000, Elo main 1000, archive {'cells': 147, 'elite_cells': 82, 'plays': 499}, 167.5s
