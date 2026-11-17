@@ -50,10 +50,13 @@ def load_library(
     for sub in include:
         for path in sorted((base / sub).glob("*.yaml")):
             add(load_play_file(path), path)
+    exclude = set(lib_cfg.get("exclude_promoted") or []) if root is None else set()
     for run in promoted_runs:
         for path in sorted((base / PROMOTED_SUBDIR / f"run_{int(run)}").glob("*.yaml")):
             with open(path) as fh:
                 data = yaml.safe_load(fh)
+            if data.get("id") in exclude:
+                continue  # configs/library.yaml: exclude_promoted
             add(parse_play(adopt_promoted(data, int(run), min_cooldown), source=str(path)), path)
     return plays
 

@@ -73,7 +73,7 @@ def _game(job: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def generate(n_games: int, workers: int = 4, seed: int = 7, max_time_s: float = 60.0, chunk: int = 40,
-             base: str | None = None, root: str | Path = "data") -> Path:
+             base: str | None = None, root: str | Path = "data", horizon_s: float = 12.0) -> Path:
     """Play ``n_games`` look-ahead games against the training opponents and save every look-ahead decision."""
     import multiprocessing as mp
 
@@ -82,7 +82,7 @@ def generate(n_games: int, workers: int = 4, seed: int = 7, max_time_s: float = 
 
     lcfg = load_config("league")
     opps = [s for s in lcfg["scripted_styles"] if s not in lcfg["held_out_styles"]] + ["library"]
-    me = {"id": "lookahead", "kind": "lookahead", "record_state": True, "temperature": 0.01}
+    me = {"id": "lookahead", "kind": "lookahead", "record_state": True, "temperature": 0.01, "horizon_s": horizon_s}
     if base:
         me["base"] = team_spec(base)
     rng = np.random.default_rng(seed)

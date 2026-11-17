@@ -20,3 +20,6 @@ data/selfplay_pool_v3/
 data/selfplay_pool_v4/
 data/heldout_reference_pool_v4/
 data/trial_critic_pool_v*/
+data/selfplay_pool_v5/
+data/heldout_reference_pool_v5/
+data/models_archive/

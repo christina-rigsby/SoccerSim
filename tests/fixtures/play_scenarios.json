@@ -102,12 +102,12 @@
         0
       ]
     },
-    "end_reason": "preempted"
+    "end_reason": "step_timeout_abort"
   },
   "long_ball_to_target": {
-    "seed": 4,
+    "seed": 2,
     "scenario": {
-      "type": "mid_progression",
+      "type": "transition_win",
       "attacking_team": 0,
       "home_formation": "4-3-3",
       "away_formation": "4-3-3",
@@ -117,7 +117,7 @@
         0
       ]
     },
-    "end_reason": "preempted"
+    "end_reason": "timeout"
   },
   "low_block_box_protection": {
     "seed": 0,
@@ -147,7 +147,7 @@
         0
       ]
     },
-    "end_reason": "abort"
+    "end_reason": "completed"
   },
   "one_two_wall_pass": {
     "seed": 3,
@@ -207,7 +207,7 @@
         0
       ]
     },
-    "end_reason": "success"
+    "end_reason": "completed"
   },
   "switch_through_keeper": {
     "seed": 21,
@@ -237,7 +237,7 @@
         0
       ]
     },
-    "end_reason": "abort"
+    "end_reason": "completed"
   },
   "through_ball_behind_high_line": {
     "seed": 7,
@@ -252,12 +252,12 @@
         0
       ]
     },
-    "end_reason": "step_timeout_abort"
+    "end_reason": "completed"
   },
   "wide_overlap_cross": {
-    "seed": 1,
+    "seed": 0,
     "scenario": {
-      "type": "mid_progression",
+      "type": "final_third_attack",
       "attacking_team": 0,
       "home_formation": "4-3-3",
       "away_formation": "4-3-3",
@@ -267,7 +267,7 @@
         0
       ]
     },
-    "end_reason": "abort"
+    "end_reason": "timeout"
   },
   "winger_checks_short": {
     "seed": 0,

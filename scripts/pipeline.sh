@@ -17,6 +17,8 @@
 #                    round-robin -> data/models/runs/run_<N>/
 #     promote        archive elites -> plays/generated_and_promoted/run_<N>/
 #     reports        everything in reports/run_<N>/ (scripts/selfplay.py reports)
+#   then: trial_data / trial_critic (critic on 12-second look-ahead trials) and an evaluation of
+#     library, selector, main and trial_critic on paired scenarios -> reports/evaluation/run_<N>_teams/
 #
 # After every training stage the models are saved to checkpoints/ and pushed (one version,
 # scripts/checkpoints.py); on a fresh machine they are restored first, so nothing trained is
@@ -63,4 +65,10 @@ step "$STATE/run_${RUN}/pretrain" $SP pretrain-generator
 step "$STATE/run_${RUN}/league"   $SP league --resume-unfinished
 step "$STATE/run_${RUN}/promote"  $SP promote --run "$RUN"
 step "$STATE/run_${RUN}/reports"  $SP reports --run "$RUN"
+# Critic trained on 12-second look-ahead trials (soccersim/selfplay/trial_critic.py), then every
+# team measured on the same paired scenarios (scripts/evaluate_teams.py).
+step "$STATE/trial_data"    python scripts/trial_critic.py generate --games "${TRIAL_GAMES:-800}" --horizon 12
+step "$STATE/trial_critic"  python scripts/trial_critic.py train
+step "$STATE/run_${RUN}/evaluation" python scripts/evaluate_teams.py --teams library selector main trial_critic \
+    --opponents styles --scenarios 20 --out "reports/evaluation/run_${RUN}_teams"
 echo PIPELINE_DONE

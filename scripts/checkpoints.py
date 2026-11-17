@@ -121,6 +121,14 @@ def restore(force: bool = False) -> bool:
     if MODELS.exists() and any(MODELS.iterdir()) and not force:
         print("data/models already exists; nothing restored (use --force to overwrite)")
         return False
+    saved_pool = json.loads((CK / "MANIFEST.json").read_text()).get("pool_fingerprint")
+    sys.path.insert(0, str(ROOT))
+    from soccersim.config import load_config as _lc
+    from soccersim.selfplay.runs import pool_fingerprint
+
+    if saved_pool and saved_pool != pool_fingerprint(_lc("league")) and not force:
+        print(f"saved models are for opponent pool {saved_pool}, not the current one; nothing restored")
+        return False
     MODELS.mkdir(parents=True, exist_ok=True)
     shutil.copytree(CK / "models", MODELS, dirs_exist_ok=True)
     if (CK / "pipeline_state").exists():

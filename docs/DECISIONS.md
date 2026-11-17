@@ -1239,3 +1239,22 @@ short-sightedness; (2) play variants tried per team (`plays/variants/`: `defensi
 pool v4 with the instincts, the adopted plays, squared-error critic loss (`critic.quick.loss:
 mse`, which beat the robust loss in the learning-curve experiment) and a longer league (30
 updates instead of 6).
+
+## D-053 · Pool v5: branchy rewrites adopted, four failing promoted plays dropped
+
+Play variants were evaluated per team against the plain library (paired, 2-minute games):
+the branchy rewrites of the five attacking plays that almost never completed gained
++0.025 ± 0.016 xG per game on 20 scenarios but −0.004 ± 0.011 on 40 fresh ones (pooled
++0.005 ± 0.009); pruning four failing promoted plays was +0.003 ± 0.014 alone and +0.029 ±
+0.011 on top of the branchy plays; the four new defensive plays were −0.014 ± 0.018. No change
+clearly helps a hand-ranked team, but the branchy plays complete far more often and the pruned
+plays never worked, so the user adopted both for retraining, where the learned selector chooses
+when to call them; the defensive plays stay a variant. Pool v5 = v4 (instincts) + version 2 of
+`one_two_wall_pass`, `third_man_combination`, `wide_overlap_cross`,
+`through_ball_behind_high_line` and `switch_of_play` + `configs/library.yaml: exclude_promoted`.
+The 12-second fair look-ahead beat the plain library by +0.140 ± 0.020 xG and the selector by
++0.034 ± 0.022 (1.5 SE), a hint that the selection ceiling was partly short-sightedness, so the
+pipeline now ends by training a critic on 12-second look-ahead trials and evaluating library,
+selector, main and that critic on paired scenarios. Pool v3 models are archived in
+`data/models_archive/pool_v3/`; `scripts/checkpoints.py restore` no longer restores models saved
+for a different pool.
