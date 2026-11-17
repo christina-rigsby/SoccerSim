@@ -14,6 +14,7 @@ from ..config import load_config
 from ..controllers.shape import shape_targets
 from ..schema.vocab import CAPABILITIES
 from .ball import gain_control
+from .fatigue import initial_fatigue, refresh_caps
 from .restarts import award_restart, kickoff
 from .state import DIRECTION, N_PER_TEAM, Ball, MatchState, team_players
 
@@ -33,6 +34,8 @@ class Scenario:
     score: tuple[int, int] = (0, 0)
     randomise_capabilities: bool = True
     overrides: dict = field(default_factory=dict)   # {"caps": {player: {cap: v}}}
+    fatigue: float | None = None         # mean starting fatigue (None: what the match minute implies)
+    cap_events: list = field(default_factory=list)  # capability changes over time (soccersim/sim/fatigue.py)
 
     def to_dict(self) -> dict:
         return {"type": self.type, "attacking_team": self.attacking_team, "home_formation": self.home_formation,
@@ -84,6 +87,10 @@ def build_state(rng: np.random.Generator, scenario: Scenario, sim_cfg: dict,
         formations=(scenario.home_formation, scenario.away_formation), ball=Ball(),
         minute0=scenario.minute, score=list(scenario.score),
     )
+    state.caps_base = caps_arr.copy()
+    state.fatigue = initial_fatigue(rng, scenario.minute, sim_cfg, scenario.fatigue)
+    state.cap_events = [dict(e) for e in scenario.cap_events]
+    refresh_caps(state, sim_cfg)
     return state
 
 

@@ -67,9 +67,9 @@ SIMPLE_SELECTORS = ("ball_carrier", "nearest_to_ball", "nearest_receiver", "seco
 # -- events (§4.5) --------------------------------------------------------------------
 
 EVENT_TYPES = (
-    "pass_completed", "pass_intercepted", "possession_won", "possession_lost", "shot_taken",
+    "pass_completed", "pass_intercepted", "possession_won", "possession_lost", "shot_taken", "shot_blocked",
     "goal", "goal_conceded", "ball_out", "ball_out_them_last", "foul_won", "tackle_won",
-    "goal_kick_ours", "goal_kick_theirs", "corner_ours", "throw_in_ours",
+    "goal_kick_ours", "goal_kick_theirs", "corner_ours", "throw_in_ours", "substitution",
 )
 
 # -- action vocabulary (§4.4) ---------------------------------------------------------

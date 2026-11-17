@@ -27,7 +27,7 @@ def cfg():
 
 def fresh(cfg, seed=0, typ="mid_progression"):
     rng = np.random.default_rng(seed)
-    sc = Scenario(type=typ, randomise_capabilities=False)
+    sc = Scenario(type=typ, randomise_capabilities=False, fatigue=0.0)
     st = build_state(rng, sc, cfg)
     setup_scenario(st, sc, rng, cfg)
     return st, rng

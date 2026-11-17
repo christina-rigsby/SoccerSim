@@ -147,11 +147,19 @@ def noisy_target(
     cfg: dict,
     noise_scale: float = 1.0,
 ) -> np.ndarray:
-    """Apply execution noise: angular error and length error, scaled by skill and pressure."""
+    """Apply execution noise: angular error and length error, scaled by skill and pressure.
+
+    The error has a skill part, ``base x (1 - passing) x (1 + pressure_gain x pressure)``, and a
+    pressure part every passer suffers whatever their skill, ``pressure_deg x pressure`` (and
+    ``pressure_len x pressure`` for the length): a pressed pass is rushed, so even a good passer
+    misplaces it more often. Both are scaled by the style multiplier.
+    """
     nz = cfg["pass"]["noise"]
-    mult = nz["style_multiplier"].get(style, 1.0) * noise_scale * (1.0 + nz["pressure_gain"] * pressure)
-    ang_sigma = np.deg2rad(nz["angle_base_deg"]) * (1.0 - passing) * mult
-    len_sigma = nz["speed_base"] * (1.0 - passing) * mult
+    style_mult = nz["style_multiplier"].get(style, 1.0) * noise_scale
+    mult = style_mult * (1.0 + nz["pressure_gain"] * pressure)
+    ang_sigma = np.deg2rad(nz["angle_base_deg"] * (1.0 - passing) * mult
+                           + nz.get("pressure_deg", 0.0) * pressure * style_mult)
+    len_sigma = nz["speed_base"] * (1.0 - passing) * mult + nz.get("pressure_len", 0.0) * pressure * style_mult
     delta = target - origin
     ang = rng.normal(0.0, ang_sigma)
     c, s = np.cos(ang), np.sin(ang)

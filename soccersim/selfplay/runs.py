@@ -96,6 +96,13 @@ def pool_definition(league_cfg: dict) -> dict[str, Any]:
         instincts = load_config("ranking").get("instincts")
         if instincts:
             out["instincts"] = instincts
+    if league_cfg.get("pool_version", 1) >= 6:
+        # And the simulator's laws themselves (configs/sim.yaml: passing under pressure, blocked
+        # shots, fatigue, ...): the same teams play differently under different laws (D-056).
+        from ..config import load_config
+
+        sim = json.dumps(load_config("sim"), sort_keys=True, default=str)
+        out["sim_laws"] = hashlib.sha1(sim.encode()).hexdigest()[:12]
     return out
 
 

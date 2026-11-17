@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from . import fatigue as fatigue_mod
 from .state import CAP_INDEX, MatchState
 
 
@@ -16,12 +17,21 @@ def max_speed(state: MatchState, cfg: dict) -> np.ndarray:
     mv = cfg["movement"]
     base = mv["base_speed"] + mv["pace_speed"] * state.caps[:, CAP_INDEX["pace"]]
     floor = mv["stamina_speed_floor"]
-    return base * (floor + (1.0 - floor) * state.stamina)
+    return base * (floor + (1.0 - floor) * state.stamina) * _tired(state, cfg, "speed_effect")
+
+
+def _tired(state: MatchState, cfg: dict, key: str) -> np.ndarray | float:
+    """Multiplier for long-term fatigue (soccersim/sim/fatigue.py): 1 - effect x fatigue."""
+    fc = cfg.get("fatigue") or {}
+    if not fc.get("enabled", False):
+        return 1.0
+    return 1.0 - float(fc.get(key, 0.0)) * state.fatigue
 
 
 def max_accel(state: MatchState, cfg: dict) -> np.ndarray:
     mv = cfg["movement"]
-    return mv["base_accel"] + mv["accel_gain"] * state.caps[:, CAP_INDEX["acceleration"]]
+    return (mv["base_accel"] + mv["accel_gain"] * state.caps[:, CAP_INDEX["acceleration"]]) \
+        * _tired(state, cfg, "accel_effect")
 
 
 def step_players(
@@ -78,7 +88,9 @@ def step_players(
     np.clip(state.pos[:, 0], -hl, hl, out=state.pos[:, 0])
     np.clip(state.pos[:, 1], -hw, hw, out=state.pos[:, 1])
 
-    _stamina(state, speed / np.maximum(vmax, 1e-6), cfg, dt)
+    frac = speed / np.maximum(vmax, 1e-6)
+    _stamina(state, frac, cfg, dt)
+    fatigue_mod.update(state, frac, cfg, dt)
 
 
 def _stamina(state: MatchState, frac: np.ndarray, cfg: dict, dt: float) -> None:

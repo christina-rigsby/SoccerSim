@@ -45,7 +45,7 @@ class Flight:
     intercept_point: np.ndarray | None = None
     intercept_t: float = 0.0
     offside: frozenset[int] = frozenset()
-    shot_outcome: str = ""         # goal | caught | parried_corner | off_target
+    shot_outcome: str = ""         # goal | caught | parried_corner | off_target | blocked
     xg: float = 0.0
     header: bool = False
 
@@ -96,6 +96,11 @@ class MatchState:
     stun_until: np.ndarray = field(default_factory=lambda: np.zeros(22))
     touch_cooldown: np.ndarray = field(default_factory=lambda: np.zeros(22))
     memo: dict = field(default_factory=dict)  # per-team instinct decisions (soccersim/executor/instincts.py)
+    # Fresh capabilities, long-term fatigue and scheduled capability changes (soccersim/sim/fatigue.py);
+    # ``caps`` above is recomputed from these every tick.
+    caps_base: np.ndarray | None = None
+    fatigue: np.ndarray = field(default_factory=lambda: np.zeros(22))
+    cap_events: list = field(default_factory=list)
 
     @property
     def minute(self) -> float:

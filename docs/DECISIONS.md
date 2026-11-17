@@ -1286,3 +1286,28 @@ two libraries: within the current library, run 5's selector is the best selector
 `selector_latest` / `main_latest` use the newest models. The league is back to 6 updates and the
 generator is on hold. Follow-up: give models play identities that survive library changes
 (e.g. map by play id, not position).
+
+## D-056 · Fixed laws and gradual fatigue; pool v6
+
+Diagnosis (docs/REALISM.md, `scripts/law_tests.py`) found three wrong or missing laws, fixed
+together so that one retraining covers them all:
+
+- **Pressure on the passer** now adds aim error for every passer, `pressure_deg x pressure`
+  (pressure = exp(-d / 2) for the nearest opponent at d metres), not only through the skill term.
+  A 20 m pass to a free receiver is completed 100 / 95 / 90 / 83–86% of the time with no defender
+  / one at 4 / 2 / 1 m (was 100 / 95 / 96 / 96%).
+- **Blocked shots**: an outfield defender near the line of a shot blocks it with up to 60% chance
+  (falling off as a Gaussian of the distance from the line); the ball deflects loose. In games,
+  25% of shots are now blocked (real: 20–30%).
+- **Gradual fatigue** (soccersim/sim/fatigue.py): long-term fatigue grows with the square of
+  speed and lowers top speed (up to 15%), acceleration (20%) and technique (5–15%). Scenarios start
+  with the fatigue of their match minute. Capabilities can also change over time
+  (`Scenario.cap_events`: a gradual change, or a substitution), the basis for testing adaptivity.
+
+Mechanism tests that assume fresh players use `Scenario(fatigue=0.0)`; at fatigue 0 nothing extra
+is drawn from the random stream. The pinned play fixtures were regenerated. Every team's games
+change, so the opponent pool is now v6, and from v6 on the simulator config is part of the pool
+fingerprint (`runs.pool_definition`, key `sim_laws`), so later law changes start a new lineage
+automatically. Realism scorecards now use 28 games of 5 minutes: 7 games gave 62% and 84%
+short-pass completion for the same team.
+

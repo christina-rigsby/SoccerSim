@@ -40,7 +40,8 @@ def make_play(actions, roles, phase="in_possession", done="always_never", steps_
 
 
 def run(play, scenario="mid_progression", attacking=0, seconds=4.0, seed=3):
-    r = run_play(LIB, play.id, seed, Scenario(type=scenario, attacking_team=attacking, randomise_capabilities=False),
+    r = run_play(LIB, play.id, seed, Scenario(type=scenario, attacking_team=attacking,
+                                                   randomise_capabilities=False, fatigue=0.0),
                  max_time_s=seconds, extra=play, ignore_triggers=True, env=MatchEnv())
     rec = r.forced_record(play.id)
     assert rec is not None, "forced play was not instantiated"

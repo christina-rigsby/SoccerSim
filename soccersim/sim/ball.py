@@ -170,9 +170,23 @@ def _release_shot(state: MatchState, shooter: int, cmd: BallCommand, cfg: dict, 
     outcome = shots_mod.sample_outcome(rng, p_goal, cfg)
     tgt_f = shots_mod.shot_target(rng, outcome, pos_f, gk_f, cmd.placement)
     target = d * tgt_f
-    dist = float(np.hypot(*(target - state.pos[shooter])))
+    # Outfield defenders in the line can block the shot; the first one to get a block stops it.
+    outfield = [o for o in opp if state.kinds[o] != "GK"]
+    blocker = -1
+    if not header and outfield:
+        p_block = shots_mod.block_probabilities(state.pos[shooter], target, state.pos[outfield], cfg)
+        unit = (target - state.pos[shooter]) / max(float(np.hypot(*(target - state.pos[shooter]))), 1e-6)
+        for j in np.argsort((state.pos[outfield] - state.pos[shooter]) @ unit):
+            if p_block[j] > 0 and rng.random() < p_block[j]:
+                blocker = outfield[j]
+                break
     speed = cfg["shot"]["shot_speed"]
-    flight = Flight(kind="shot", team=team, passer=shooter, receiver=-1, style="shot", target=target,
+    if blocker >= 0:
+        outcome = "blocked"
+        unit = (target - state.pos[shooter]) / max(float(np.hypot(*(target - state.pos[shooter]))), 1e-6)
+        target = state.pos[shooter] + unit * float((state.pos[blocker] - state.pos[shooter]) @ unit)
+    dist = float(np.hypot(*(target - state.pos[shooter])))
+    flight = Flight(kind="shot", team=team, passer=shooter, receiver=blocker, style="shot", target=target,
                     release_t=state.t, air=False, duration=max(dist / speed, 0.1), shot_outcome=outcome,
                     xg=float(xg_v), header=header)
     emit(state, "shot_taken", team, shooter, state.pos[shooter], xg=round(float(xg_v), 4), outcome=outcome,
@@ -211,7 +225,7 @@ def step_ball(state: MatchState, cfg: dict, rng: np.random.Generator, dt: float)
     if fl is not None and fl.kind == "shot":
         ball.pos = ball.pos + ball.vel * dt
         if t_rel >= fl.duration:
-            _resolve_shot(state, fl, cfg)
+            _resolve_shot(state, fl, cfg, rng)
         return
 
     if fl is not None and fl.air and ball.height == "air":
@@ -323,10 +337,25 @@ def _resolve_landing(state: MatchState, fl: Flight, cfg: dict, rng: np.random.Ge
         state.touch_cooldown[winner] = state.t + 0.4
 
 
-def _resolve_shot(state: MatchState, fl: Flight, cfg: dict) -> None:
+def _resolve_shot(state: MatchState, fl: Flight, cfg: dict, rng: np.random.Generator) -> None:
     team = fl.team
     other = 1 - team
-    if fl.shot_outcome == "goal":
+    if fl.shot_outcome == "blocked":
+        # The ball deflects off the blocker and runs loose, mostly back the way it came.
+        blocker = fl.receiver
+        emit(state, "shot_blocked", other, blocker, state.pos[blocker])
+        back = -state.ball.vel / max(float(np.hypot(*state.ball.vel)), 1e-6)
+        ang = rng.normal(0.0, 0.9)
+        c, s = np.cos(ang), np.sin(ang)
+        d = np.array([c * back[0] - s * back[1], s * back[0] + c * back[1]])
+        state.ball.pos = state.pos[blocker] + d * 0.6
+        state.ball.vel = d * rng.uniform(3.0, 9.0)
+        state.ball.flight = None
+        state.ball.last_touch_team = other
+        state.ball.last_touch_player = blocker
+        state.touch_cooldown[blocker] = state.t + 0.3
+        state.possession = None
+    elif fl.shot_outcome == "goal":
         state.score[team] += 1
         emit(state, "goal", team, fl.passer)
         emit(state, "goal_conceded", other, fl.passer)

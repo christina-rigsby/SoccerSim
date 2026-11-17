@@ -71,6 +71,28 @@ def sample_outcome(rng: np.random.Generator, p_goal: float, cfg: dict) -> str:
     return "off_target"
 
 
+def block_probabilities(shooter: np.ndarray, target: np.ndarray, defenders: np.ndarray, cfg: dict) -> np.ndarray:
+    """Chance that each outfield defender blocks a shot from ``shooter`` towards ``target``.
+
+    Only defenders between the shooter (beyond ``min_dist`` m) and the target can block. A
+    defender standing on the line blocks with ``max_prob``; the chance falls off with the lateral
+    distance from the line as a Gaussian of width ``width_m + width_per_m x`` distance from the
+    shooter (further away there is more time to react, so a slightly wider reach).
+    """
+    bc = (cfg.get("shot") or {}).get("block") or {}
+    if not bc.get("enabled", False) or len(defenders) == 0:
+        return np.zeros(len(defenders))
+    line = target - shooter
+    length = float(np.hypot(*line))
+    unit = line / max(length, 1e-6)
+    rel = np.asarray(defenders, float) - shooter
+    along = rel @ unit
+    lateral = np.abs(rel[:, 0] * unit[1] - rel[:, 1] * unit[0])
+    width = bc.get("width_m", 0.6) + bc.get("width_per_m", 0.04) * along
+    p = bc.get("max_prob", 0.6) * np.exp(-0.5 * (lateral / np.maximum(width, 1e-3)) ** 2)
+    return np.where((along > bc.get("min_dist", 1.0)) & (along < length - 0.5), p, 0.0)
+
+
 def shot_target(rng: np.random.Generator, outcome: str, shooter: np.ndarray, gk: np.ndarray | None,
                 placement: str) -> np.ndarray:
     """Where the ball goes for a sampled outcome (shooter frame)."""

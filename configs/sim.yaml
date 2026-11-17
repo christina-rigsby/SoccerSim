@@ -25,6 +25,27 @@ stamina:
   drain_per_s: 0.012         # at full sprint, scaled by (1.2 - stamina capability)
   recover_per_s: 0.004
 
+# Long-term fatigue (soccersim/sim/fatigue.py): capabilities degrade gradually with work.
+fatigue:
+  enabled: true
+  rate: 0.0024               # per second at top speed, x (1.2 - stamina capability) x (speed / top speed)^2
+  recover_per_s: 0.0001      # while walking (below rest_frac of top speed)
+  rest_frac: 0.3
+  start_per_minute: 0.0035   # a scenario at match minute m starts with fatigue ~ m x this (x 0.7-1.3 per player)
+  speed_effect: 0.15         # at fatigue 1, top speed is 15% lower (physics.max_speed)
+  accel_effect: 0.20         # and acceleration 20% lower (physics.max_accel)
+  effect:                    # at fatigue 1 each technical capability is reduced by this fraction
+    passing: 0.12
+    crossing: 0.12
+    first_touch: 0.12
+    dribbling: 0.15
+    finishing: 0.15
+    tackling: 0.15
+    aerial: 0.15
+    positioning: 0.10
+    composure: 0.10
+    vision: 0.05
+
 ball:
   friction: 2.5              # ground deceleration, m/s^2
   gravity: 9.81
@@ -53,6 +74,8 @@ pass:
     angle_base_deg: 7.0      # angular sigma = base * (1 - passing) * (1 + pressure_gain * pressure)
     speed_base: 0.10         # relative speed sigma, same scaling
     pressure_gain: 1.0
+    pressure_deg: 10.0       # + pressure_deg x pressure for every passer (a rushed pass; pressure = exp(-d / 2))
+    pressure_len: 0.15       # + pressure_len x pressure on the relative length error
     style_multiplier: {ground: 1.0, driven: 1.2, through: 1.3, lofted: 1.6, whipped: 1.5, driven_low: 1.3, clear: 2.5}
 
 control:
@@ -93,6 +116,12 @@ shot:
   on_target_prob: 0.55       # of non-goals, fraction on target
   corner_from_save: 0.35
   shot_speed: 26.0
+  block:                     # outfield defenders in the line can block a shot (shots.block_probabilities)
+    enabled: true
+    max_prob: 0.6            # a defender standing on the line
+    width_m: 0.6             # Gaussian reach either side of the line, + width_per_m x distance from the shooter
+    width_per_m: 0.04
+    min_dist: 1.0            # nearer than this the defender cannot get in the way
   max_range: 35.0
 
 restarts:

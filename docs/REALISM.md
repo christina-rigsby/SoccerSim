@@ -10,7 +10,41 @@ Scorecard: `python scripts/realism_report.py --team selector` (continuous games 
 style, per team per 90 minutes, next to approximate real-football ranges); latest in
 `reports/realism/<team>/`.
 
-## Scorecard of the best selector (pool v5, 35 simulated minutes)
+Isolated law tests: `python scripts/law_tests.py` (one factor at a time, no teams or plays).
+
+## Law fixes made (D-056, pool v6)
+
+| Law | Before | After (`scripts/law_tests.py`) |
+|---|---|---|
+| Pressure on the passer: aim error for every passer, `pressure_deg x pressure` (configs/sim.yaml `pass.noise`) | 20 m pass to a free receiver: 100 / 95 / 96 / 96% completed with no defender / a defender at 4 / 2 / 1 m (the drop came only from the defender chasing the ball, the same at every distance) | 100 / 95 / 90 / 83–86% |
+| Blocked shots: an outfield defender near the line of a shot can block it; the ball runs loose (`shot.block`) | never blocked: a 16 m central shot scored 17 / 15 / 13% with 0 / 1 / 3 defenders in the line | blocked 0 / 26–32 / 49–57%; goals 11–16 / 7–10 / 4% |
+| Gradual fatigue: capabilities degrade with work, `rate x (1.2 - stamina capability) x (speed / top speed)^2` per second; top speed and acceleration fall by up to 15% and 20%, technique by 5–15% (`fatigue`, soccersim/sim/fatigue.py) | only the short-term stamina: sprinting lowered top speed to 85% at most, recovered within a minute, and jogging cost nothing | shuttle sprints: top speed 95 / 81 / 74% after 1 / 5 / 15 minutes; half speed: 100 / 99 / 97% |
+
+Scenarios now start with the fatigue their match minute implies (about 0.0035 per minute, varying
+by player), and capabilities can change over time: a gradual change of any capability, or a
+substitution (a fresh player with new capabilities in that slot), set by `Scenario.cap_events`.
+
+## Scorecard of the best selector under the new laws
+
+28 continuous games of 5 minutes (140 simulated minutes) against every style; the selector was
+trained under the old laws, so behaviour (how often it shoots, how much it runs) has not adapted
+yet. Earlier scorecards used 7 games, which proved far too few: two 7-game samples of the same
+team gave 62% and 84% short-pass completion.
+
+| Measure | Simulation | Real (approx.) | Cause |
+|---|---|---|---|
+| Pass completion (every pass played) | 66% (71% without the pressure law, 67% with neither pressure nor fatigue) | 75–85% | to inspect: likely behaviour (the carrier instinct passes when the pass succeeds at least 55% of the time) and congestion |
+| Short passes (< 15 m) | 68% | 85–92% | same |
+| Long passes (≥ 30 m) | 46% | 50–62% | about right |
+| Completion drop when pressed (opponent < 2 m) | 2 points | 5–15 points | the law now gives 10–15 points in isolation (above); in games, passes under pressure are mostly short and safe |
+| Shots / goals | 94 / 5.8 (were 98 / 13) | 10–15 / 1.2–1.6 | behaviour: the selector shoots constantly; retraining under blocked shots should reduce it |
+| Shots blocked | 25% | 20–30% | fine |
+| xG per shot | 0.06 | 0.09–0.12 | behaviour: many speculative shots |
+| Distance per outfield player | 205 m/min | 105–125 m/min | behaviour (shape and pressing movement); running now costs fatigue |
+| Fatigue built up per 90 minutes | 1.03 | ~0.3–0.5 at real work rates | follows from the running |
+| Tackles won / fouls / ball out (match) | 31 / 18 / 144 | 8–15 / 9–13 / 70–100 | to inspect |
+
+## Scorecard of the best selector (pool v5, old laws, 35 simulated minutes; too small a sample)
 
 | Measure | Simulation | Real (approx.) | Cause |
 |---|---|---|---|
@@ -41,8 +75,8 @@ ones and missed passes lost on the first touch or out of play.
    through a crowded box is as likely to score as one through an empty one. **Wrong law**: real
    teams block roughly a quarter of shots.
 
-## Planned fixes (batched with fatigue and substitutions, then one retraining)
+## Still to inspect
 
-- Pressure adds aim error for every passer, not only weak ones.
-- Shots can be blocked by outfield defenders in the shooting cone near the ball.
-- Fatigue: capabilities degrade gradually with effort, so constant running has a cost.
+- Pass completion, especially short passes: which failures (interceptions, first touch, out of
+  play) and whether the carrier instinct's pass threshold is the cause.
+- Tackles, fouls and balls out of play, all well above real counts.

@@ -116,7 +116,7 @@ def _mini(steps, success=None, abort=None, max_s=10.0):
 
 
 def _run(play, seconds=6.0):
-    r = run_play(LIB, play.id, 2, Scenario(type="mid_progression", randomise_capabilities=False),
+    r = run_play(LIB, play.id, 2, Scenario(type="mid_progression", randomise_capabilities=False, fatigue=0.0),
                  max_time_s=seconds, extra=play, ignore_triggers=True, env=MatchEnv())
     return r.forced_record(play.id)
 
@@ -169,7 +169,8 @@ def test_possession_change_ends_possession_plays():
     play = _mini([{"id": "a", "actions": [{"role": "R1", "type": "pass", "to": {"anchor": "own_goal",
                                                                                "offset": [80, 30]}}],
                    "done_when": {"elapsed_s": {"gt": 99}}, "timeout_s": 50}])
-    r = run_play(LIB, "mini", 2, Scenario(type="mid_progression", randomise_capabilities=False), max_time_s=12,
+    r = run_play(LIB, "mini", 2, Scenario(type="mid_progression", randomise_capabilities=False, fatigue=0.0),
+                 max_time_s=12,
                  extra=play, ignore_triggers=True, env=MatchEnv())
     rec = r.forced_record("mini")
     assert rec["end_reason"] in ("possession_change", "timeout")

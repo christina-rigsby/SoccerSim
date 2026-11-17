@@ -1,6 +1,6 @@
 """Realism scorecard: how a team's games compare with real football (a diagnostic, not a target).
 
-    python scripts/realism_report.py                       # best selector v every style, 6 x 5 min
+    python scripts/realism_report.py                       # best selector v every style, 28 x 5 min
     python scripts/realism_report.py --team lookahead_fast --games 12 --minutes 5
 
 Plays continuous games (no stop at turnovers or goals) with full tracking and reports, per team
@@ -30,7 +30,11 @@ REAL = {
     "pass_completion_long": (0.50, 0.62), "pressure_drop": (0.05, 0.15), "shots": (10, 15), "goals": (1.2, 1.6),
     "xg_per_shot": (0.09, 0.12), "tackles_won": (8, 15), "fouls": (9, 13), "ball_out_match": (70, 100),
     "distance_m_per_min": (105, 125), "share_above_4ms": (0.12, 0.20), "share_sprint": (0.01, 0.03),
-    "top_speed": (8.5, 10.0),
+    "top_speed": (8.5, 10.0), "shots_blocked_share": (0.20, 0.30),
+    # Fatigue an outfield player builds up over 90 minutes (soccersim/sim/fatigue.py). Not a real
+    # measurement: the law is set so that real work rates (105-125 m/min, little sprinting) would
+    # give roughly 0.3-0.5; more running gives more.
+    "fatigue_per_90": (0.3, 0.5),
 }
 
 
@@ -58,6 +62,7 @@ def _game(job: dict) -> dict:
     E.release = release
     env = MatchEnv(randomise=True, record_frames=True)
     env.reset(job["seed"], Scenario())
+    f0 = env.state.fatigue.copy()
     me = make_policy(team_spec(job["team"]), lib, np.random.default_rng(job["seed"] + 1))
     opp = make_policy(team_spec(job["opp"]), lib, np.random.default_rng(job["seed"] + 2))
     res = env.run(me, opp, max_time_s=job["seconds"], stop_on_goal=False, stop_on_turnover=False)
@@ -74,10 +79,12 @@ def _game(job: dict) -> dict:
     sp = np.linalg.norm(np.diff(pos, axis=0), axis=2) * 10.0
     out_idx = [i for i in range(11) if env.state.kinds[i] != "GK"]
     sp_o = sp[:, out_idx]
+    blocked = sum(1 for e in res.events if e["type"] == "shot_blocked" and e.get("team") == 1)
+    fat = float(np.mean(env.state.fatigue[out_idx] - f0[out_idx]))
     return {"seconds": res.duration_s, "passes": passes, "ev": dict(ours), "outs": outs, "xg": xg,
             "dist_per_min": float(np.median(sp_o.sum(axis=0) / 10.0) / (res.duration_s / 60)),
             "above4": float((sp_o >= 4).mean()), "sprint": float((sp_o >= 7).mean()),
-            "top_speed": float(np.percentile(sp_o, 99.9))}
+            "top_speed": float(np.percentile(sp_o, 99.9)), "blocked": blocked, "fatigue_gain": fat}
 
 
 def report(team: str, games: int, minutes: float, workers: int, seed: int) -> dict:
@@ -112,6 +119,8 @@ def report(team: str, games: int, minutes: float, workers: int, seed: int) -> di
         "share_above_4ms": float(np.mean([r["above4"] for r in rs])),
         "share_sprint": float(np.mean([r["sprint"] for r in rs])),
         "top_speed": float(np.max([r["top_speed"] for r in rs])),
+        "shots_blocked_share": sum(r["blocked"] for r in rs) / max(ev["shot_taken"], 1),
+        "fatigue_per_90": float(np.mean([r["fatigue_gain"] / r["seconds"] for r in rs]) * 5400),
     }
     return {"team": team, "games": games, "minutes": mins, "measures": m}
 
@@ -123,7 +132,7 @@ def markdown(rep: dict) -> str:
              "| Measure | Simulation | Real (approx.) | |", "|---|---|---|---|"]
     for k, v in rep["measures"].items():
         lo, hi = REAL[k]
-        pct = k.startswith(("pass_completion", "pressure_drop", "share_"))
+        pct = k.startswith(("pass_completion", "pressure_drop", "share_", "shots_blocked"))
         fmt = (lambda x: f"{x:.0%}") if pct else (lambda x: f"{x:.2f}" if x < 10 else f"{x:.0f}")
         flag = "" if v is None else ("ok" if lo <= v <= hi else ("high" if v > hi else "low"))
         lines.append(f"| {k} | {'—' if v is None else fmt(v)} | {fmt(lo)}–{fmt(hi)} | {flag} |")
@@ -133,7 +142,7 @@ def markdown(rep: dict) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--team", default="selector")
-    ap.add_argument("--games", type=int, default=7)
+    ap.add_argument("--games", type=int, default=28)
     ap.add_argument("--minutes", type=float, default=5.0)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--seed", type=int, default=500)
