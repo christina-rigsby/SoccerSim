@@ -199,3 +199,43 @@ critic A/B {"without_critic": {"mean_play_reward": 0.009395470817120622, "mean_e
   critic epoch 7: test MSE 0.009987 vs per-play baseline 0.010064, success acc 0.761
   critic epoch 8: test MSE 0.009979 vs per-play baseline 0.010064, success acc 0.761
   response epoch 1: opp-play acc 0.605 (majority 0.345), event BCE 0.1411 (base rate 0.2168)
+  response epoch 2: opp-play acc 0.647 (majority 0.345), event BCE 0.1244 (base rate 0.2168)
+  response epoch 3: opp-play acc 0.642 (majority 0.345), event BCE 0.1206 (base rate 0.2168)
+  response epoch 4: opp-play acc 0.652 (majority 0.345), event BCE 0.1192 (base rate 0.2168)
+  response epoch 5: opp-play acc 0.651 (majority 0.345), event BCE 0.1171 (base rate 0.2168)
+  response epoch 6: opp-play acc 0.658 (majority 0.345), event BCE 0.1130 (base rate 0.2168)
+  saving models (selector iteration 1)
+saved 6 items to checkpoints/ (4.5 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  selector iteration 1: 300 games (epsilon 0.20), mean play reward +0.0034, goals 3-5, shots 139; refit MSE 0.009979 vs per-play 0.010064
+  critic epoch 1: test MSE 0.011657 vs per-play baseline 0.011579, success acc 0.759
+  critic epoch 2: test MSE 0.011845 vs per-play baseline 0.011579, success acc 0.759
+  critic epoch 3: test MSE 0.011774 vs per-play baseline 0.011579, success acc 0.761
+  critic epoch 4: test MSE 0.011872 vs per-play baseline 0.011579, success acc 0.763
+  critic epoch 5: test MSE 0.011876 vs per-play baseline 0.011579, success acc 0.763
+  critic epoch 6: test MSE 0.011749 vs per-play baseline 0.011579, success acc 0.760
+  critic epoch 7: test MSE 0.011769 vs per-play baseline 0.011579, success acc 0.757
+  critic epoch 8: test MSE 0.011902 vs per-play baseline 0.011579, success acc 0.763
+  response epoch 1: opp-play acc 0.635 (majority 0.350), event BCE 0.1367 (base rate 0.2211)
+  response epoch 2: opp-play acc 0.646 (majority 0.350), event BCE 0.1266 (base rate 0.2211)
+  response epoch 3: opp-play acc 0.647 (majority 0.350), event BCE 0.1266 (base rate 0.2211)
+  response epoch 4: opp-play acc 0.665 (majority 0.350), event BCE 0.1226 (base rate 0.2211)
+  response epoch 5: opp-play acc 0.661 (majority 0.350), event BCE 0.1210 (base rate 0.2211)
+  response epoch 6: opp-play acc 0.665 (majority 0.350), event BCE 0.1201 (base rate 0.2211)
+  saving models (selector iteration 2)
+saved 6 items to checkpoints/ (4.5 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  selector iteration 2: 300 games (epsilon 0.15), mean play reward +0.0117, goals 9-0, shots 139; refit MSE 0.011902 vs per-play 0.011579
+  critic epoch 1: test MSE 0.009024 vs per-play baseline 0.008933, success acc 0.768
+  critic epoch 2: test MSE 0.008964 vs per-play baseline 0.008933, success acc 0.766
+  critic epoch 3: test MSE 0.009193 vs per-play baseline 0.008933, success acc 0.767
+  critic epoch 4: test MSE 0.009032 vs per-play baseline 0.008933, success acc 0.766
+  critic epoch 5: test MSE 0.008954 vs per-play baseline 0.008933, success acc 0.767
+  critic epoch 6: test MSE 0.008997 vs per-play baseline 0.008933, success acc 0.767
+  critic epoch 7: test MSE 0.008967 vs per-play baseline 0.008933, success acc 0.767
+  critic epoch 8: test MSE 0.009005 vs per-play baseline 0.008933, success acc 0.767
+  response epoch 1: opp-play acc 0.648 (majority 0.341), event BCE 0.1276 (base rate 0.2122)
+  response epoch 2: opp-play acc 0.646 (majority 0.341), event BCE 0.1252 (base rate 0.2122)
+  response epoch 3: opp-play acc 0.643 (majority 0.341), event BCE 0.1216 (base rate 0.2122)
+  response epoch 4: opp-play acc 0.658 (majority 0.341), event BCE 0.1195 (base rate 0.2122)
+  response epoch 5: opp-play acc 0.667 (majority 0.341), event BCE 0.1125 (base rate 0.2122)
