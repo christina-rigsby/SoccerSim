@@ -6313,3 +6313,5 @@ committed and pushed to claude/friendly-gates-4kjgu7
 }
 == reports: done 10:30:32
 == trial_data: start 10:30:32
+  chunk 0: 40 games, 369 decisions, 720s
+  chunk 1: 40 games, 300 decisions, 565s
