@@ -175,3 +175,27 @@ committed and pushed to claude/friendly-gates-4kjgu7
 critic A/B {"without_critic": {"mean_play_reward": 0.009395470817120622, "mean_epv_delta": 0.0034888678643333307, "plays": 257, "shots": 10}, "with_critic": {"mean_play_reward": 0.009417583333333333, "mean_epv_delta": 0.0034052928889387202, "plays": 252, "shots": 10}, "improves": true}
 == critic_ab: done 05:17:20
 == selector: start 05:17:20
+  critic epoch 1: test MSE 0.013310 vs per-play baseline 0.013246, success acc 0.757
+  critic epoch 2: test MSE 0.013415 vs per-play baseline 0.013246, success acc 0.760
+  critic epoch 3: test MSE 0.013248 vs per-play baseline 0.013246, success acc 0.760
+  critic epoch 4: test MSE 0.013247 vs per-play baseline 0.013246, success acc 0.762
+  critic epoch 5: test MSE 0.013294 vs per-play baseline 0.013246, success acc 0.760
+  critic epoch 6: test MSE 0.013351 vs per-play baseline 0.013246, success acc 0.759
+  critic epoch 7: test MSE 0.013507 vs per-play baseline 0.013246, success acc 0.762
+  critic epoch 8: test MSE 0.013321 vs per-play baseline 0.013246, success acc 0.762
+  response epoch 1: opp-play acc 0.611 (majority 0.353), event BCE 0.1360 (base rate 0.2164)
+  response epoch 2: opp-play acc 0.636 (majority 0.353), event BCE 0.1271 (base rate 0.2164)
+  response epoch 3: opp-play acc 0.650 (majority 0.353), event BCE 0.1232 (base rate 0.2164)
+  response epoch 4: opp-play acc 0.639 (majority 0.353), event BCE 0.1208 (base rate 0.2164)
+  response epoch 5: opp-play acc 0.647 (majority 0.353), event BCE 0.1207 (base rate 0.2164)
+  response epoch 6: opp-play acc 0.644 (majority 0.353), event BCE 0.1190 (base rate 0.2164)
+  selector iteration 0: value model fitted on Phase A (60000 rows), held-out MSE 0.013321 vs per-play 0.013246
+  critic epoch 1: test MSE 0.009990 vs per-play baseline 0.010064, success acc 0.757
+  critic epoch 2: test MSE 0.010029 vs per-play baseline 0.010064, success acc 0.760
+  critic epoch 3: test MSE 0.010044 vs per-play baseline 0.010064, success acc 0.758
+  critic epoch 4: test MSE 0.010153 vs per-play baseline 0.010064, success acc 0.761
+  critic epoch 5: test MSE 0.010065 vs per-play baseline 0.010064, success acc 0.760
+  critic epoch 6: test MSE 0.010039 vs per-play baseline 0.010064, success acc 0.761
+  critic epoch 7: test MSE 0.009987 vs per-play baseline 0.010064, success acc 0.761
+  critic epoch 8: test MSE 0.009979 vs per-play baseline 0.010064, success acc 0.761
+  response epoch 1: opp-play acc 0.605 (majority 0.345), event BCE 0.1411 (base rate 0.2168)
