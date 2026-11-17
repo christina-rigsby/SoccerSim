@@ -6351,3 +6351,4 @@ data/trial_critic_pool_v5
 == trial_critic: done 14:06:28
 == evaluation: start 14:06:28
 4 teams x 7 opponents x 20 scenarios x 2 sides = 1120 games
+  500/1120 episodes, 26218 decisions, 2791s wall, 21x real time
