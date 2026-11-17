@@ -3,5 +3,8 @@
   "critic_trained": "2026-11-17 05:16",
   "data_root": "/home/user/SoccerSim/data/selfplay_pool_v5",
   "critic_pool_fingerprint": "e72d5071eb0e",
-  "critic_pool_version": 5
+  "critic_pool_version": 5,
+  "generator_trained": "2026-11-17 08:20",
+  "generator_pool_fingerprint": "e72d5071eb0e",
+  "generator_pool_version": 5
 }
