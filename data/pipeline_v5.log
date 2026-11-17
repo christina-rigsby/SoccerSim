@@ -6332,3 +6332,22 @@ committed and pushed to claude/friendly-gates-4kjgu7
   chunk 16: 40 games, 336 decisions, 620s
   chunk 17: 40 games, 299 decisions, 568s
   chunk 18: 40 games, 378 decisions, 655s
+  chunk 19: 40 games, 301 decisions, 519s
+data/trial_critic_pool_v5
+== trial_data: done 13:59:05
+== trial_critic: start 13:59:05
+  epoch 1: picks the trials' best 37.3% (base ranking 38.4%, chance 37.5%); trial value lost 0.0251 (base ranking 0.0272)
+  epoch 2: picks the trials' best 36.0% (base ranking 38.4%, chance 37.5%); trial value lost 0.0252 (base ranking 0.0272)
+  epoch 3: picks the trials' best 37.6% (base ranking 38.4%, chance 37.5%); trial value lost 0.0249 (base ranking 0.0272)
+  epoch 4: picks the trials' best 37.2% (base ranking 38.4%, chance 37.5%); trial value lost 0.0254 (base ranking 0.0272)
+  epoch 5: picks the trials' best 37.3% (base ranking 38.4%, chance 37.5%); trial value lost 0.0253 (base ranking 0.0272)
+  epoch 6: picks the trials' best 38.7% (base ranking 38.4%, chance 37.5%); trial value lost 0.0231 (base ranking 0.0272)
+  epoch 7: picks the trials' best 38.8% (base ranking 38.4%, chance 37.5%); trial value lost 0.0246 (base ranking 0.0272)
+  epoch 8: picks the trials' best 36.5% (base ranking 38.4%, chance 37.5%); trial value lost 0.0238 (base ranking 0.0272)
+  epoch 9: picks the trials' best 37.2% (base ranking 38.4%, chance 37.5%); trial value lost 0.0253 (base ranking 0.0272)
+  epoch 10: picks the trials' best 37.3% (base ranking 38.4%, chance 37.5%); trial value lost 0.0231 (base ranking 0.0272)
+  epoch 11: picks the trials' best 40.7% (base ranking 38.4%, chance 37.5%); trial value lost 0.0215 (base ranking 0.0272)
+  epoch 12: picks the trials' best 37.6% (base ranking 38.4%, chance 37.5%); trial value lost 0.0213 (base ranking 0.0272)
+== trial_critic: done 14:06:28
+== evaluation: start 14:06:28
+4 teams x 7 opponents x 20 scenarios x 2 sides = 1120 games
