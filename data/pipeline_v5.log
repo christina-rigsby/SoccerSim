@@ -239,3 +239,51 @@ committed and pushed to claude/friendly-gates-4kjgu7
   response epoch 3: opp-play acc 0.643 (majority 0.341), event BCE 0.1216 (base rate 0.2122)
   response epoch 4: opp-play acc 0.658 (majority 0.341), event BCE 0.1195 (base rate 0.2122)
   response epoch 5: opp-play acc 0.667 (majority 0.341), event BCE 0.1125 (base rate 0.2122)
+  response epoch 6: opp-play acc 0.667 (majority 0.341), event BCE 0.1128 (base rate 0.2122)
+  saving models (selector iteration 3)
+saved 6 items to checkpoints/ (4.5 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  selector iteration 3: 300 games (epsilon 0.10), mean play reward +0.0053, goals 4-2, shots 142; refit MSE 0.009005 vs per-play 0.008933
+  critic epoch 1: test MSE 0.009179 vs per-play baseline 0.009117, success acc 0.774
+  critic epoch 2: test MSE 0.009182 vs per-play baseline 0.009117, success acc 0.774
+  critic epoch 3: test MSE 0.009249 vs per-play baseline 0.009117, success acc 0.774
+  critic epoch 4: test MSE 0.009064 vs per-play baseline 0.009117, success acc 0.774
+  critic epoch 5: test MSE 0.009061 vs per-play baseline 0.009117, success acc 0.774
+  critic epoch 6: test MSE 0.009104 vs per-play baseline 0.009117, success acc 0.773
+  critic epoch 7: test MSE 0.009022 vs per-play baseline 0.009117, success acc 0.774
+  critic epoch 8: test MSE 0.009077 vs per-play baseline 0.009117, success acc 0.753
+  response epoch 1: opp-play acc 0.610 (majority 0.339), event BCE 0.1339 (base rate 0.2169)
+  response epoch 2: opp-play acc 0.644 (majority 0.339), event BCE 0.1278 (base rate 0.2169)
+  response epoch 3: opp-play acc 0.649 (majority 0.339), event BCE 0.1193 (base rate 0.2169)
+  response epoch 4: opp-play acc 0.651 (majority 0.339), event BCE 0.1160 (base rate 0.2169)
+  response epoch 5: opp-play acc 0.670 (majority 0.339), event BCE 0.1127 (base rate 0.2169)
+  response epoch 6: opp-play acc 0.658 (majority 0.339), event BCE 0.1150 (base rate 0.2169)
+  saving models (selector iteration 4)
+saved 6 items to checkpoints/ (4.5 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+  selector iteration 4: 300 games (epsilon 0.05), mean play reward +0.0052, goals 7-6, shots 115; refit MSE 0.009077 vs per-play 0.009117
+{
+  "iteration": 4,
+  "epsilon": 0.05,
+  "games": 300,
+  "mean_play_reward": 0.005208877998629198,
+  "shots": 115,
+  "goals_for": 7,
+  "goals_against": 6,
+  "fit": {
+    "rows": 60000,
+    "mse": 0.009076748974621296,
+    "baseline_mse": 0.009117096662521362,
+    "mean_mse": 0.009652490727603436
+  },
+  "wall_s": 1673.3
+}
+== selector: done 07:26:37
+saved 6 items to checkpoints/ (4.5 MB)
+committed and pushed to claude/friendly-gates-4kjgu7
+== pretrain: start 07:26:39
+  BC examples from logs: 12000
+  earlier promoted plays: 23 from runs [1, 2, 3, 4]
+  mutation filtering: 407 plays evaluated, 251 survivors (178 from earlier promoted plays)
+  BC epoch 1: loss 0.615, held-out token acc 0.991
+  BC epoch 2: loss 0.075, held-out token acc 0.992
