@@ -26,7 +26,8 @@ def run_job(job: dict[str, Any]) -> dict[str, Any]:
 
     ``job`` keys: episode_id, seed, scenario (dict), home, away (policy specs), randomise,
     max_time_s, save_tracking, sim_overrides (optional dict merged into the sim config),
-    stop_on_goal / stop_on_turnover (default true; false for continuous evaluation games).
+    stop_on_goal / stop_on_turnover (default true; false for continuous evaluation games),
+    keep_events (extra event types to return besides shots and goals).
     """
     lib = _library()
     seed = int(job["seed"])
@@ -65,7 +66,8 @@ def run_job(job: dict[str, Any]) -> dict[str, Any]:
         out["success_clips"] = generated_success_clips(res, job)
     out["plays"] = [{k: p.get(k) for k in ("play_id", "source", "team", "reward", "end_reason", "t_start",
                                            "steps_visited", "play_yaml", "state", "side")} for p in res.plays]
-    out["events"] = [e for e in res.events if e["type"] in ("shot_taken", "goal")]
+    keep = ("shot_taken", "goal", *job.get("keep_events", ()))
+    out["events"] = [e for e in res.events if e["type"] in keep]
     return out
 
 
