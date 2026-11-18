@@ -1,10 +1,7 @@
 {
   "profile": "quick",
-  "critic_trained": "2026-11-18 02:21",
-  "data_root": "/home/user/SoccerSim/data/selfplay_pool_v6",
-  "critic_pool_fingerprint": "47acc80e75d0",
-  "critic_pool_version": 6,
-  "generator_trained": "2026-11-18 06:13",
-  "generator_pool_fingerprint": "47acc80e75d0",
-  "generator_pool_version": 6
+  "critic_trained": "2026-11-18 21:36",
+  "data_root": "/home/user/SoccerSim/data/selfplay_pool_v7",
+  "critic_pool_fingerprint": "7ee8108a2ba6",
+  "critic_pool_version": 7
 }
