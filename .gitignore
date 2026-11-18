@@ -29,3 +29,4 @@ data/trial_critic_pool_v6/
 data/objective_queue.log
 data/expert_pool_v6/
 data/expert_queue.log
+reports/**/games.partial.jsonl
