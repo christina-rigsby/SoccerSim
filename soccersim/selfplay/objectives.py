@@ -162,8 +162,9 @@ def trial_value(objective: str, events: list[dict[str, Any]], team: int, depv: f
     them = 1 - team
     gf = sum(1 for e in events if e["type"] == "goal" and e.get("team") == team)
     ga = sum(1 for e in events if e["type"] == "goal" and e.get("team") == them)
-    shots = [(e.get("team"), float((e.get("data") or {}).get("xg") or 0.0)) for e in events
-             if e["type"] == "shot_taken"]
+    from .rewards import shot_credit_xg
+
+    shots = [(e.get("team"), shot_credit_xg(e)) for e in events if e["type"] == "shot_taken"]  # blocked: 0
     xgf = sum(x for t, x in shots if t == team)
     xga = sum(x for t, x in shots if t == them)
     shaping = 0.2 * depv

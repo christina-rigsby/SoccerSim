@@ -58,6 +58,7 @@ from ..config import load_config
 from ..dashboard.team_state import TeamView
 from ..executor.instance import PlayInstance
 from ..schema.models import Play
+from ..selfplay.rewards import shot_credit_xg
 from .selector import Candidate, RankingPolicy
 
 REAL_DECISIONS = ("start", "play_end", "possession_change", "restart")
@@ -177,7 +178,7 @@ class LookaheadPolicy(RankingPolicy):
             if e["type"] == "goal":
                 value += self.w_goal if e.get("team") == team else -self.w_goal
             elif e["type"] == "shot_taken":
-                xg = float((e.get("data") or {}).get("xg") or 0.0)
+                xg = shot_credit_xg(e)  # a blocked shot earns nothing
                 value += self.w_xg * xg if e.get("team") == team else -self.w_xg * xg
         return float(value)
 

@@ -1334,3 +1334,18 @@ rank the candidates as the trials did (`expert@<objective>`, no simulation at ga
 next search is built on the network, and so on. Queued after the objective baselines (data/
 objective_queue.sh, data/expert_queue.sh).
 
+## D-058 · Run 6 results; blocked shots no longer earn reward
+
+Run 6 (pool v6, the new laws), paired against the library over 280 games
+(reports/evaluation/run_6_teams): selector_latest +0.049 ± 0.017 xG per game, main_latest
++0.050 ± 0.017, trial_critic +0.018 ± 0.019 (it again barely learned: it picks the trials' best
+play 37.7% of the time against 36.4% by chance). Goal differences are within noise.
+
+The realism scorecard of run 6's selector shows 116 shots per 90 (more than before) with 38%
+blocked. Cause: the reward credits 0.5 x xG for every shot, and a blocked shot still carries
+its xG, so shooting into defenders still paid. Blocked shots now earn no credit, in the play
+reward (`rewards.shot_credit_xg`), in the look-ahead's trial values and in the objective trial
+values. Models trained before this (run 6) learned under the old credit. The objective baseline
+already running (reports/objectives/baseline_pool_v6) was started before the change. The
+scorecard's top speed no longer counts players being moved to kick-off positions after a goal.
+

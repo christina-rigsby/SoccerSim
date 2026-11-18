@@ -72,3 +72,13 @@ def test_objective_teams_play_for_the_measured_objective():
         mine = j["home"] if j["obj"]["side"] == 0 else j["away"]
         assert mine["objective"] == j["obj"]["objective"] and mine["kind"] == "lookahead"
         assert j["obj"]["team"] == "lookahead_fast@objective"
+
+
+def test_blocked_shots_earn_no_credit():
+    from soccersim.selfplay.objectives import trial_value
+    from soccersim.selfplay.rewards import shot_credit_xg
+
+    blocked = tev(12, "shot_taken", 0, xg=0.3, outcome="blocked")
+    clear = tev(12, "shot_taken", 0, xg=0.3, outcome="off_target")
+    assert shot_credit_xg(blocked) == 0.0 and shot_credit_xg(clear) == 0.3
+    assert trial_value("score_30", [blocked], 0, 0.0, 10.0, 6.0) == 0.0

@@ -77,6 +77,7 @@ def _game(job: dict) -> dict:
           if e["type"] == "shot_taken" and e["team"] == 0]
     pos = np.array([f["p"] for f in res.frames])
     sp = np.linalg.norm(np.diff(pos, axis=0), axis=2) * 10.0
+    sp[sp > 15.0] = 0.0  # players moved to their kick-off places after a goal, not running
     out_idx = [i for i in range(11) if env.state.kinds[i] != "GK"]
     sp_o = sp[:, out_idx]
     blocked = sum(1 for e in res.events if e["type"] == "shot_blocked" and e.get("team") == 1)

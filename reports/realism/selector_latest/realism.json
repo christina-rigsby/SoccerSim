@@ -1,0 +1,24 @@
+{
+ "team": "selector_latest",
+ "games": 28,
+ "minutes": 140.0,
+ "measures": {
+  "passes": 407.57142857142856,
+  "pass_completion": 0.7176656151419558,
+  "pass_completion_short": 0.6585365853658537,
+  "pass_completion_long": 0.5970149253731343,
+  "pressure_drop": 0.0636911662415951,
+  "shots": 116.35714285714286,
+  "goals": 7.071428571428571,
+  "xg_per_shot": 0.06188674033149171,
+  "tackles_won": 28.285714285714285,
+  "fouls": 19.285714285714285,
+  "ball_out_match": 158.14285714285714,
+  "distance_m_per_min": 196.11446518659722,
+  "share_above_4ms": 0.3994212356499785,
+  "share_sprint": 0.06324489115419425,
+  "top_speed": 9.219544457292873,
+  "shots_blocked_share": 0.3756906077348066,
+  "fatigue_per_90": 0.9994697543682931
+ }
+}

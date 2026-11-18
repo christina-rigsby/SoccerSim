@@ -44,8 +44,9 @@ def play_reward(rec: dict[str, Any], phase: str, cfg: dict | None = None) -> flo
             r += rc["regain_bonus"]
         elif et == "shot_taken" and rc.get("shot_xg", 0.0):
             # A shot counts by its quality (xG), so a good chance is credited even when missed;
-            # an opponent's shot during the play counts against it.
-            xg = float((ev.get("data") or {}).get("xg") or 0.0)
+            # an opponent's shot during the play counts against it. A blocked shot counts nothing:
+            # otherwise shooting into defenders would still be rewarded (D-058).
+            xg = shot_credit_xg(ev)
             r += rc["shot_xg"] * xg * (1.0 if ev.get("team") == team else -1.0)
     return float(r)
 
@@ -147,3 +148,9 @@ def assign_rewards(plays: list[dict[str, Any]], phases: dict[str, str], objectiv
             for p in reversed(spell):
                 g = p["reward"] + gamma * g
                 p["possession_return"] = round(g, 6)
+
+
+def shot_credit_xg(ev: dict) -> float:
+    """xG a ``shot_taken`` event earns as reward: its xG, or 0 if the shot was blocked."""
+    data = ev.get("data") or {}
+    return 0.0 if data.get("outcome") == "blocked" else float(data.get("xg") or 0.0)
