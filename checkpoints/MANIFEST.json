@@ -1,5 +1,5 @@
 {
-  "saved": "2026-11-18 06:13 UTC",
+  "saved": "2026-11-18 06:17 UTC",
   "files": [
     "models/critic.pt",
     "models/response.pt",
@@ -10,8 +10,9 @@
     "models/generator_metrics.json",
     "models/mutation_filter_cache.pkl",
     "models/selector/",
+    "models/runs/run_6/",
     "pipeline_state/"
   ],
   "pool_fingerprint": "47acc80e75d0",
-  "latest_run": null
+  "latest_run": "run_6"
 }
