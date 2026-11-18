@@ -1,10 +1,11 @@
 {
-  "saved": "2026-11-18 21:36 UTC",
+  "saved": "2026-11-18 22:27 UTC",
   "files": [
     "models/critic.pt",
     "models/response.pt",
     "models/meta.json",
     "models/critic_metrics.json",
+    "models/selector/",
     "pipeline_state/"
   ],
   "pool_fingerprint": "7ee8108a2ba6",
