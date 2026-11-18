@@ -41,6 +41,22 @@
     "mean_mse": 0.01832037977874279
    },
    "wall_s": 1445.7
+  },
+  {
+   "iteration": 3,
+   "epsilon": 0.1,
+   "games": 300,
+   "mean_play_reward": 0.004742306711409396,
+   "shots": 134,
+   "goals_for": 2,
+   "goals_against": 2,
+   "fit": {
+    "rows": 60000,
+    "mse": 0.01725684106349945,
+    "baseline_mse": 0.017196064814925194,
+    "mean_mse": 0.018583305180072784
+   },
+   "wall_s": 1539.7
   }
  ],
  "fitted_on_phase_a": true
