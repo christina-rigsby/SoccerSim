@@ -23,6 +23,10 @@ situation, through ``Scenario.cap_events`` (soccersim/sim/fatigue.py):
 - ``their_defence_tiring``: their defenders (CB, FB) lose pace and acceleration (down to 0.25)
   over the first 15 s of the situation.
 
+**Objective-driven play.** A look-ahead team named ``<team>@objective`` (e.g.
+``lookahead_fast@objective``) is told the objective of each situation and scores its trials by it
+(:func:`trial_value`).
+
 **Measurement.** Each objective uses ``n`` fixed situations (the same for every team), played
 against every opponent; the evaluated team alternates home and away by situation. A rate is
 reported with its 95% Wilson interval; the headline for a team and objective is its rate against
@@ -92,7 +96,9 @@ def situations(objective: str, n: int, seed: int = 7) -> list[dict[str, Any]]:
 
 def build_jobs(teams: list[str], opponents: list[str], objectives: list[str], n: int, conditions: list[str],
                seed: int = 7, models_dir: str | Path = "data/models") -> list[dict[str, Any]]:
-    specs = {t: team_spec(t, models_dir) for t in {*teams, *opponents}}
+    # A team named "<look-ahead team>@objective" plays for whichever objective is being measured.
+    named = {(t, obj): t.replace("@objective", f"@{obj}") for t in teams for obj in objectives}
+    specs = {n: team_spec(n, models_dir) for n in {*named.values(), *opponents}}
     jobs = []
     for obj in objectives:
         spec = OBJECTIVES[obj]
@@ -110,7 +116,8 @@ def build_jobs(teams: list[str], opponents: list[str], objectives: list[str], n:
                     for o in opponents:
                         if o == t:
                             continue
-                        home, away = (t, o) if side == 0 else (o, t)
+                        me = named[(t, obj)]
+                        home, away = (me, o) if side == 0 else (o, me)
                         jobs.append({"episode_id": f"O-{obj}-{cond}-{t}-{o}-{k:04d}", "seed": s["seed"],
                                      "scenario": scen, "home": {**specs[home], "id": home},
                                      "away": {**specs[away], "id": away}, "randomise": True,
@@ -136,6 +143,43 @@ def success(objective: str, events: list[dict[str, Any]], side: int) -> bool:
         return not any(e["type"] == "possession_lost" and e.get("team") == side for e in events)
     if objective == "win_back_8":
         return any(e["type"] == "possession_won" and e.get("team") == side for e in events)
+    raise ValueError(objective)
+
+
+def trial_value(objective: str, events: list[dict[str, Any]], team: int, depv: float, t0: float,
+                horizon_s: float) -> float:
+    """How well one look-ahead trial served ``objective`` (higher is better), for objective-driven
+    play (soccersim/ranking/lookahead.py). The objective's own success, partly credited by timing,
+    plus a small share of the change in expected possession value (EPV) to separate trials in
+    which nothing decisive happened:
+
+    - score_30: goals for (1 each) + xG of our shots - goals against;
+    - chance_30: shots of xG >= 0.10 (1 each) + xG of our shots - goals against;
+    - protect_60: - goals against - xG of their shots;
+    - keep_30: 1 if we never lose the ball, else the share of the horizon before we lost it;
+    - win_back_8: 1 - (time to win the ball back) / horizon if we win it back, else 0; - goals against.
+    """
+    them = 1 - team
+    gf = sum(1 for e in events if e["type"] == "goal" and e.get("team") == team)
+    ga = sum(1 for e in events if e["type"] == "goal" and e.get("team") == them)
+    shots = [(e.get("team"), float((e.get("data") or {}).get("xg") or 0.0)) for e in events
+             if e["type"] == "shot_taken"]
+    xgf = sum(x for t, x in shots if t == team)
+    xga = sum(x for t, x in shots if t == them)
+    shaping = 0.2 * depv
+    if objective == "score_30":
+        return gf + xgf - ga + shaping
+    if objective == "chance_30":
+        good = sum(1 for t, x in shots if t == team and x >= OBJECTIVES["chance_30"]["min_xg"])
+        return good + xgf - ga + shaping
+    if objective == "protect_60":
+        return -ga - xga + shaping
+    if objective == "keep_30":
+        lost = [e["t"] for e in events if e["type"] == "possession_lost" and e.get("team") == team and e["t"] >= t0]
+        return (1.0 if not lost else min(1.0, (min(lost) - t0) / horizon_s)) + shaping
+    if objective == "win_back_8":
+        won = [e["t"] for e in events if e["type"] == "possession_won" and e.get("team") == team and e["t"] >= t0]
+        return (1.0 - min(1.0, (min(won) - t0) / horizon_s) if won else 0.0) - ga + shaping
     raise ValueError(objective)
 
 

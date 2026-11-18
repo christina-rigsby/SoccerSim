@@ -66,8 +66,16 @@ def team_spec(name: str, models_dir: str | Path = "data/models") -> dict[str, An
 
     Suffixes: ``_noinst`` plays without player instincts (e.g. ``library_noinst``),
     ``_carrieronly`` / ``_offballonly`` with only that instinct; ``+<variant>`` with a play
-    variant from ``plays/variants/<variant>/`` (e.g. ``library+defensive_plus``).
+    variant from ``plays/variants/<variant>/`` (e.g. ``library+defensive_plus``); ``@<objective>``
+    on a look-ahead team scores its trials by that objective (e.g. ``lookahead_fast@keep_30``).
     """
+    if "@" in name:
+        # <look-ahead team>@<objective>: its trials are scored by that objective (objectives.trial_value).
+        team, objective = name.rsplit("@", 1)
+        spec = team_spec(team, models_dir)
+        if spec.get("kind") != "lookahead":
+            raise ValueError(f"only look-ahead teams take an objective, not {team!r}")
+        return {**spec, "id": name, "objective": objective}
     if "+" in name:
         # <team>+<variant>: the team with a play variant (plays/variants/<variant>/) applied.
         team, variant = name.split("+", 1)

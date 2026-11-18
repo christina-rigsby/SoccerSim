@@ -45,3 +45,30 @@ def test_conditions_target_the_right_players():
 def test_wilson_interval():
     p, lo, hi = wilson(5, 10)
     assert p == 0.5 and 0.2 < lo < 0.5 < hi < 0.8
+
+
+def tev(t, typ, team, **data):
+    return {"t": t, "type": typ, "team": team, "data": data}
+
+
+def test_trial_values_follow_each_objective():
+    from soccersim.selfplay.objectives import trial_value
+
+    kept = trial_value("keep_30", [tev(11.0, "possession_lost", 1)], 0, 0.0, 10.0, 6.0)
+    lost_late = trial_value("keep_30", [tev(14.5, "possession_lost", 0)], 0, 0.0, 10.0, 6.0)
+    lost_early = trial_value("keep_30", [tev(10.5, "possession_lost", 0)], 0, 0.0, 10.0, 6.0)
+    assert kept == 1.0 > lost_late > lost_early > 0
+    soon = trial_value("win_back_8", [tev(11.0, "possession_won", 1)], 1, 0.0, 10.0, 6.0)
+    late = trial_value("win_back_8", [tev(15.0, "possession_won", 1)], 1, 0.0, 10.0, 6.0)
+    assert soon > late > trial_value("win_back_8", [], 1, 0.0, 10.0, 6.0) == 0.0
+    assert trial_value("protect_60", [tev(12, "goal", 1)], 0, 0.0, 10.0, 6.0) < \
+        trial_value("protect_60", [tev(12, "shot_taken", 1, xg=0.3)], 0, 0.0, 10.0, 6.0) < 0
+    assert trial_value("score_30", [tev(12, "goal", 0)], 0, 0.0, 10.0, 6.0) >= 1
+
+
+def test_objective_teams_play_for_the_measured_objective():
+    jobs = build_jobs(["lookahead_fast@objective"], ["possession"], ["keep_30", "win_back_8"], 2, ["fresh"])
+    for j in jobs:
+        mine = j["home"] if j["obj"]["side"] == 0 else j["away"]
+        assert mine["objective"] == j["obj"]["objective"] and mine["kind"] == "lookahead"
+        assert j["obj"]["team"] == "lookahead_fast@objective"

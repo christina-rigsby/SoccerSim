@@ -96,7 +96,7 @@ def _make_policy(spec: dict[str, Any], library: dict[str, Play], rng: np.random.
                                opponent_model=spec.get("opponent_model", "copy"),
                                record_state=spec.get("record_state", False),
                                trial_continue=spec.get("trial_continue", "base"), key_x=spec.get("key_x"),
-                               name=spec.get("id", "lookahead"), **kw)
+                               objective=spec.get("objective"), name=spec.get("id", "lookahead"), **kw)
     if kind == "agent":
         from ..generator.agent import make_agent_policy
 

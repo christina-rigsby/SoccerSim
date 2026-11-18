@@ -100,3 +100,16 @@ def test_the_fair_lookahead_never_consults_the_real_opponent():
     assert calls == real  # every call came from the real game, none from the trials
     calls, real = _spy_calls("copy")
     assert calls > real  # the upper-bound version does ask (copies of) the real opponent
+
+
+def test_an_objective_driven_lookahead_scores_trials_by_its_objective():
+    env = _env()
+    la = LookaheadPolicy(LIB, rng=np.random.default_rng(0), top_k=2, rollouts=2, horizon_s=2.0, screen=0,
+                         objective="keep_30")
+    res = env.run(la, RankingPolicy(LIB, rng=np.random.default_rng(1)), max_time_s=4, stop_on_goal=False,
+                  stop_on_turnover=False)
+    decs = [d for d in res.decisions if d.get("lookahead")]
+    assert decs
+    # keep_30 trial values are a share of the horizon kept (0..1) plus a small EPV term.
+    vals = [v for d in decs for r in d["lookahead"].values() for v in r["values"]]
+    assert all(-0.5 < v < 1.5 for v in vals)

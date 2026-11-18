@@ -15,6 +15,11 @@ At each real decision (a play ended, possession changed, a restart, the start), 
    our shots (minus theirs) — the same terms as a play's reward (``configs/training.yaml``);
 4. calls the play with the best average.
 
+**Objective-driven** (``objective``, e.g. ``"keep_30"``): trials are scored by how well they serve
+that objective instead (:func:`soccersim.selfplay.objectives.trial_value`: keeping the ball,
+winning it back soon, not conceding, scoring), so the same team plays differently for different
+objectives. Evaluation name ``<look-ahead team>@<objective>``.
+
 **Common random numbers.** Every candidate is tried with the *same* set of seeds, so the
 candidates face the same luck (the same pass errors, the same tackle rolls) as far as their
 paths stay alike. Comparing them is then much less noisy than with independent seeds.
@@ -99,7 +104,7 @@ class LookaheadPolicy(RankingPolicy):
     def __init__(self, library: dict[str, Play], rng: np.random.Generator | None = None, top_k: int = 6,
                  rollouts: int = 8, horizon_s: float = 6.0, temperature: float = 0.01, name: str = "lookahead",
                  screen: int = 2, finalists: int = 3, opponent_model: str = "copy", record_state: bool = False,
-                 trial_continue: str = "base", key_x: float | None = None,
+                 trial_continue: str = "base", key_x: float | None = None, objective: str | None = None,
                  **kw) -> None:
         super().__init__(library, rng=rng, temperature=temperature, name=name, **kw)
         if opponent_model not in ("copy", "library"):
@@ -114,6 +119,14 @@ class LookaheadPolicy(RankingPolicy):
         # Only simulate when the ball is within key_x metres of either goal line's third (|x| >= key_x,
         # i.e. near either goal, where chances are made and conceded); elsewhere rank as usual.
         self.key_x = key_x
+        # Score trials by a chosen objective (soccersim/selfplay/objectives.py: trial_value) instead of
+        # the play reward (EPV change + goals + shot xG).
+        if objective is not None:
+            from ..selfplay.objectives import OBJECTIVES
+
+            if objective not in OBJECTIVES:
+                raise ValueError(f"unknown objective {objective!r}; one of {sorted(OBJECTIVES)}")
+        self.objective = objective
         self.top_k = int(top_k)
         self.rollouts = int(rollouts)
         self.screen = int(screen)  # trials per candidate in the first round (0: every candidate gets all)
@@ -150,9 +163,15 @@ class LookaheadPolicy(RankingPolicy):
         pols = (ours, opp) if team == 0 else (opp, ours)
         f = env.fork(*pols, seed=seed, horizon_s=self.horizon_s, drop_active=(team,))
         v0 = TeamView(f.state, team, f.ctx).epv()
+        t0 = f.state.t
         while f.step():
             pass
         v1 = TeamView(f.state, team, f.ctx).epv()
+        self.n_trials += 1
+        if self.objective is not None:
+            from ..selfplay.objectives import trial_value
+
+            return trial_value(self.objective, f.loop.result.events, team, v1 - v0, t0, self.horizon_s)
         value = v1 - v0
         for e in f.loop.result.events:
             if e["type"] == "goal":
@@ -160,7 +179,6 @@ class LookaheadPolicy(RankingPolicy):
             elif e["type"] == "shot_taken":
                 xg = float((e.get("data") or {}).get("xg") or 0.0)
                 value += self.w_xg * xg if e.get("team") == team else -self.w_xg * xg
-        self.n_trials += 1
         return float(value)
 
     def decide(self, obs: TeamView, reason: str) -> PlayInstance | None:
