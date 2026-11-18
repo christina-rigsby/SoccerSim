@@ -69,6 +69,6 @@ step "$STATE/run_${RUN}/reports"  $SP reports --run "$RUN"
 # team measured on the same paired scenarios (scripts/evaluate_teams.py).
 step "$STATE/trial_data"    python scripts/trial_critic.py generate --games "${TRIAL_GAMES:-800}" --horizon 12
 step "$STATE/trial_critic"  python scripts/trial_critic.py train
-step "$STATE/run_${RUN}/evaluation" python scripts/evaluate_teams.py --teams library selector main trial_critic \
+step "$STATE/run_${RUN}/evaluation" python scripts/evaluate_teams.py --teams library selector_latest main_latest trial_critic \
     --opponents styles --scenarios 20 --out "reports/evaluation/run_${RUN}_teams"
 echo PIPELINE_DONE
