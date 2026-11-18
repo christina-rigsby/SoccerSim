@@ -96,12 +96,12 @@ def team_spec(name: str, models_dir: str | Path = "data/models") -> dict[str, An
     if name == "library":
         return {"id": "library", "kind": "library", "temperature": 0.01}
     if name in ("lookahead_fast", "lookahead_fast_key"):
-        # Fast look-ahead on the best selector: its top 3 plays, 4 trials each of 12 s against a generic
-        # opponent, our team carrying on with the plain library in the trials; _key: trials only with
-        # the ball in either final third.
+        # Fast look-ahead on the newest selector (trained under the current laws and rewards): its top 3
+        # plays, 4 trials each of 12 s against a generic opponent, our team carrying on with the plain
+        # library in the trials; _key: trials only with the ball in either final third.
         spec = {"id": name, "kind": "lookahead", "temperature": 0.01, "opponent_model": "library",
                 "top_k": 3, "rollouts": 4, "screen": 0, "horizon_s": 12.0, "trial_continue": "library",
-                "base": team_spec("selector", models_dir)}
+                "base": team_spec("selector_latest", models_dir)}
         if name == "lookahead_fast_key":
             spec["key_x"] = 17.5
         return spec

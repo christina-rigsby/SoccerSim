@@ -61,6 +61,7 @@ step "$STATE/stats"        $SP report
 step "$STATE/critic"       $SP train-critic
 step "$STATE/critic_ab"    critic_ab
 step "$STATE/selector"     $SP train-selector
+if [ "${STOP_AFTER:-}" = selector ]; then echo SELECTOR_DONE; exit 0; fi  # only the critic and the selector
 step "$STATE/run_${RUN}/pretrain" $SP pretrain-generator
 step "$STATE/run_${RUN}/league"   $SP league --resume-unfinished
 step "$STATE/run_${RUN}/promote"  $SP promote --run "$RUN"

@@ -30,3 +30,9 @@ data/objective_queue.log
 data/expert_pool_v6/
 data/expert_queue.log
 reports/**/games.partial.jsonl
+data/selfplay_pool_v7/
+data/heldout_reference_pool_v7/
+data/trial_critic_pool_v7/
+data/expert_pool_v7/
+data/v7_queue.log
+data/pipeline_v7.log

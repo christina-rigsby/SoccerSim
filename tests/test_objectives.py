@@ -82,3 +82,22 @@ def test_blocked_shots_earn_no_credit():
     clear = tev(12, "shot_taken", 0, xg=0.3, outcome="off_target")
     assert shot_credit_xg(blocked) == 0.0 and shot_credit_xg(clear) == 0.3
     assert trial_value("score_30", [blocked], 0, 0.0, 10.0, 6.0) == 0.0
+
+
+def test_current_objectives():
+    from soccersim.selfplay.objectives import CURRENT, OBJECTIVES
+
+    assert set(CURRENT) <= set(OBJECTIVES)
+    assert success("score_120", [ev("goal", 0)], side=0)
+    blocked = {"type": "shot_taken", "team": 0, "data": {"xg": 0.3, "outcome": "blocked"}}
+    clear = {"type": "shot_taken", "team": 0, "data": {"xg": 0.3, "outcome": "caught"}}
+    assert not success("chance_60", [blocked], side=0) and success("chance_60", [clear], side=0)
+    assert success("chance_30", [blocked], side=0)  # the first set counted blocked shots
+    assert success("win_back_30", [ev("possession_won", 0)], side=0)
+    assert not success("protect_180", [ev("goal", 1)], side=0)
+    jobs = build_jobs(["library"], ["possession"], ["keep_30", "win_back_30", "protect_180"], 2, ["fresh"])
+    stop = {j["obj"]["objective"]: j["stop_on_turnover"] for j in jobs}
+    assert stop == {"keep_30": True, "win_back_30": True, "protect_180": False}
+    for j in jobs:
+        if j["obj"]["objective"] == "protect_180":
+            assert j["max_time_s"] == 180 and j["scenario"]["minute"] == 85

@@ -1349,3 +1349,29 @@ values. Models trained before this (run 6) learned under the old credit. The obj
 already running (reports/objectives/baseline_pool_v6) was started before the change. The
 scorecard's top speed no longer counts players being moved to kick-off positions after a goal.
 
+## D-059 · Objectives the user can expect high success rates on; pool v7
+
+The first objective baselines (reports/objectives/baseline_pool_v6; against each team's weakest
+style): the objective-driven look-ahead beat the library against every style on four of five
+objectives (score within 30 s 6% v 4%, create a chance within 30 s 36% v 22%, keep the ball for
+30 s 42% v 17%, win it back within 8 s 28% v 24%); protecting a lead for 60 s was too easy to tell
+teams apart (93–95% for everyone).
+
+The user rejected targets built on those objectives: success should be high (around 60%) on
+objectives realistic enough to reach it. The current objectives are score within 2 minutes,
+create an (unblocked) chance of xG ≥ 0.10 within 60 s, keep the ball for 30 s, win it back within
+30 s, and protect a 1-0 lead for 3 minutes from minute 85 with them attacking in our final third
+(`objectives.CURRENT`; the first set is kept for comparison). Targets are proposed after their
+baseline. Keep and win-back games now end shortly after the first change of possession, which
+decides them.
+
+Interim adaptivity on the first set (matched situations, partly played, stopped to move to the
+current objectives): slow substitute forwards cut chance creation from 19% to 7% for the library
+and from 26% to 17% for the objective-driven look-ahead; tiring opposition defenders changed
+rates by only about ±2 points, so the teams do not exploit them.
+
+The selector is retrained with blocked shots earning no reward (D-058). Rewards are computed when
+games are logged, so this is opponent pool v7, whose definition now includes the reward settings.
+Only the critic and the selector are retrained (`STOP_AFTER=selector`). The fast look-ahead is now
+built on the newest selector (`selector_latest`). Sequence: data/v7_queue.sh.
+

@@ -103,6 +103,10 @@ def pool_definition(league_cfg: dict) -> dict[str, Any]:
 
         sim = json.dumps(load_config("sim"), sort_keys=True, default=str)
         out["sim_laws"] = hashlib.sha1(sim.encode()).hexdigest()[:12]
+    if league_cfg.get("pool_version", 1) >= 7:
+        # And how plays are rewarded (configs/training.yaml: rewards), with the rule that blocked
+        # shots earn no xG credit (D-058): rewards are computed when games are logged.
+        out["rewards"] = {**load_config("training")["rewards"], "shot_credit": "unblocked shots only"}
     return out
 
 

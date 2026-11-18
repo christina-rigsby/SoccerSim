@@ -4,15 +4,21 @@ Success here is achieving an objective named in advance ("score within 30 second
 the lead for a minute"), not winning on average. An objective is a kind of situation plus a test
 of the game that follows (:data:`OBJECTIVES`):
 
+Current objectives (D-059; horizons long enough for high success rates to be realistic):
+
 =============  ===============================================================  =========
 objective      situation (our side)                                             success
 =============  ===============================================================  =========
-score_30       we have the ball in the final third                              we score within 30 s
-chance_30      the same situations                                              we take a shot of xG >= 0.10 within 30 s
-protect_60     1-0 up, minute 80, they have the ball (final third or midfield)  they do not score within 60 s
+score_120      we have the ball in the final third                              we score within 2 minutes
+chance_60      we have the ball in the final third or midfield                  unblocked shot, xG >= 0.10, in 60 s
 keep_30        we have the ball in our half or midfield                         we never lose possession within 30 s
-win_back_8     they have just won the ball deep in their own half               we win it back within 8 s
+win_back_30    they have just won the ball deep in their own half               we win it back within 30 s
+protect_180    1-0 up, minute 85, they have the ball in our final third         they do not score within 3 minutes
 =============  ===============================================================  =========
+
+The first set (score_30, chance_30, protect_60, win_back_8; D-057) is kept for comparison with
+reports/objectives/baseline_pool_v6. Keep and win-back games end shortly after the first change
+of possession, which decides them.
 
 **Conditions** test adaptivity: capabilities that differ from the usual or change during the
 situation, through ``Scenario.cap_events`` (soccersim/sim/fatigue.py):
@@ -50,13 +56,24 @@ from .evaluate import team_spec
 
 #: name -> situation (scenario types, whose ball, score from our side, minute) and test.
 OBJECTIVES: dict[str, dict[str, Any]] = {
-    "score_30": {"types": ["final_third_attack"], "ours": True, "seconds": 30.0},
-    "chance_30": {"types": ["final_third_attack"], "ours": True, "seconds": 30.0, "min_xg": 0.10},
-    "protect_60": {"types": ["final_third_attack", "mid_progression"], "ours": False, "seconds": 60.0,
-                   "score": (1, 0), "minute": 80.0},
-    "keep_30": {"types": ["build_up", "mid_progression"], "ours": True, "seconds": 30.0},
-    "win_back_8": {"types": ["transition_loss"], "ours": False, "seconds": 8.0},
+    # Current set (D-059): horizons long enough that high success rates are realistic.
+    "score_120": {"kind": "score", "types": ["final_third_attack"], "ours": True, "seconds": 120.0},
+    "chance_60": {"kind": "chance", "types": ["final_third_attack", "mid_progression"], "ours": True,
+                  "seconds": 60.0, "min_xg": 0.10, "unblocked": True},
+    "keep_30": {"kind": "keep", "types": ["build_up", "mid_progression"], "ours": True, "seconds": 30.0,
+                "stop_on_turnover": True},
+    "win_back_30": {"kind": "win_back", "types": ["transition_loss"], "ours": False, "seconds": 30.0,
+                    "stop_on_turnover": True},
+    "protect_180": {"kind": "protect", "types": ["final_third_attack"], "ours": False, "seconds": 180.0,
+                    "score": (1, 0), "minute": 85.0},
+    # First set (D-057; reports/objectives/baseline_pool_v6), kept for comparison.
+    "score_30": {"kind": "score", "types": ["final_third_attack"], "ours": True, "seconds": 30.0},
+    "chance_30": {"kind": "chance", "types": ["final_third_attack"], "ours": True, "seconds": 30.0, "min_xg": 0.10},
+    "protect_60": {"kind": "protect", "types": ["final_third_attack", "mid_progression"], "ours": False,
+                   "seconds": 60.0, "score": (1, 0), "minute": 80.0},
+    "win_back_8": {"kind": "win_back", "types": ["transition_loss"], "ours": False, "seconds": 8.0},
 }
+CURRENT = ("score_120", "chance_60", "keep_30", "win_back_30", "protect_180")
 CONDITIONS = ("fresh", "our_forwards_slow", "their_defence_tiring")
 EVENTS = ("possession_won", "possession_lost", "substitution")
 
@@ -122,7 +139,10 @@ def build_jobs(teams: list[str], opponents: list[str], objectives: list[str], n:
                                      "scenario": scen, "home": {**specs[home], "id": home},
                                      "away": {**specs[away], "id": away}, "randomise": True,
                                      "max_time_s": spec["seconds"], "stop_on_goal": True,
-                                     "stop_on_turnover": False, "keep_events": list(EVENTS),
+                                     # keep / win back: the outcome is decided at the first change
+                                     # of possession, so the game ends shortly after it
+                                     "stop_on_turnover": bool(spec.get("stop_on_turnover", False)),
+                                     "keep_events": list(EVENTS),
                                      "obj": {"objective": obj, "condition": cond, "team": t, "opp": o, "k": k,
                                              "side": side}})
     return jobs
@@ -130,18 +150,20 @@ def build_jobs(teams: list[str], opponents: list[str], objectives: list[str], n:
 
 def success(objective: str, events: list[dict[str, Any]], side: int) -> bool:
     """Whether the game (its events, from our side ``side``) achieved ``objective``."""
+    from .rewards import shot_credit_xg
+
     spec = OBJECTIVES[objective]
-    them = 1 - side
-    if objective == "score_30":
+    kind, them = spec["kind"], 1 - side
+    if kind == "score":
         return any(e["type"] == "goal" and e.get("team") == side for e in events)
-    if objective == "chance_30":
-        return any(e["type"] == "shot_taken" and e.get("team") == side
-                   and float((e.get("data") or {}).get("xg") or 0.0) >= spec["min_xg"] for e in events)
-    if objective == "protect_60":
+    if kind == "chance":  # a shot of xG >= min_xg (not blocked, for objectives marked "unblocked")
+        xg = shot_credit_xg if spec.get("unblocked") else (lambda e: float((e.get("data") or {}).get("xg") or 0.0))
+        return any(e["type"] == "shot_taken" and e.get("team") == side and xg(e) >= spec["min_xg"] for e in events)
+    if kind == "protect":
         return not any(e["type"] == "goal" and e.get("team") == them for e in events)
-    if objective == "keep_30":
+    if kind == "keep":
         return not any(e["type"] == "possession_lost" and e.get("team") == side for e in events)
-    if objective == "win_back_8":
+    if kind == "win_back":
         return any(e["type"] == "possession_won" and e.get("team") == side for e in events)
     raise ValueError(objective)
 
@@ -168,17 +190,18 @@ def trial_value(objective: str, events: list[dict[str, Any]], team: int, depv: f
     xgf = sum(x for t, x in shots if t == team)
     xga = sum(x for t, x in shots if t == them)
     shaping = 0.2 * depv
-    if objective == "score_30":
+    kind = OBJECTIVES[objective]["kind"]
+    if kind == "score":
         return gf + xgf - ga + shaping
-    if objective == "chance_30":
-        good = sum(1 for t, x in shots if t == team and x >= OBJECTIVES["chance_30"]["min_xg"])
+    if kind == "chance":
+        good = sum(1 for t, x in shots if t == team and x >= OBJECTIVES[objective]["min_xg"])
         return good + xgf - ga + shaping
-    if objective == "protect_60":
+    if kind == "protect":
         return -ga - xga + shaping
-    if objective == "keep_30":
+    if kind == "keep":
         lost = [e["t"] for e in events if e["type"] == "possession_lost" and e.get("team") == team and e["t"] >= t0]
         return (1.0 if not lost else min(1.0, (min(lost) - t0) / horizon_s)) + shaping
-    if objective == "win_back_8":
+    if kind == "win_back":
         won = [e["t"] for e in events if e["type"] == "possession_won" and e.get("team") == team and e["t"] >= t0]
         return (1.0 - min(1.0, (min(won) - t0) / horizon_s) if won else 0.0) - ga + shaping
     raise ValueError(objective)

@@ -22,14 +22,14 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from scripts.evaluate_teams import expand  # noqa: E402
-from soccersim.selfplay.objectives import CONDITIONS, OBJECTIVES, markdown, run, summarise  # noqa: E402
+from soccersim.selfplay.objectives import CONDITIONS, CURRENT, OBJECTIVES, markdown, run, summarise  # noqa: E402
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--teams", nargs="+", required=True)
     ap.add_argument("--opponents", nargs="+", default=["styles"])
-    ap.add_argument("--objectives", nargs="+", default=list(OBJECTIVES), choices=list(OBJECTIVES))
+    ap.add_argument("--objectives", nargs="+", default=list(CURRENT), choices=list(OBJECTIVES))
     ap.add_argument("--conditions", nargs="+", default=["fresh"], choices=list(CONDITIONS))
     ap.add_argument("--scenarios", type=int, default=200, help="situations per objective")
     ap.add_argument("--baseline", default="library")
