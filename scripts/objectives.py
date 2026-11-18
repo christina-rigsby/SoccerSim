@@ -6,7 +6,8 @@
 
 ``--opponents``: team names, or ``styles`` (every scripted style, the default). See
 soccersim/selfplay/objectives.py for the objectives, conditions and measures. Writes README.md,
-summary.json and games.json to ``--out``; an interrupted run resumes from ``--out``/games.partial.jsonl.
+summary.json and games.json to ``--out``; an interrupted run resumes from ``--out``/games.partial.jsonl,
+and a finished one is skipped (``--force`` runs it again).
 """
 
 from __future__ import annotations
@@ -36,9 +37,13 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=7)
     ap.add_argument("--models", default=str(ROOT / "data" / "models"))
     ap.add_argument("--out", default=None)
+    ap.add_argument("--force", action="store_true", help="run again even if --out already has a finished report")
     a = ap.parse_args()
     teams, opps = expand(a.teams), expand(a.opponents)
     out = Path(a.out or ROOT / "reports" / "objectives" / time.strftime("%Y%m%d-%H%M"))
+    if (out / "README.md").exists() and not a.force:
+        print(f"{out} is already finished (README.md); skipping (--force to run again)")
+        return 0
     out.mkdir(parents=True, exist_ok=True)
     t0 = time.time()
     partial = out / "games.partial.jsonl"
