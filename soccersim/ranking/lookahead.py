@@ -212,6 +212,8 @@ class LookaheadPolicy(RankingPolicy):
         }
         if self.record_state:
             record["state"] = obs.compact()
+            # Capabilities as they are now (fatigue, substitutions), not as they were at kick-off.
+            record["caps"] = np.round(obs.state.caps, 3).tolist()
             record["sides"] = {c.play.id: c.side for c in top}
         record["decision_id"] = f"{obs.team}-la-{self.n_trials}"
         self.last_decision = record

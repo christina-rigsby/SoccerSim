@@ -69,6 +69,13 @@ def team_spec(name: str, models_dir: str | Path = "data/models") -> dict[str, An
     variant from ``plays/variants/<variant>/`` (e.g. ``library+defensive_plus``); ``@<objective>``
     on a look-ahead team scores its trials by that objective (e.g. ``lookahead_fast@keep_30``).
     """
+    if name.startswith("expert") and "@" in name:
+        # expert[<iteration>]@<objective>: the distilled network of that objective (selfplay/expert.py).
+        from .expert import expert_spec
+
+        head, objective = name.rsplit("@", 1)
+        it = int(head[len("expert"):]) if head[len("expert"):] else None
+        return expert_spec(objective, it, models_dir, name=name)
     if "@" in name:
         # <look-ahead team>@<objective>: its trials are scored by that objective (objectives.trial_value).
         team, objective = name.rsplit("@", 1)

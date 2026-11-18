@@ -60,13 +60,14 @@ def _game(job: dict[str, Any]) -> list[dict[str, Any]]:
     me = make_policy(job["me"], lib, np.random.default_rng(rng.integers(1 << 31)))
     opp = make_policy(job["opp"], lib, np.random.default_rng(rng.integers(1 << 31)))
     pols = (me, opp) if job["side"] == 0 else (opp, me)
-    res = env.run(*pols, max_time_s=job["max_time_s"], stop_on_goal=False, stop_on_turnover=False)
+    res = env.run(*pols, max_time_s=job["max_time_s"], stop_on_goal=job.get("stop_on_goal", False),
+                  stop_on_turnover=False)
     caps = np.round(env.state.caps, 3).tolist()
     out = []
     for d in res.decisions:
         if d.get("lookahead") and d.get("state") and d.get("team") == job["side"]:
             out.append({"game": job["game_id"], "opp": job["opp"]["id"], "t": d["t"], "state": d["state"],
-                        "caps": caps, "sides": d["sides"], "trials": d["lookahead"],
+                        "caps": d.get("caps", caps), "sides": d["sides"], "trials": d["lookahead"],
                         "scores": {c["play_id"]: c["score"] for c in d["candidates"] if c["feasible"]},
                         "chosen": d["chosen"]})
     return out
@@ -75,8 +76,6 @@ def _game(job: dict[str, Any]) -> list[dict[str, Any]]:
 def generate(n_games: int, workers: int = 4, seed: int = 7, max_time_s: float = 60.0, chunk: int = 40,
              base: str | None = None, root: str | Path = "data", horizon_s: float = 12.0) -> Path:
     """Play ``n_games`` look-ahead games against the training opponents and save every look-ahead decision."""
-    import multiprocessing as mp
-
     from ..sim.scenarios import SCENARIO_TYPES, sample_scenario
     from .evaluate import team_spec
 
@@ -91,10 +90,16 @@ def generate(n_games: int, workers: int = 4, seed: int = 7, max_time_s: float = 
         sc = sample_scenario(rng, SCENARIO_TYPES[:-2] + ("random_open_play",), tuple(lcfg["formations"]))
         jobs.append({"game_id": f"T{g:05d}", "seed": int(rng.integers(1 << 31)), "scenario": sc.to_dict(),
                      "me": me, "opp": team_spec(opps[g % len(opps)]), "side": g % 2, "max_time_s": max_time_s})
-    out = data_dir(root)
+    return write_chunks(jobs, data_dir(root), workers, chunk)
+
+
+def write_chunks(jobs: list[dict[str, Any]], out: Path, workers: int = 4, chunk: int = 40) -> Path:
+    """Play ``jobs`` (see :func:`_game`) in chunks, saving each chunk's decisions; finished chunks are skipped."""
+    import multiprocessing as mp
+
     out.mkdir(parents=True, exist_ok=True)
     ctx = mp.get_context("fork")
-    for c0 in range(0, n_games, chunk):
+    for c0 in range(0, len(jobs), chunk):
         path = out / f"chunk_{c0 // chunk:04d}.jsonl.gz"
         if path.exists():
             continue
@@ -106,14 +111,14 @@ def generate(n_games: int, workers: int = 4, seed: int = 7, max_time_s: float = 
             for r in recs:
                 f.write(json.dumps(r) + "\n")
         tmp.rename(path)
-        print(f"  chunk {c0 // chunk}: {min(chunk, n_games - c0)} games, {len(recs)} decisions, "
+        print(f"  chunk {c0 // chunk}: {min(chunk, len(jobs) - c0)} games, {len(recs)} decisions, "
               f"{time.time() - t0:.0f}s", flush=True)
     return out
 
 
-def load_records(root: str | Path = "data") -> list[dict[str, Any]]:
+def load_records(root: str | Path = "data", path: str | Path | None = None) -> list[dict[str, Any]]:
     recs = []
-    for p in sorted(data_dir(root).glob("chunk_*.jsonl.gz")):
+    for p in sorted((Path(path) if path is not None else data_dir(root)).glob("chunk_*.jsonl.gz")):
         with gzip.open(p, "rt") as f:
             recs += [json.loads(line) for line in f]
     return recs
@@ -153,7 +158,10 @@ def build(recs: list[dict[str, Any]], library) -> dict[str, np.ndarray]:
 
 
 def train(models_dir: str | Path = "data/models", root: str | Path = "data", epochs: int = 12, lr: float = 0.001,
-          batch: int = 256, seed: int = 0) -> dict[str, Any]:
+          batch: int = 256, seed: int = 0, data_path: str | Path | None = None,
+          out_path: str | Path | None = None) -> dict[str, Any]:
+    """Train on the decisions in ``data_path`` (default: this pool's trial data) and save the critic
+    to ``out_path`` (default: ``data/models/trial_critic``)."""
     import torch
     from torch import nn
 
@@ -164,7 +172,7 @@ def train(models_dir: str | Path = "data/models", root: str | Path = "data", epo
 
     torch.manual_seed(seed)
     lib = load_library()
-    recs = load_records(root)
+    recs = load_records(root, data_path)
     d = build(recs, lib)
     games = np.unique(d["game"])
     rng = np.random.default_rng(seed)
@@ -202,7 +210,7 @@ def train(models_dir: str | Path = "data/models", root: str | Path = "data", epo
               f"chance {m['top1_chance']:.1%}); trial value lost {m['regret']:.4f} "
               f"(base ranking {m['regret_score']:.4f})", flush=True)
     critic.eval()
-    out = model_dir(models_dir)
+    out = Path(out_path) if out_path is not None else model_dir(models_dir)
     out.mkdir(parents=True, exist_ok=True)
     save_model(critic, out / "critic.pt", ids=play_ids(lib))
     res = {"decisions": len(recs), "rows": int(len(d["y"])), "test_games": len(test_games), "history": hist}

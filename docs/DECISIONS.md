@@ -1311,3 +1311,26 @@ fingerprint (`runs.pool_definition`, key `sim_laws`), so later law changes start
 automatically. Realism scorecards now use 28 games of 5 minutes: 7 games gave 62% and 84%
 short-pass completion for the same team.
 
+## D-057 · Objectives, objective-driven play and expert iteration (steps 2–4)
+
+Success is achieving objectives named in advance, measured as success rates
+(soccersim/selfplay/objectives.py, `scripts/objectives.py`): score within 30 s, create a chance
+(xG ≥ 0.10) within 30 s, protect a 1-0 lead for 60 s, keep the ball for 30 s, win it back within
+8 s. Each uses fixed situations played against every style, with 95% Wilson intervals; the
+headline is the rate against the weakest style, and whether a team beats the library against every
+style. Adaptivity is measured by conditions that change capabilities through
+`Scenario.cap_events` (our forwards replaced by slow substitutes; their defenders tiring during
+the situation). Results against different styles are correlated (they often choose the same plays
+at first), so pooled intervals are too narrow; per-style rates are the measure.
+
+Objective-driven play: a look-ahead team told the objective scores its trials by the objective's
+own success (`objectives.trial_value`), e.g. `lookahead_fast@keep_30`; in the objective evaluation,
+`lookahead_fast@objective` plays for whichever objective is measured.
+
+Expert iteration (soccersim/selfplay/expert.py, `scripts/expert.py`): the objective-driven
+look-ahead plays training situations (seeds distinct from the evaluation's, training styles only),
+each decision is saved with the capabilities at that moment, and a network per objective learns to
+rank the candidates as the trials did (`expert@<objective>`, no simulation at game time). The
+next search is built on the network, and so on. Queued after the objective baselines (data/
+objective_queue.sh, data/expert_queue.sh).
+
