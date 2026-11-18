@@ -26,3 +26,4 @@ data/models_archive/
 data/selfplay_pool_v6/
 data/heldout_reference_pool_v6/
 data/trial_critic_pool_v6/
+data/pipeline_v6.log
