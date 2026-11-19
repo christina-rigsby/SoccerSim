@@ -45,3 +45,5 @@ data/calibration.log
 data/selfplay_pool_v9/
 data/heldout_reference_pool_v9/
 data/expert_pool_v9/
+data/v9_queue.log
+data/pipeline_v9.log
