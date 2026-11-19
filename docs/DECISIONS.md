@@ -1439,3 +1439,16 @@ library unless listed in configs/library.yaml).
   generator's reinforcement learning so far is only 96 league games; nearly all of what it knows
   comes from imitating the library.
 
+## D-063 · Agreed objectives and targets
+
+From the calibration (D-062), the user agreed these objectives and targets (success rate against
+the weakest style, and beating the library against every style; `objectives.CURRENT`, `TARGETS`):
+take an unblocked shot within 60 s (90%), keep the ball for 15 s (75%), win it back within 20 s
+(75%), protect a 1-0 lead for 5 minutes from minute 85 with them attacking in our final third
+(90%), create an unblocked chance of xG ≥ 0.10 within 3 minutes (60%, a stretch). Scoring within 3
+minutes is reported without a target: no definition of scoring reaches a high rate (best 30%).
+Reports now show each target and whether it is met. Queue (data/v9_objectives_queue.sh): after
+the pool v9 retraining, baselines (library, selector, generator, objective-driven look-ahead),
+adaptivity, then expert iteration (step 4) per objective and its evaluation; the long objectives
+use 50 situations and 200 search games because the look-ahead's 5-minute games are expensive.
+

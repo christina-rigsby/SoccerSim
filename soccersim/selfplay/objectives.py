@@ -4,21 +4,22 @@ Success here is achieving an objective named in advance ("score within 30 second
 the lead for a minute"), not winning on average. An objective is a kind of situation plus a test
 of the game that follows (:data:`OBJECTIVES`):
 
-Current objectives (D-059; horizons long enough for high success rates to be realistic):
+Current objectives (D-063, chosen from reports/objectives/calibration so that high success is
+realistic; targets in :data:`TARGETS`, against the weakest style):
 
 =============  ===============================================================  =========
 objective      situation (our side)                                             success
 =============  ===============================================================  =========
-score_120      we have the ball in the final third                              we score within 2 minutes
-chance_60      we have the ball in the final third or midfield                  unblocked shot, xG >= 0.10, in 60 s
-keep_30        we have the ball in our half or midfield                         we never lose possession within 30 s
-win_back_30    they have just won the ball deep in their own half               we win it back within 30 s
-protect_180    1-0 up, minute 85, they have the ball in our final third         they do not score within 3 minutes
+shot_60        we have the ball in the final third or midfield                  an unblocked shot in 60 s
+keep_15        we have the ball in our half or midfield                         no loss of the ball in 15 s
+win_back_20    they have just won the ball deep in their own half               we win it back in 20 s
+protect_300    1-0 up, minute 85, they have the ball in our final third         no goal against in 5 min
+chance_180     we have the ball in the final third or midfield                  unblocked shot, xG >= 0.10, 3 min
+score_180      we have the ball in the final third                              we score in 3 min (no target)
 =============  ===============================================================  =========
 
-The first set (score_30, chance_30, protect_60, win_back_8; D-057) is kept for comparison with
-reports/objectives/baseline_pool_v6. Keep and win-back games end shortly after the first change
-of possession, which decides them.
+Earlier sets (D-057, D-059) are kept for comparison with their reports. Keep and win-back games end
+shortly after the first change of possession, which decides them.
 
 **Conditions** test adaptivity: capabilities that differ from the usual or change during the
 situation, through ``Scenario.cap_events`` (soccersim/sim/fatigue.py):
@@ -56,7 +57,20 @@ from .evaluate import team_spec
 
 #: name -> situation (scenario types, whose ball, score from our side, minute) and test.
 OBJECTIVES: dict[str, dict[str, Any]] = {
-    # Current set (D-059): horizons long enough that high success rates are realistic.
+    # Current set (D-063): chosen from the calibration (reports/objectives/calibration) so that high
+    # success rates are realistic; targets in TARGETS.
+    "shot_60": {"kind": "shot", "types": ["final_third_attack", "mid_progression"], "ours": True,
+                "seconds": 60.0},
+    "keep_15": {"kind": "keep", "types": ["build_up", "mid_progression"], "ours": True, "seconds": 15.0,
+                "stop_on_turnover": True},
+    "win_back_20": {"kind": "win_back", "types": ["transition_loss"], "ours": False, "seconds": 20.0,
+                    "stop_on_turnover": True},
+    "protect_300": {"kind": "protect", "types": ["final_third_attack"], "ours": False, "seconds": 300.0,
+                    "score": (1, 0), "minute": 85.0},
+    "chance_180": {"kind": "chance", "types": ["final_third_attack", "mid_progression"], "ours": True,
+                   "seconds": 180.0, "min_xg": 0.10, "unblocked": True},
+    "score_180": {"kind": "score", "types": ["final_third_attack"], "ours": True, "seconds": 180.0},
+    # Second set (D-059; reports/objectives/baseline_pool_v8), kept for comparison.
     "score_120": {"kind": "score", "types": ["final_third_attack"], "ours": True, "seconds": 120.0},
     "chance_60": {"kind": "chance", "types": ["final_third_attack", "mid_progression"], "ours": True,
                   "seconds": 60.0, "min_xg": 0.10, "unblocked": True},
@@ -73,7 +87,10 @@ OBJECTIVES: dict[str, dict[str, Any]] = {
                    "seconds": 60.0, "score": (1, 0), "minute": 80.0},
     "win_back_8": {"kind": "win_back", "types": ["transition_loss"], "ours": False, "seconds": 8.0},
 }
-CURRENT = ("score_120", "chance_60", "keep_30", "win_back_30", "protect_180")
+CURRENT = ("shot_60", "keep_15", "win_back_20", "protect_300", "chance_180", "score_180")
+#: Agreed targets (D-063): success rate against the weakest style, and beating the library against every
+#: style. score_180 is reported without a target (no realistic definition of scoring reaches a high rate).
+TARGETS = {"shot_60": 0.90, "keep_15": 0.75, "win_back_20": 0.75, "protect_300": 0.90, "chance_180": 0.60}
 CONDITIONS = ("fresh", "our_forwards_slow", "their_defence_tiring")
 EVENTS = ("possession_won", "possession_lost", "substitution")
 
@@ -159,6 +176,9 @@ def success(objective: str, events: list[dict[str, Any]], side: int) -> bool:
     if kind == "chance":  # a shot of xG >= min_xg (not blocked, for objectives marked "unblocked")
         xg = shot_credit_xg if spec.get("unblocked") else (lambda e: float((e.get("data") or {}).get("xg") or 0.0))
         return any(e["type"] == "shot_taken" and e.get("team") == side and xg(e) >= spec["min_xg"] for e in events)
+    if kind == "shot":  # any shot that was not blocked
+        return any(e["type"] == "shot_taken" and e.get("team") == side
+                   and (e.get("data") or {}).get("outcome") != "blocked" for e in events)
     if kind == "protect":
         return not any(e["type"] == "goal" and e.get("team") == them for e in events)
     if kind == "keep":
@@ -196,6 +216,10 @@ def trial_value(objective: str, events: list[dict[str, Any]], team: int, depv: f
     if kind == "chance":
         good = sum(1 for t, x in shots if t == team and x >= OBJECTIVES[objective]["min_xg"])
         return good + xgf - ga + shaping
+    if kind == "shot":
+        unblocked = sum(1 for e in events if e["type"] == "shot_taken" and e.get("team") == team
+                        and (e.get("data") or {}).get("outcome") != "blocked")
+        return min(unblocked, 1) + xgf - ga + shaping
     if kind == "protect":
         return -ga - xga + shaping
     if kind == "keep":
@@ -292,13 +316,18 @@ def markdown(summ: dict[str, Any], n: int) -> str:
              f"{n} fixed situations per objective, against every opponent; 95% Wilson intervals. "
              "Headline: the rate against the team's weakest opponent. See soccersim/selfplay/objectives.py.\n",
              "| Objective | Condition | Team | Overall | Weakest opponent | Beats "
-             f"{summ['baseline']} against every opponent |", "|---|---|---|---|---|---|"]
+             f"{summ['baseline']} against every opponent | Target (weakest) | Met |",
+             "|---|---|---|---|---|---|---|---|"]
     for h in summ["headline"]:
         p, lo, hi = h["overall"]
         w = h["weakest"]
         b = {True: "yes", False: "no", None: "—"}[h["beats_baseline_everywhere"]]
+        tgt = TARGETS.get(h["objective"])
+        met = "—" if tgt is None or h["team"] == summ["baseline"] else (
+            "yes" if w["rate"] >= tgt and h["beats_baseline_everywhere"] else "no")
         lines.append(f"| {h['objective']} | {h['condition']} | {h['team']} | {pct(p)} ({pct(lo)}–{pct(hi)}) | "
-                     f"{pct(w['rate'])} ({pct(w['lo'])}–{pct(w['hi'])}) v {w['opp']} | {b} |")
+                     f"{pct(w['rate'])} ({pct(w['lo'])}–{pct(w['hi'])}) v {w['opp']} | {b} | "
+                     f"{'—' if tgt is None else pct(tgt)} | {met} |")
     lines += ["", "## Every pairing\n", "| Objective | Condition | Team | Opponent | n | Rate (95%) |",
               "|---|---|---|---|---|---|"]
     for r in summ["rows"]:

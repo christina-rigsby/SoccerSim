@@ -101,3 +101,16 @@ def test_current_objectives():
     for j in jobs:
         if j["obj"]["objective"] == "protect_180":
             assert j["max_time_s"] == 180 and j["scenario"]["minute"] == 85
+
+
+def test_agreed_objectives_and_targets():
+    from soccersim.selfplay.objectives import CURRENT, TARGETS, markdown, summarise
+
+    assert set(TARGETS) < set(CURRENT) and "score_180" not in TARGETS
+    blocked = {"type": "shot_taken", "team": 0, "data": {"xg": 0.02, "outcome": "blocked"}}
+    wide = {"type": "shot_taken", "team": 0, "data": {"xg": 0.02, "outcome": "off_target"}}
+    assert not success("shot_60", [blocked], side=0) and success("shot_60", [wide], side=0)
+    games = [{"objective": "keep_15", "condition": "fresh", "team": t, "opp": o, "k": k, "success": t == "x" or k == 0}
+             for t in ("library", "x") for o in ("a", "b") for k in range(4)]
+    md = markdown(summarise(games), 4)
+    assert "| keep_15 | fresh | x |" in md and "75% | yes |" in md
