@@ -1,0 +1,43 @@
+{
+ "stages_s": {
+  "phase_a": 1422,
+  "heldout_ref": 175,
+  "stats": 1,
+  "critic": 2769,
+  "critic_ab": 16,
+  "selector": 5958,
+  "pretrain": 1483,
+  "league": 899,
+  "promote": 102,
+  "reports": 159,
+  "evaluation": 1286
+ },
+ "games": {
+  "Phase A (library games, shared)": 13500,
+  "Selector refinement rounds": 1200,
+  "Generator league (PPO)": 96
+ },
+ "durations": {
+  "Phase A (library games, shared)": [
+   10.899999618530273,
+   18.100000381469727,
+   40.0
+  ],
+  "Selector refinement rounds": [
+   10.899999618530273,
+   17.799999237060547,
+   38.599998474121094
+  ],
+  "Generator league (PPO)": [
+   9.900000095367432,
+   15.300000190734863,
+   33.64999961853027
+  ]
+ },
+ "per_game_wall_s": {
+  "library": 3.0018128752708435,
+  "selector_latest": 3.7372888922691345,
+  "main_latest": 19.583959221839905,
+  "lookahead_fast@score_120": 54.19528925418854
+ }
+}

@@ -41,3 +41,4 @@ data/heldout_reference_pool_v8/
 data/expert_pool_v8/
 data/v8_queue.log
 data/pipeline_v8.log
+data/calibration.log

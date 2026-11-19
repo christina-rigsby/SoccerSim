@@ -82,7 +82,11 @@ def team_spec(name: str, models_dir: str | Path = "data/models") -> dict[str, An
         spec = team_spec(team, models_dir)
         if spec.get("kind") != "lookahead":
             raise ValueError(f"only look-ahead teams take an objective, not {team!r}")
-        return {**spec, "id": name, "objective": objective}
+        from .objectives import OBJECTIVES
+
+        # Trials long enough to see the objective happen: a fifth of its time limit, 12-24 s (D-062).
+        horizon = float(np.clip(OBJECTIVES[objective]["seconds"] / 5.0, spec.get("horizon_s", 12.0), 24.0))
+        return {**spec, "id": name, "objective": objective, "horizon_s": horizon}
     if "+" in name:
         # <team>+<variant>: the team with a play variant (plays/variants/<variant>/) applied.
         team, variant = name.split("+", 1)
