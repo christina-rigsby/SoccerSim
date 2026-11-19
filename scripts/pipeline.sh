@@ -66,6 +66,14 @@ step "$STATE/run_${RUN}/pretrain" $SP pretrain-generator
 step "$STATE/run_${RUN}/league"   $SP league --resume-unfinished
 step "$STATE/run_${RUN}/promote"  $SP promote --run "$RUN"
 step "$STATE/run_${RUN}/reports"  $SP reports --run "$RUN"
+# SKIP_TRIAL=1: no trial critic (superseded by expert iteration, soccersim/selfplay/expert.py);
+# the evaluation then compares the library, the selector and the main agent (generator) only.
+if [ "${SKIP_TRIAL:-}" = 1 ]; then
+  step "$STATE/run_${RUN}/evaluation" python scripts/evaluate_teams.py --teams library selector_latest main_latest \
+      --opponents styles --scenarios 20 --out "reports/evaluation/run_${RUN}_teams"
+  echo PIPELINE_DONE
+  exit 0
+fi
 # Critic trained on 12-second look-ahead trials (soccersim/selfplay/trial_critic.py), then every
 # team measured on the same paired scenarios (scripts/evaluate_teams.py).
 step "$STATE/trial_data"    python scripts/trial_critic.py generate --games "${TRIAL_GAMES:-800}" --horizon 12

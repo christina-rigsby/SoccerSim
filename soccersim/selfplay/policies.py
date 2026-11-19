@@ -68,6 +68,8 @@ def make_policy(spec: dict[str, Any], library: dict[str, Play], rng: np.random.G
             _VARIANTS[name] = load_variant_library(name, library)
         library = _VARIANTS[name]
     pol = _make_policy(spec, library, rng)
+    if spec.get("skill_aware", True) is False:
+        pol.skill_aware = False  # instincts and shooting ignore who the player is (D-060)
     if spec.get("instincts", True) is not True:
         # False: no player instincts; a list: only those (soccersim/executor/instincts.py)
         pol.instincts = spec["instincts"]

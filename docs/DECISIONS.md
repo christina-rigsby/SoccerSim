@@ -1375,3 +1375,34 @@ games are logged, so this is opponent pool v7, whose definition now includes the
 Only the critic and the selector are retrained (`STOP_AFTER=selector`). The fast look-ahead is now
 built on the newest selector (`selector_latest`). Sequence: data/v7_queue.sh.
 
+## D-060 · Skill-aware instincts: decisions depend on who the player is; pool v8
+
+Before this, every ball carrier outside a play used the same rule whoever it was, so player
+capabilities mattered only through the simulator's execution of actions, and a play generator
+that sees capabilities had little individual strength to exploit. Now (configs/ranking.yaml
+`instincts.*.skill_aware`, `shooting.skill_aware`):
+
+- the carrier's pass chance is its own (`TeamView.pass_p_own`): the lane's chance averaged over
+  the passer's own aim error (passing skill and pressure, the simulator's `aim_sigmas`), times
+  the receiver's first-touch control under its nearest opponent; it has its own threshold
+  (`min_pass_p_own` 0.45, as it is lower than the lane alone);
+- losing the ball when holding or carrying scales with the duel between the carrier's dribbling
+  and the nearest defender's tackling (the simulator's tackle law, `instincts.duel_factor`);
+  carrying now carries a risk (`carry_risk` 0.2);
+- pace scales how far a carrier carries the ball and how far an off-ball player looks for space;
+- shooting judges xG scaled by the shooter's finishing (the simulator's goal probability), so
+  good finishers shoot from further out.
+
+Team suffix `_noskill` keeps the player-agnostic behaviour. Library v the player-agnostic
+library, 280 paired games: −0.004 ± 0.017 xG, −0.039 ± 0.030 goals per game (a first setting
+with `carry_risk` 0.4 and the old pass threshold made carriers too cautious: −0.021 xG). So
+heterogeneity is neutral for a team that ignores who its players are; the benefit is for teams
+that choose plays and players knowing them, the generator in particular.
+
+Also fixed: a play replaced at a change of possession was recorded as "preempted" instead of
+"possession_change" (the new play was chosen before the old play's own possession check ran).
+
+Every team's behaviour changes, so this is pool v8, retrained in full including the generator
+league (no trial critic: superseded by expert iteration), then compared on the objectives.
+The v7 objective baseline was stopped unfinished.
+

@@ -10,6 +10,8 @@ every team (configs/ranking.yaml: ``shooting``):
   posts within ``block_range_m`` of the shooter (widened by ``cone_margin_m``). The simulator
   does not model blocked shots, so without this check a shot through a defender would count;
 - the carrier has had the ball for at least ``settle_s`` (no shooting on the first touch);
+- with ``skill_aware`` (D-060), the xG is scaled by the shooter's finishing relative to a finisher
+  of ``reference_finishing``, so good finishers shoot from further out and poor ones hold back;
 - the goalkeeper never shoots.
 """
 
@@ -60,6 +62,14 @@ def shot_is_on(view: TeamView, cfg: dict | None = None) -> bool:
         return False
     if view.t - view.state.ball.owner_since < float(cfg.get("settle_s", 0.2)):
         return False
-    if view.xg_of(h) < float(cfg.get("min_xg", 0.1)):
+    xg = view.xg_of(h)
+    if cfg.get("skill_aware", False) and not view.state.memo.get(("no_skill", view.team)):
+        # A good finisher converts more of the same chances (the simulator's goal probability
+        # scales xG by finishing_base + finishing_gain x finishing), so it shoots from further out;
+        # judged against a finisher of finishing ``reference_finishing``.
+        sc = view.ctx.sim["shot"]
+        ref = sc["finishing_base"] + sc["finishing_gain"] * float(cfg.get("reference_finishing", 0.6))
+        xg *= (sc["finishing_base"] + sc["finishing_gain"] * view.cap(h, "finishing")) / ref
+    if xg < float(cfg.get("min_xg", 0.1)):
         return False
     return not shot_blockers(view, h, float(cfg.get("block_range_m", 10.0)), float(cfg.get("cone_margin_m", 0.5)))

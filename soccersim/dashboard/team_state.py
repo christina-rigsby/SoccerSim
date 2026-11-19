@@ -179,6 +179,37 @@ class TeamView:
     def pass_p(self, passer: int, target: np.ndarray, style: str = "ground", receiver: int = -1) -> float:
         return self.pass_assess(passer, target, style, receiver).p_success
 
+    def pass_p_own(self, passer: int, target: np.ndarray, style: str = "ground", receiver: int = -1) -> float:
+        """Chance that *this* passer's pass to ``receiver`` arrives and is controlled.
+
+        Unlike :meth:`pass_p` (the lane on its own), it includes the passer's own aim error, from
+        its passing skill and the pressure on it (the same error the simulator applies when the
+        pass is played: :func:`soccersim.sim.passmodel.aim_sigmas`), averaged over the error with
+        a three-point rule, and the receiver's first touch under its nearest opponent
+        (:func:`soccersim.sim.duels.control_prob`). So a good passer sees more passes on than a
+        poor one, and a pass to a poor first touch under pressure counts for less.
+        """
+        from ..sim.duels import control_prob
+        from ..sim.passmodel import GH3, aim_sigmas
+
+        opp = self.them if self.is_ours(passer) else self.us
+        origin = self.pos[passer]
+        target = np.asarray(target, float)
+        skill = self.cap(passer, "crossing" if style in ("whipped", "driven_low") else "passing")
+        pressure = passer_pressure(origin, self.pos[opp])
+        ang, _ = aim_sigmas(style, skill, pressure, self.ctx.sim, float(self.ctx.sim.get("noise_scale", 1.0)))
+        delta = target - origin
+        p = 0.0
+        for z, w in GH3:
+            a = z * ang
+            c, s_ = np.cos(a), np.sin(a)
+            t = origin + np.array([c * delta[0] - s_ * delta[1], s_ * delta[0] + c * delta[1]])
+            p += w * self.pass_assess(passer, t, style, receiver).p_success
+        if receiver >= 0:
+            speed = float(self.ctx.sim["pass"]["arrival_speed"].get(style, 7.0)) if style not in AIR_STYLES else 6.0
+            p *= control_prob(self.state, receiver, speed, self.nearest_opponent_dist(receiver), self.ctx.sim)
+        return float(p)
+
     @cached_property
     def lane_probs(self) -> dict[int, float]:
         """Ball holder -> each teammate pass success (spec §8.4)."""

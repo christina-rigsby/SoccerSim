@@ -36,3 +36,8 @@ data/trial_critic_pool_v7/
 data/expert_pool_v7/
 data/v7_queue.log
 data/pipeline_v7.log
+data/selfplay_pool_v8/
+data/heldout_reference_pool_v8/
+data/expert_pool_v8/
+data/v8_queue.log
+data/pipeline_v8.log

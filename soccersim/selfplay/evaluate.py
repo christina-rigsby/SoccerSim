@@ -87,6 +87,9 @@ def team_spec(name: str, models_dir: str | Path = "data/models") -> dict[str, An
         # <team>+<variant>: the team with a play variant (plays/variants/<variant>/) applied.
         team, variant = name.split("+", 1)
         return {**team_spec(team, models_dir), "id": name, "plays_variant": variant}
+    if name.endswith("_noskill"):
+        # The team with player-agnostic instincts and shooting (as before D-060).
+        return {**team_spec(name[: -len("_noskill")], models_dir), "id": name, "skill_aware": False}
     for suffix, keep in (("_noinst", False), ("_carrieronly", ["carrier"]), ("_offballonly", ["off_ball"])):
         if name.endswith(suffix):
             return {**team_spec(name[: -len(suffix)], models_dir), "id": name, "instincts": keep}

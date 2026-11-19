@@ -143,6 +143,8 @@ class MatchEnv:
             keep = getattr(p, "instincts", True)
             if keep is not True:  # False: no player instincts; a list: only those instincts
                 state.memo[("no_instincts", team)] = True if keep is False else {"carrier", "off_ball"} - set(keep)
+            if getattr(p, "skill_aware", True) is False:  # player-agnostic instincts (D-060)
+                state.memo[("no_skill", team)] = True
             if hasattr(p, "attach"):
                 p.attach(self, team)  # e.g. the look-ahead policy, which forks this env to try plays
         result = EpisodeResult(self.seed, self.scenario.to_dict(), list(state.score), 0.0, "time_limit",
@@ -197,7 +199,10 @@ class MatchEnv:
                 result.decisions.append(rec)
             if new is not None:
                 if inst is not None and not inst.ended:
-                    inst.end("preempted", views[tm])
+                    # Replaced because possession turned against it: record that, not a preemption.
+                    why = "possession_change" if reason == "possession_change" and inst.possession_ended(
+                        views[tm]) else "preempted"
+                    inst.end(why, views[tm])
                     self._close(inst, policies[tm], result, views[tm])
                 new.decision = rec
                 new.state_compact = views[tm].compact()

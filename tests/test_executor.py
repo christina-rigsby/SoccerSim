@@ -169,8 +169,19 @@ def test_possession_change_ends_possession_plays():
     play = _mini([{"id": "a", "actions": [{"role": "R1", "type": "pass", "to": {"anchor": "own_goal",
                                                                                "offset": [80, 30]}}],
                    "done_when": {"elapsed_s": {"gt": 99}}, "timeout_s": 50}])
-    r = run_play(LIB, "mini", 2, Scenario(type="mid_progression", randomise_capabilities=False, fatigue=0.0),
-                 max_time_s=12,
-                 extra=play, ignore_triggers=True, env=MatchEnv())
-    rec = r.forced_record("mini")
-    assert rec["end_reason"] in ("possession_change", "timeout")
+    # Find games in which we lose the ball while the play runs; the play must end for that reason.
+    checked = 0
+    for seed in range(2, 14):
+        r = run_play(LIB, "mini", seed, Scenario(type="mid_progression", randomise_capabilities=False,
+                                                 fatigue=0.0), max_time_s=12, extra=play, ignore_triggers=True,
+                     env=MatchEnv())
+        rec = r.forced_record("mini")
+        t_end = rec.get("t_end") or 12.0
+        lost = [e["t"] for e in r.result.events if e["type"] == "possession_lost" and e.get("team") == 0
+                and rec["t_start"] < e["t"] <= t_end + 0.11]
+        if lost:
+            assert rec["end_reason"] == "possession_change", (seed, rec["end_reason"])
+            checked += 1
+        if checked >= 2:
+            break
+    assert checked, "no game lost the ball during the play"

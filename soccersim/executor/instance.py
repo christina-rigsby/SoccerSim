@@ -94,6 +94,13 @@ class PlayInstance:
         self.t_end = view.t
         self.epv_end = view.epv()
 
+    def possession_ended(self, view) -> bool:
+        """Whether possession has turned against this play: an attacking play once they have the
+        ball, a defending play once we have it."""
+        if self.play.phase in POSSESSION_PHASES:
+            return view.possession == "them"
+        return view.possession == "us" and view.holder >= 0
+
     # -- the tick -----------------------------------------------------------------------------
 
     def tick(self, view: TeamView) -> dict[int, Directive]:
@@ -109,10 +116,7 @@ class PlayInstance:
         if view.t - self.t_start > self.play.max_duration_s:
             self.end("timeout", view)
             return {}
-        if self.play.phase in POSSESSION_PHASES and view.possession == "them":
-            self.end("possession_change", view)
-            return {}
-        if self.play.phase not in POSSESSION_PHASES and view.possession == "us" and view.holder >= 0:
+        if self.possession_ended(view):
             self.end("possession_change", view)
             return {}
 

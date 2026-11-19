@@ -26,6 +26,12 @@ teammates, and moves to the one with the highest ``w_value * c(p) * (xT(p) + ope
 minus ``w_shape`` per metre from its place in the shape: space we control, and more so where
 it is dangerous. Players nearest the ball choose first.
 
+**Who the player is** (``skill_aware``, D-060): the carrier's pass chances are its own (its passing
+skill and the pressure on it set its aim error; the receiver's first touch counts), the risk of
+losing the ball when holding or carrying follows the duel between its dribbling and the nearest
+defender's tackling, and pace sets how far a player carries the ball and how far an off-ball
+player looks for space. Shooting depends on finishing in the same way (soccersim/executor/shooting.py).
+
 Decisions are kept in ``state.memo`` between re-evaluations, so a copied game state carries them.
 """
 
@@ -98,32 +104,69 @@ def carrier_instinct(view: TeamView, cfg: dict | None = None) -> Directive | Non
     return None
 
 
+def duel_factor(view: TeamView, carrier: int, opponent: int, protect: bool) -> float:
+    """How likely ``opponent`` is to win the ball off ``carrier`` relative to an even duel, from
+    the simulator's own tackle law (configs/sim.yaml ``duel``: base + gain x (tackling -
+    dribbling), less when the carrier protects the ball). 1 for equal skills; above 1 when the
+    defender is the better tackler, below 1 when the carrier is the better dribbler."""
+    dc = view.ctx.sim["duel"]
+    base = dc["base_success"] - (dc["protect_penalty"] if protect else 0.0)
+    p = base + dc["skill_gain"] * (view.cap(opponent, "tackling") - view.cap(carrier, "dribbling"))
+    return float(np.clip(p, 0.05, 0.9) / max(base, 0.05))
+
+
+def _pace_scale(view: TeamView, player: int, cfg: dict) -> float:
+    """Distance scale from pace: ``pace_scale`` [lo, hi] at pace 0 and 1 (1.0 at pace 0.5)."""
+    lo, hi = cfg.get("pace_scale", [0.6, 1.4])
+    return float(lo + (hi - lo) * view.cap(player, "pace"))
+
+
 def _choose(view: TeamView, h: int, cfg: dict) -> tuple[str, np.ndarray | None, int]:
+    """Hold, carry or pass. With ``skill_aware`` the choice depends on who the carrier is (D-060):
+    the pass chance is the carrier's own (its aim error from passing skill and pressure, and the
+    receiver's first touch: :meth:`TeamView.pass_p_own`), losing the ball when holding or carrying
+    scales with the duel against the nearest defender (:func:`duel_factor`), and a fast carrier
+    carries further (:func:`_pace_scale`)."""
     here = view.pos[h]
+    skill = bool(cfg.get("skill_aware", False)) and not view.state.memo.get(("no_skill", view.team))
+    press = float(cfg.get("press_scale_m", 2.0))
     # Holding still under pressure risks a tackle: the closer the nearest opponent, the likelier
     # we lose the ball before the next decision (pitch control at our own feet misses this).
     d = view.nearest_opponent_dist(h)
-    p_lose = float(cfg.get("hold_risk", 0.5)) * float(np.exp(-max(d - 1.0, 0.0) / float(cfg.get("press_scale_m", 2.0))))
+    p_lose = float(cfg.get("hold_risk", 0.5)) * float(np.exp(-max(d - 1.0, 0.0) / press))
+    if skill:
+        near = int(view.them[np.argmin(np.linalg.norm(view.pos[view.them] - here, axis=1))])
+        p_lose = min(0.95, p_lose * duel_factor(view, h, near, protect=True))
     v_hold = (1.0 - p_lose) * float(_value_us(view, here)[0]) - p_lose * float(view.xt(-np.atleast_2d(here))[0])
     best = ("hold", None, -1, v_hold)
     # Carry: a fan of mostly forward directions.
-    dist = float(cfg.get("carry_dist_m", 6.0))
+    dist = float(cfg.get("carry_dist_m", 6.0)) * (_pace_scale(view, h, cfg) if skill else 1.0)
     angles = np.radians(cfg.get("carry_angles_deg", [-75, -45, -20, 0, 20, 45, 75]))
     pts = np.array([clip_pitch(here + dist * np.array([np.cos(a), np.sin(a)]), 1.0) for a in angles])
     vals = _value_us(view, pts)
+    if skill:
+        # Carrying past defenders risks a tackle too, judged by the duel with the defender nearest
+        # the end of the carry.
+        dists = np.linalg.norm(view.pos[view.them][None, :, :] - pts[:, None, :], axis=2)
+        risk = float(cfg.get("carry_risk", 0.4)) * np.exp(-np.maximum(dists.min(axis=1) - 1.0, 0.0) / press)
+        factor = np.array([duel_factor(view, h, int(view.them[j]), protect=False) for j in dists.argmin(axis=1)])
+        p_carry = np.minimum(0.95, risk * factor)
+        vals = (1.0 - p_carry) * vals - p_carry * view.xt(-pts)
     k = int(np.argmax(vals))
     if vals[k] > v_hold + float(cfg.get("carry_margin", 0.002)) and vals[k] > best[3]:
         best = ("carry", pts[k], -1, float(vals[k]))
     # Pass: to each teammate, once we have settled on the ball.
     if view.t - view.state.ball.owner_since >= float(cfg.get("settle_s", 0.3)):
-        min_p = float(cfg.get("min_pass_p", 0.55))
+        # A player's own pass chance (skill_aware) includes its aim error and the receiver's touch,
+        # so it is lower than the lane alone and has its own threshold.
+        min_p = float(cfg.get("min_pass_p_own", 0.45) if skill else cfg.get("min_pass_p", 0.55))
         margin = float(cfg.get("pass_margin", 0.004))
         for i in view.us:
             i = int(i)
             if i == h or view.state.kinds[i] == "GK" or not view.onside(i):
                 continue
             target = view.pos[i]
-            p = view.pass_p(h, target, "ground", i)
+            p = view.pass_p_own(h, target, "ground", i) if skill else view.pass_p(h, target, "ground", i)
             if p < min_p:
                 continue
             v = p * float(_value_us(view, target)[0]) - (1.0 - p) * float(view.xt(-np.atleast_2d(target))[0])
@@ -170,8 +213,11 @@ def off_ball_targets(view: TeamView, shape: dict[int, np.ndarray], bound: set[in
     taken = [view.pos[h]] if h >= 0 else []
     taken += [view.pos[p] for p in bound if p != h]
     targets: dict[int, np.ndarray] = {}
+    skill = bool(cfg.get("skill_aware", False)) and not view.state.memo.get(("no_skill", view.team))
     for p in movers:
-        cand = np.array([clip_pitch(shape[p] + o, 1.5) for o in offsets])
+        # With skill_aware, a fast player looks for space further away (D-060).
+        reach = _pace_scale(view, p, cfg) if skill else 1.0
+        cand = np.array([clip_pitch(shape[p] + reach * o, 1.5) for o in offsets])
         cand[:, 0] = np.minimum(cand[:, 0], max(offside, shape[p][0]))
         c = view.pc(cand)
         score = w_value * c * (view.xt(cand) + open_base) - w_shape * np.hypot(*(cand - shape[p]).T)

@@ -42,7 +42,7 @@
         0
       ]
     },
-    "end_reason": "preempted"
+    "end_reason": "step_timeout_abort"
   },
   "direct_counterattack": {
     "seed": 4,
@@ -75,9 +75,9 @@
     "end_reason": "success"
   },
   "fullback_outlet_bounce": {
-    "seed": 0,
+    "seed": 1,
     "scenario": {
-      "type": "build_up",
+      "type": "mid_progression",
       "attacking_team": 0,
       "home_formation": "4-3-3",
       "away_formation": "4-3-3",
@@ -87,10 +87,10 @@
         0
       ]
     },
-    "end_reason": "timeout"
+    "end_reason": "completed"
   },
   "high_press_sideline_trap": {
-    "seed": 25,
+    "seed": 1,
     "scenario": {
       "type": "mid_progression",
       "attacking_team": 1,
@@ -105,7 +105,7 @@
     "end_reason": "completed"
   },
   "long_ball_to_target": {
-    "seed": 3,
+    "seed": 0,
     "scenario": {
       "type": "build_up",
       "attacking_team": 0,
@@ -117,7 +117,7 @@
         0
       ]
     },
-    "end_reason": "preempted"
+    "end_reason": "timeout"
   },
   "low_block_box_protection": {
     "seed": 0,
@@ -132,7 +132,7 @@
         0
       ]
     },
-    "end_reason": "preempted"
+    "end_reason": "possession_change"
   },
   "mid_block_compact": {
     "seed": 0,
@@ -147,7 +147,7 @@
         0
       ]
     },
-    "end_reason": "preempted"
+    "end_reason": "completed"
   },
   "one_two_wall_pass": {
     "seed": 0,
@@ -162,7 +162,7 @@
         0
       ]
     },
-    "end_reason": "preempted"
+    "end_reason": "possession_change"
   },
   "pivot_drop_back_three": {
     "seed": 25,
@@ -210,9 +210,9 @@
     "end_reason": "completed"
   },
   "switch_through_keeper": {
-    "seed": 3,
+    "seed": 0,
     "scenario": {
-      "type": "mid_progression",
+      "type": "build_up",
       "attacking_team": 0,
       "home_formation": "4-3-3",
       "away_formation": "4-3-3",
@@ -222,10 +222,10 @@
         0
       ]
     },
-    "end_reason": "preempted"
+    "end_reason": "timeout"
   },
   "third_man_combination": {
-    "seed": 8,
+    "seed": 2,
     "scenario": {
       "type": "transition_win",
       "attacking_team": 0,
@@ -237,10 +237,10 @@
         0
       ]
     },
-    "end_reason": "preempted"
+    "end_reason": "possession_change"
   },
   "through_ball_behind_high_line": {
-    "seed": 1,
+    "seed": 13,
     "scenario": {
       "type": "transition_win",
       "attacking_team": 0,
@@ -267,7 +267,7 @@
         0
       ]
     },
-    "end_reason": "step_timeout_abort"
+    "end_reason": "timeout"
   },
   "winger_checks_short": {
     "seed": 0,

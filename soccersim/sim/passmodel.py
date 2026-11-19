@@ -137,6 +137,23 @@ def passer_pressure(passer_pos: np.ndarray, opp_pos: np.ndarray) -> float:
     return float(np.exp(-d / 2.0))
 
 
+def aim_sigmas(style: str, passing: float, pressure: float, cfg: dict, noise_scale: float = 1.0) -> tuple[float, float]:
+    """Standard deviations of a pass's angular error (radians) and relative length error, for a
+    passer of skill ``passing`` under ``pressure`` (see :func:`noisy_target`)."""
+    nz = cfg["pass"]["noise"]
+    style_mult = nz["style_multiplier"].get(style, 1.0) * noise_scale
+    mult = style_mult * (1.0 + nz["pressure_gain"] * pressure)
+    ang_sigma = np.deg2rad(nz["angle_base_deg"] * (1.0 - passing) * mult
+                           + nz.get("pressure_deg", 0.0) * pressure * style_mult)
+    len_sigma = nz["speed_base"] * (1.0 - passing) * mult + nz.get("pressure_len", 0.0) * pressure * style_mult
+    return float(ang_sigma), float(len_sigma)
+
+
+#: Three-point Gauss-Hermite rule for an expectation over a normal error: offsets in standard
+#: deviations and their weights.
+GH3 = ((-np.sqrt(3.0), 1.0 / 6.0), (0.0, 2.0 / 3.0), (np.sqrt(3.0), 1.0 / 6.0))
+
+
 def noisy_target(
     rng: np.random.Generator,
     origin: np.ndarray,
@@ -154,12 +171,7 @@ def noisy_target(
     ``pressure_len x pressure`` for the length): a pressed pass is rushed, so even a good passer
     misplaces it more often. Both are scaled by the style multiplier.
     """
-    nz = cfg["pass"]["noise"]
-    style_mult = nz["style_multiplier"].get(style, 1.0) * noise_scale
-    mult = style_mult * (1.0 + nz["pressure_gain"] * pressure)
-    ang_sigma = np.deg2rad(nz["angle_base_deg"] * (1.0 - passing) * mult
-                           + nz.get("pressure_deg", 0.0) * pressure * style_mult)
-    len_sigma = nz["speed_base"] * (1.0 - passing) * mult + nz.get("pressure_len", 0.0) * pressure * style_mult
+    ang_sigma, len_sigma = aim_sigmas(style, passing, pressure, cfg, noise_scale)
     delta = target - origin
     ang = rng.normal(0.0, ang_sigma)
     c, s = np.cos(ang), np.sin(ang)

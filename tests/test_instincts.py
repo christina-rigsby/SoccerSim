@@ -80,3 +80,67 @@ def test_no_space_seeking_without_the_ball():
     v = TeamView(st, 0, CTX)
     shape_arr = shape_targets(st, 0, False, v.ball, CTX.formations["shape"])
     assert off_ball_targets(v, {int(p): shape_arr[k] for k, p in enumerate(v.us)}, set(), OFF_BALL) == {}
+
+
+# -- who the player is (skill_aware, D-060) --------------------------------------------------
+
+
+def _set(st, player, **caps):
+    from soccersim.sim.state import CAP_INDEX
+
+    for k, v in caps.items():
+        st.caps[player, CAP_INDEX[k]] = v
+
+
+def test_own_pass_chance_depends_on_the_passer_and_the_receiver():
+    st, c = _state(carrier_at=(0.0, 0.0), opponents=[(1.5, 1.0)], teammate_at=(22.0, 6.0))
+    r = [i for i in range(11) if st.kinds[i] != "GK"][6]
+    _set(st, c, passing=0.95)
+    good = TeamView(st, 0, CTX).pass_p_own(c, st.pos[r], "ground", r)
+    _set(st, c, passing=0.2)
+    poor = TeamView(st, 0, CTX).pass_p_own(c, st.pos[r], "ground", r)
+    lane = TeamView(st, 0, CTX).pass_p(c, st.pos[r], "ground", r)
+    assert good > poor and good <= lane + 1e-9
+    _set(st, c, passing=0.95)
+    _set(st, r, first_touch=0.1)
+    assert TeamView(st, 0, CTX).pass_p_own(c, st.pos[r], "ground", r) < good
+
+
+def test_duel_factor_follows_dribbling_against_tackling():
+    from soccersim.executor.instincts import duel_factor
+
+    st, c = _state(opponents=[(2.0, 0.0)])
+    o = [o for o in range(11, 22) if st.kinds[o] != "GK"][0]
+    _set(st, c, dribbling=0.9)
+    _set(st, o, tackling=0.3)
+    weak = duel_factor(TeamView(st, 0, CTX), c, o, protect=True)
+    _set(st, c, dribbling=0.3)
+    _set(st, o, tackling=0.9)
+    strong = duel_factor(TeamView(st, 0, CTX), c, o, protect=True)
+    assert weak < 1.0 < strong
+
+
+def test_a_fast_carrier_carries_further():
+    cfg = {**CARRIER, "skill_aware": True, "settle_s": 99.0}  # no passes: hold or carry
+    dists = []
+    for pace in (0.1, 0.9):
+        st, c = _state(carrier_at=(10.0, 0.0))
+        _set(st, c, pace=pace)
+        d = carrier_instinct(TeamView(st, 0, CTX), cfg)
+        assert d is not None
+        dists.append(float(np.hypot(*(d.target - st.pos[c]))))
+    assert dists[1] > dists[0]
+
+
+def test_a_good_finisher_shoots_from_further_out():
+    from soccersim.executor.shooting import shooting_config, shot_is_on
+
+    cfg = {**shooting_config(), "enabled": True, "skill_aware": True, "min_xg": 0.1}
+    st, c = _state(carrier_at=(33.0, 0.0))
+    view = TeamView(st, 0, CTX)
+    xg = view.xg_of(c)
+    cfg["min_xg"] = xg * 1.1  # just out of range for a reference finisher
+    _set(st, c, finishing=0.95)
+    assert shot_is_on(TeamView(st, 0, CTX), cfg)
+    _set(st, c, finishing=0.3)
+    assert not shot_is_on(TeamView(st, 0, CTX), cfg)

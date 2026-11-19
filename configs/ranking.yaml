@@ -78,6 +78,8 @@ generator:
 shooting:
   enabled: true
   min_xg: 0.10           # about the edge of the box, central, unpressured
+  skill_aware: true      # scale xG by the shooter's finishing (D-060)
+  reference_finishing: 0.6
   block_range_m: 10.0
   cone_margin_m: 0.5
   settle_s: 0.2
@@ -87,6 +89,10 @@ instincts:
   carrier:                 # a ball carrier outside any play: pass, carry or hold, by value
     enabled: true
     decide_every_s: 0.4    # re-evaluate this often (a chosen carry is kept in between)
+    skill_aware: true      # decisions depend on who the carrier is (D-060; executor/instincts.py)
+    carry_risk: 0.2        # chance of losing the ball carrying next to a defender, x the duel factor
+    min_pass_p_own: 0.45   # threshold for the carrier's own pass chance (lower than the lane's alone)
+    pace_scale: [0.6, 1.4] # carry distance x this at pace 0 / 1 (1.0 at pace 0.5)
     settle_s: 0.3          # no instinct pass in the first moments after receiving
     min_pass_p: 0.55       # passes less likely than this to arrive are not considered
     pass_margin: 0.004     # a pass must beat holding the ball by this much value
@@ -99,6 +105,8 @@ instincts:
     enabled: true
     every_s: 0.5
     radius_m: 9.0          # how far from their place in the team shape they may roam
+    skill_aware: true      # a fast player roams further: radius x pace_scale (D-060)
+    pace_scale: [0.6, 1.4]
     rings_m: [4.0, 9.0]
     spacing_m: 7.0         # stay at least this far from teammates' chosen spots
     rest_defence: 2        # the deepest outfield players keep shape (cover against a turnover)
