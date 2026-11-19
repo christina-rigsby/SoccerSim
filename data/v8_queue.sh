@@ -12,8 +12,8 @@ echo "== baseline: start $(date +%T)"
 python scripts/objectives.py --teams $TEAMS --scenarios 100 --conditions fresh \
   --out reports/objectives/baseline_pool_v8 || exit 1
 echo "== adaptivity: start $(date +%T)"
-python scripts/objectives.py --teams $TEAMS --scenarios 100 --objectives score_120 chance_60 keep_30 \
-  --conditions our_forwards_slow their_defence_tiring --out reports/objectives/adaptivity_pool_v8 || exit 1
+python scripts/objectives.py --teams library selector_latest main_latest --scenarios 100 --objectives score_120 \
+  chance_60 keep_30 --conditions our_forwards_slow their_defence_tiring --out reports/objectives/adaptivity_pool_v8 || exit 1
 echo "== expert iteration: start $(date +%T)"
 python scripts/expert.py --objective score_120 chance_60 keep_30 win_back_30 protect_180 --games 300 \
   --iterations 2 || exit 1
