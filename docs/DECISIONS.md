@@ -1406,3 +1406,15 @@ Every team's behaviour changes, so this is pool v8, retrained in full including 
 league (no trial critic: superseded by expert iteration), then compared on the objectives.
 The v7 objective baseline was stopped unfinished.
 
+## D-061 · With skill-aware instincts the generator beats the selector (run 7)
+
+Run 7 (pool v8, skill-aware instincts; reports/evaluation/run_7_teams, 280 paired games each):
+the main agent (the play generator) +0.101 ± 0.021 xG and +0.104 ± 0.030 goals per game over the
+library; the selector +0.051 ± 0.019 xG, +0.036 ± 0.031 goals. Paired directly, the generator
+beats the selector by +0.050 ± 0.023 xG and +0.068 ± 0.033 goals per game (about 2 standard
+errors each), and it is ahead of the library against every style. Before (run 6, player-agnostic
+instincts) the two were level (+0.050 v +0.049 xG over the library). Consistent with the
+intent of D-060: once players act according to who they are, generating plays for the players
+on the pitch pays off. Five plays were promoted (plays/generated_and_promoted/run_7; not in the
+library unless listed in configs/library.yaml).
+
