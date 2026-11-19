@@ -1,0 +1,1775 @@
+{
+ "baseline": "library",
+ "rows": [
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.15,
+   "lo": 0.09305903191162297,
+   "hi": 0.23283733332157835
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.11,
+   "lo": 0.06254131955225126,
+   "hi": 0.18631463027903022
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.15,
+   "lo": 0.09305903191162297,
+   "hi": 0.23283733332157835
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.11,
+   "lo": 0.06254131955225126,
+   "hi": 0.18631463027903022
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.12,
+   "lo": 0.06999337365267776,
+   "hi": 0.19812268002908368
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.18,
+   "lo": 0.11700131654251038,
+   "hi": 0.26667536024213084
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.16,
+   "lo": 0.10095202349473717,
+   "hi": 0.24420444558894414
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.21,
+   "lo": 0.14165549531645788,
+   "hi": 0.2998014930196232
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.23,
+   "lo": 0.15843154746876406,
+   "hi": 0.32154564856827694
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.26,
+   "lo": 0.18404578126986462,
+   "hi": 0.35371172631861636
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.22,
+   "lo": 0.15001174503655804,
+   "hi": 0.3107053471500031
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.24,
+   "lo": 0.16691211265459965,
+   "hi": 0.3323251872329213
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.22,
+   "lo": 0.15001174503655804,
+   "hi": 0.3107053471500031
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.27,
+   "lo": 0.1926946091766482,
+   "hi": 0.3643230022623127
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.17,
+   "lo": 0.10893476059773155,
+   "hi": 0.25548181233642975
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.13,
+   "lo": 0.07757093858414264,
+   "hi": 0.20980521894809878
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.21,
+   "lo": 0.14165549531645788,
+   "hi": 0.2998014930196232
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.14,
+   "lo": 0.08526265754464905,
+   "hi": 0.22137360383807236
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.22,
+   "lo": 0.15001174503655804,
+   "hi": 0.3107053471500031
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.2,
+   "lo": 0.1333659225590988,
+   "hi": 0.28883096192650237
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.18,
+   "lo": 0.11700131654251038,
+   "hi": 0.26667536024213084
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.08,
+   "lo": 0.04109296948581091,
+   "hi": 0.14998266879403072
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.08,
+   "lo": 0.04109296948581091,
+   "hi": 0.14998266879403072
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.14,
+   "lo": 0.08526265754464905,
+   "hi": 0.22137360383807236
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.09,
+   "lo": 0.04807199516388488,
+   "hi": 0.16226374696643667
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.12,
+   "lo": 0.06999337365267776,
+   "hi": 0.19812268002908368
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.08,
+   "lo": 0.04109296948581091,
+   "hi": 0.14998266879403072
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.11,
+   "lo": 0.06254131955225126,
+   "hi": 0.18631463027903022
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.11,
+   "lo": 0.06254131955225126,
+   "hi": 0.18631463027903022
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.12,
+   "lo": 0.06999337365267776,
+   "hi": 0.19812268002908368
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.11,
+   "lo": 0.06254131955225126,
+   "hi": 0.18631463027903022
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.11,
+   "lo": 0.06254131955225126,
+   "hi": 0.18631463027903022
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.11,
+   "lo": 0.06254131955225126,
+   "hi": 0.18631463027903022
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.11,
+   "lo": 0.06254131955225126,
+   "hi": 0.18631463027903022
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.11,
+   "lo": 0.06254131955225126,
+   "hi": 0.18631463027903022
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.51,
+   "lo": 0.4134784047743415,
+   "hi": 0.6057816990761385
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.52,
+   "lo": 0.4231640509017654,
+   "hi": 0.6153561567991945
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.51,
+   "lo": 0.4134784047743415,
+   "hi": 0.6057816990761385
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.51,
+   "lo": 0.4134784047743415,
+   "hi": 0.6057816990761385
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.51,
+   "lo": 0.4134784047743415,
+   "hi": 0.6057816990761385
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.51,
+   "lo": 0.4134784047743415,
+   "hi": 0.6057816990761385
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.51,
+   "lo": 0.4134784047743415,
+   "hi": 0.6057816990761385
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.1,
+   "lo": 0.05522854161313613,
+   "hi": 0.1743673043676654
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.1,
+   "lo": 0.05522854161313613,
+   "hi": 0.1743673043676654
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.11,
+   "lo": 0.06254131955225126,
+   "hi": 0.18631463027903022
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.1,
+   "lo": 0.05522854161313613,
+   "hi": 0.1743673043676654
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.1,
+   "lo": 0.05522854161313613,
+   "hi": 0.1743673043676654
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.1,
+   "lo": 0.05522854161313613,
+   "hi": 0.1743673043676654
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.1,
+   "lo": 0.05522854161313613,
+   "hi": 0.1743673043676654
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.21,
+   "lo": 0.14165549531645788,
+   "hi": 0.2998014930196232
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.21,
+   "lo": 0.14165549531645788,
+   "hi": 0.2998014930196232
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.2,
+   "lo": 0.1333659225590988,
+   "hi": 0.28883096192650237
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.21,
+   "lo": 0.14165549531645788,
+   "hi": 0.2998014930196232
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.21,
+   "lo": 0.14165549531645788,
+   "hi": 0.2998014930196232
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.21,
+   "lo": 0.14165549531645788,
+   "hi": 0.2998014930196232
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.21,
+   "lo": 0.14165549531645788,
+   "hi": 0.2998014930196232
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.86,
+   "lo": 0.7786263961619276,
+   "hi": 0.914737342455351
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.83,
+   "lo": 0.7445181876635703,
+   "hi": 0.8910652394022684
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.83,
+   "lo": 0.7445181876635703,
+   "hi": 0.8910652394022684
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.87,
+   "lo": 0.7901947810519012,
+   "hi": 0.9224290614158575
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.86,
+   "lo": 0.7786263961619276,
+   "hi": 0.914737342455351
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.85,
+   "lo": 0.7671626666784216,
+   "hi": 0.906940968088377
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.84,
+   "lo": 0.7557955544110557,
+   "hi": 0.8990479765052628
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.86,
+   "lo": 0.7786263961619276,
+   "hi": 0.914737342455351
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.89,
+   "lo": 0.8136853697209698,
+   "hi": 0.9374586804477487
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.86,
+   "lo": 0.7786263961619276,
+   "hi": 0.914737342455351
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.86,
+   "lo": 0.7786263961619276,
+   "hi": 0.914737342455351
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.89,
+   "lo": 0.8136853697209698,
+   "hi": 0.9374586804477487
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.87,
+   "lo": 0.7901947810519012,
+   "hi": 0.9224290614158575
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.89,
+   "lo": 0.8136853697209698,
+   "hi": 0.9374586804477487
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.89,
+   "lo": 0.8136853697209698,
+   "hi": 0.9374586804477487
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.87,
+   "lo": 0.7901947810519012,
+   "hi": 0.9224290614158575
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.82,
+   "lo": 0.7333246397578691,
+   "hi": 0.8829986834574896
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.82,
+   "lo": 0.7333246397578691,
+   "hi": 0.8829986834574896
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.87,
+   "lo": 0.7901947810519012,
+   "hi": 0.9224290614158575
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.9,
+   "lo": 0.8256326956323347,
+   "hi": 0.9447714583868639
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.85,
+   "lo": 0.7671626666784216,
+   "hi": 0.906940968088377
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.88,
+   "lo": 0.8018773199709163,
+   "hi": 0.9300066263473222
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.87,
+   "lo": 0.7901947810519012,
+   "hi": 0.9224290614158575
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.82,
+   "lo": 0.7333246397578691,
+   "hi": 0.8829986834574896
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.85,
+   "lo": 0.7671626666784216,
+   "hi": 0.906940968088377
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.84,
+   "lo": 0.7557955544110557,
+   "hi": 0.8990479765052628
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.9,
+   "lo": 0.8256326956323347,
+   "hi": 0.9447714583868639
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.88,
+   "lo": 0.8018773199709163,
+   "hi": 0.9300066263473222
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.15,
+   "lo": 0.09305903191162297,
+   "hi": 0.23283733332157835
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.15,
+   "lo": 0.09305903191162297,
+   "hi": 0.23283733332157835
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.2,
+   "lo": 0.1333659225590988,
+   "hi": 0.28883096192650237
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.15,
+   "lo": 0.09305903191162297,
+   "hi": 0.23283733332157835
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.18,
+   "lo": 0.11700131654251038,
+   "hi": 0.26667536024213084
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.14,
+   "lo": 0.08526265754464905,
+   "hi": 0.22137360383807236
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.16,
+   "lo": 0.10095202349473717,
+   "hi": 0.24420444558894414
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.07,
+   "lo": 0.034318824364064096,
+   "hi": 0.13749671006529757
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.11,
+   "lo": 0.06254131955225126,
+   "hi": 0.18631463027903022
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.18,
+   "lo": 0.11700131654251038,
+   "hi": 0.26667536024213084
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.11,
+   "lo": 0.06254131955225126,
+   "hi": 0.18631463027903022
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.1,
+   "lo": 0.05522854161313613,
+   "hi": 0.1743673043676654
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.13,
+   "lo": 0.07757093858414264,
+   "hi": 0.20980521894809878
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.1,
+   "lo": 0.05522854161313613,
+   "hi": 0.1743673043676654
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.24,
+   "lo": 0.16691211265459965,
+   "hi": 0.3323251872329213
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.26,
+   "lo": 0.18404578126986462,
+   "hi": 0.35371172631861636
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.24,
+   "lo": 0.16691211265459965,
+   "hi": 0.3323251872329213
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.23,
+   "lo": 0.15843154746876406,
+   "hi": 0.32154564856827694
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.26,
+   "lo": 0.18404578126986462,
+   "hi": 0.35371172631861636
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.25,
+   "lo": 0.1754509400372426,
+   "hi": 0.3430464637007583
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.26,
+   "lo": 0.18404578126986462,
+   "hi": 0.35371172631861636
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.15,
+   "lo": 0.09305903191162297,
+   "hi": 0.23283733332157835
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.15,
+   "lo": 0.09305903191162297,
+   "hi": 0.23283733332157835
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.17,
+   "lo": 0.10893476059773155,
+   "hi": 0.25548181233642975
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.15,
+   "lo": 0.09305903191162297,
+   "hi": 0.23283733332157835
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.19,
+   "lo": 0.1251465399270426,
+   "hi": 0.27779024070807856
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.14,
+   "lo": 0.08526265754464905,
+   "hi": 0.22137360383807236
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.13,
+   "lo": 0.07757093858414264,
+   "hi": 0.20980521894809878
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.89,
+   "lo": 0.8136853697209698,
+   "hi": 0.9374586804477487
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.96,
+   "lo": 0.9016278276739262,
+   "hi": 0.984336949448152
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.97,
+   "lo": 0.915479219195973,
+   "hi": 0.9897456617765851
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.96,
+   "lo": 0.9016278276739262,
+   "hi": 0.984336949448152
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.75,
+   "lo": 0.6569535362992417,
+   "hi": 0.8245490599627573
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.69,
+   "lo": 0.5937376052204429,
+   "hi": 0.7722043679386762
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.85,
+   "lo": 0.7671626666784216,
+   "hi": 0.906940968088377
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.91,
+   "lo": 0.8377362530335634,
+   "hi": 0.9519280048361151
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.94,
+   "lo": 0.8752303146877748,
+   "hi": 0.9722142547333433
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.96,
+   "lo": 0.9016278276739262,
+   "hi": 0.984336949448152
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.94,
+   "lo": 0.8752303146877748,
+   "hi": 0.9722142547333433
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.75,
+   "lo": 0.6569535362992417,
+   "hi": 0.8245490599627573
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.61,
+   "lo": 0.5120283616749817,
+   "hi": 0.699832780680298
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.88,
+   "lo": 0.8018773199709163,
+   "hi": 0.9300066263473222
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.88,
+   "lo": 0.8018773199709163,
+   "hi": 0.9300066263473222
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.95,
+   "lo": 0.8882480347279118,
+   "hi": 0.9784566385436864
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.96,
+   "lo": 0.9016278276739262,
+   "hi": 0.984336949448152
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.94,
+   "lo": 0.8752303146877748,
+   "hi": 0.9722142547333433
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.74,
+   "lo": 0.6462882736813838,
+   "hi": 0.8159542187301354
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.66,
+   "lo": 0.5627754565831095,
+   "hi": 0.74538620502457
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.86,
+   "lo": 0.7786263961619276,
+   "hi": 0.914737342455351
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "chaotic",
+   "n": 100,
+   "rate": 0.91,
+   "lo": 0.8377362530335634,
+   "hi": 0.9519280048361151
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "direct",
+   "n": 100,
+   "rate": 0.93,
+   "lo": 0.8625032899347025,
+   "hi": 0.965681175635936
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "high_press",
+   "n": 100,
+   "rate": 0.94,
+   "lo": 0.8752303146877748,
+   "hi": 0.9722142547333433
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "low_block_counter",
+   "n": 100,
+   "rate": 0.93,
+   "lo": 0.8625032899347025,
+   "hi": 0.965681175635936
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "mid_block",
+   "n": 100,
+   "rate": 0.73,
+   "lo": 0.6356769977376873,
+   "hi": 0.8073053908233518
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "possession",
+   "n": 100,
+   "rate": 0.62,
+   "lo": 0.5220957382071033,
+   "hi": 0.7090255079986562
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "opp": "wing_play",
+   "n": 100,
+   "rate": 0.87,
+   "lo": 0.7901947810519012,
+   "hi": 0.9224290614158575
+  }
+ ],
+ "headline": [
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "library",
+   "overall": [
+    0.14,
+    0.11625478994968162,
+    0.16767500334471877
+   ],
+   "weakest": {
+    "opp": "direct",
+    "rate": 0.11,
+    "lo": 0.06254131955225126,
+    "hi": 0.18631463027903022
+   },
+   "beats_baseline_everywhere": null
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "overall": [
+    0.2357142857142857,
+    0.20576625331344783,
+    0.26854728541458417
+   ],
+   "weakest": {
+    "opp": "chaotic",
+    "rate": 0.21,
+    "lo": 0.14165549531645788,
+    "hi": 0.2998014930196232
+   },
+   "beats_baseline_everywhere": true
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "main_latest",
+   "overall": [
+    0.17857142857142858,
+    0.15197647794199964,
+    0.20867512321371495
+   ],
+   "weakest": {
+    "opp": "direct",
+    "rate": 0.13,
+    "lo": 0.07757093858414264,
+    "hi": 0.20980521894809878
+   },
+   "beats_baseline_everywhere": true
+  },
+  {
+   "objective": "chance_60",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "overall": [
+    0.1,
+    0.0799123719749178,
+    0.12445406501886036
+   ],
+   "weakest": {
+    "opp": "chaotic",
+    "rate": 0.08,
+    "lo": 0.04109296948581091,
+    "hi": 0.14998266879403072
+   },
+   "beats_baseline_everywhere": false
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "library",
+   "overall": [
+    0.11142857142857143,
+    0.09020607536740613,
+    0.13689274914083552
+   ],
+   "weakest": {
+    "opp": "chaotic",
+    "rate": 0.11,
+    "lo": 0.06254131955225126,
+    "hi": 0.18631463027903022
+   },
+   "beats_baseline_everywhere": null
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "overall": [
+    0.5114285714285715,
+    0.47443649617036954,
+    0.5482958913440941
+   ],
+   "weakest": {
+    "opp": "chaotic",
+    "rate": 0.51,
+    "lo": 0.4134784047743415,
+    "hi": 0.6057816990761385
+   },
+   "beats_baseline_everywhere": true
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "overall": [
+    0.10142857142857142,
+    0.08119454721148228,
+    0.1260134382216038
+   ],
+   "weakest": {
+    "opp": "chaotic",
+    "rate": 0.1,
+    "lo": 0.05522854161313613,
+    "hi": 0.1743673043676654
+   },
+   "beats_baseline_everywhere": false
+  },
+  {
+   "objective": "keep_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "overall": [
+    0.20857142857142857,
+    0.1801040077349598,
+    0.24022011064622142
+   ],
+   "weakest": {
+    "opp": "high_press",
+    "rate": 0.2,
+    "lo": 0.1333659225590988,
+    "hi": 0.28883096192650237
+   },
+   "beats_baseline_everywhere": true
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "library",
+   "overall": [
+    0.8485714285714285,
+    0.8201176877459198,
+    0.8732201314452164
+   ],
+   "weakest": {
+    "opp": "direct",
+    "rate": 0.83,
+    "lo": 0.7445181876635703,
+    "hi": 0.8910652394022684
+   },
+   "beats_baseline_everywhere": null
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "overall": [
+    0.8742857142857143,
+    0.8476650448128266,
+    0.8968206462858527
+   ],
+   "weakest": {
+    "opp": "chaotic",
+    "rate": 0.86,
+    "lo": 0.7786263961619276,
+    "hi": 0.914737342455351
+   },
+   "beats_baseline_everywhere": false
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "main_latest",
+   "overall": [
+    0.86,
+    0.8323249966552813,
+    0.8837452100503185
+   ],
+   "weakest": {
+    "opp": "high_press",
+    "rate": 0.82,
+    "lo": 0.7333246397578691,
+    "hi": 0.8829986834574896
+   },
+   "beats_baseline_everywhere": false
+  },
+  {
+   "objective": "protect_180",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "overall": [
+    0.8628571428571429,
+    0.8353855047778673,
+    0.8863677988063483
+   ],
+   "weakest": {
+    "opp": "high_press",
+    "rate": 0.82,
+    "lo": 0.7333246397578691,
+    "hi": 0.8829986834574896
+   },
+   "beats_baseline_everywhere": false
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "library",
+   "overall": [
+    0.16142857142857142,
+    0.1360319278219226,
+    0.19052109206209675
+   ],
+   "weakest": {
+    "opp": "possession",
+    "rate": 0.14,
+    "lo": 0.08526265754464905,
+    "hi": 0.22137360383807236
+   },
+   "beats_baseline_everywhere": null
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "overall": [
+    0.11428571428571428,
+    0.09279180798430134,
+    0.13999011340255615
+   ],
+   "weakest": {
+    "opp": "chaotic",
+    "rate": 0.07,
+    "lo": 0.034318824364064096,
+    "hi": 0.13749671006529757
+   },
+   "beats_baseline_everywhere": false
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "main_latest",
+   "overall": [
+    0.24857142857142858,
+    0.21798505841878554,
+    0.28190241626301793
+   ],
+   "weakest": {
+    "opp": "low_block_counter",
+    "rate": 0.23,
+    "lo": 0.15843154746876406,
+    "hi": 0.32154564856827694
+   },
+   "beats_baseline_everywhere": true
+  },
+  {
+   "objective": "score_120",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "overall": [
+    0.15428571428571428,
+    0.1294194097102539,
+    0.18292586797722576
+   ],
+   "weakest": {
+    "opp": "wing_play",
+    "rate": 0.13,
+    "lo": 0.07757093858414264,
+    "hi": 0.20980521894809878
+   },
+   "beats_baseline_everywhere": false
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "library",
+   "overall": [
+    0.8671428571428571,
+    0.8399831423329277,
+    0.8902948065692117
+   ],
+   "weakest": {
+    "opp": "possession",
+    "rate": 0.69,
+    "lo": 0.5937376052204429,
+    "hi": 0.7722043679386762
+   },
+   "beats_baseline_everywhere": null
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "lookahead_fast@objective",
+   "overall": [
+    0.8557142857142858,
+    0.8277408785209116,
+    0.8798046828667644
+   ],
+   "weakest": {
+    "opp": "possession",
+    "rate": 0.61,
+    "lo": 0.5120283616749817,
+    "hi": 0.699832780680298
+   },
+   "beats_baseline_everywhere": false
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "main_latest",
+   "overall": [
+    0.8557142857142858,
+    0.8277408785209116,
+    0.8798046828667644
+   ],
+   "weakest": {
+    "opp": "possession",
+    "rate": 0.66,
+    "lo": 0.5627754565831095,
+    "hi": 0.74538620502457
+   },
+   "beats_baseline_everywhere": false
+  },
+  {
+   "objective": "win_back_30",
+   "condition": "fresh",
+   "team": "selector_latest",
+   "overall": [
+    0.8471428571428572,
+    0.8185955106747251,
+    0.8719007600771034
+   ],
+   "weakest": {
+    "opp": "possession",
+    "rate": 0.62,
+    "lo": 0.5220957382071033,
+    "hi": 0.7090255079986562
+   },
+   "beats_baseline_everywhere": false
+  }
+ ],
+ "args": {
+  "teams": [
+   "library",
+   "selector_latest",
+   "main_latest",
+   "lookahead_fast@objective"
+  ],
+  "opponents": [
+   "styles"
+  ],
+  "objectives": [
+   "score_120",
+   "chance_60",
+   "keep_30",
+   "win_back_30",
+   "protect_180"
+  ],
+  "conditions": [
+   "fresh"
+  ],
+  "scenarios": 100,
+  "baseline": "library",
+  "workers": 4,
+  "seed": 7,
+  "models": "/home/user/SoccerSim/data/models",
+  "out": "reports/objectives/baseline_pool_v8",
+  "force": false
+ }
+}
