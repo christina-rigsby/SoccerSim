@@ -1,6 +1,6 @@
 # League configuration (spec §11 Phase C).
 
-# Opponent pool v8 (D-060: v7 with skill-aware instincts: decisions depend on who the player
+# Opponent pool v9 (D-062: v8 plus run 7's five promoted plays in the library). v8 (D-060: v7 with skill-aware instincts: decisions depend on who the player
 # is). v7 (D-059: v6 with blocked shots earning no reward; the reward settings are now
 # part of the pool). v6 (D-056: v5 under the fixed laws: pressure on every passer, blocked shots,
 # gradual fatigue; the simulator config is now part of the pool). v5 (D-053: v4 plus the branchy rewrites of five attacking plays and four failing
@@ -8,7 +8,7 @@
 # only continues from the previous run's generator when everything that defines the pool
 # (runs.pool_definition) is identical, so any change here is a deliberate version bump that
 # starts a new run lineage. Bump pool_version with it.
-pool_version: 8
+pool_version: 9
 
 # Scripted styles are library-only teams. They differ by play preferences, not formation:
 # every style draws its formation at random from `formations` each game, so the generator
@@ -56,8 +56,8 @@ randomise_eval_formations: true
 # Where this pool's data lives. Held-out reference games (library v held-out styles) are kept
 # apart from training data and used only for promotion's library medians.
 data:
-  selfplay: data/selfplay_pool_v8
-  heldout_reference: data/heldout_reference_pool_v8
+  selfplay: data/selfplay_pool_v9
+  heldout_reference: data/heldout_reference_pool_v9
 
 snapshot_every: 5          # updates between frozen snapshots of the main agent
 main_exploiter_reset_every: 20

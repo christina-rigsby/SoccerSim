@@ -1418,3 +1418,24 @@ intent of D-060: once players act according to who they are, generating plays fo
 on the pitch pays off. Five plays were promoted (plays/generated_and_promoted/run_7; not in the
 library unless listed in configs/library.yaml).
 
+## D-062 · Run 7's plays join the library (pool v9); longer look-ahead trials; objectives recalibrated
+
+- The five plays promoted by run 7 join the library (configs/library.yaml `promoted_runs`), at the
+  user's request. Models identify plays by their position in the library (D-055), so this is
+  pool v9 and needs a full retraining before the models use them.
+- The objective-driven look-ahead's trials now last a fifth of the objective's time limit, between
+  12 and 24 s (scoring within 2 minutes: 24 s), so long objectives can be seen within a trial.
+- D-061 overstated the generator's lead: +0.068 ± 0.033 goals per 2-minute game over the selector
+  is about 2 standard errors — evidence, not a clear win.
+- The user rejected targets on the D-059 objectives and asked for objectives where high success is
+  realistic. `scripts/objective_calibration.py` measures each kind of objective's success rate
+  against the time allowed (one long game per situation gives every time limit at once):
+  reports/objectives/calibration. Scoring stays rare at any horizon (generator 30% within 3
+  minutes); an unblocked shot is very achievable (generator 89% within 60 s, library 51%);
+  keeping the ball falls off quickly (library 75% for 10 s, 15% for 30 s); winning the ball back
+  and protecting a lead are high for every team. Passes completed into the box are almost never
+  recorded (0–7%): carriers enter the box by dribbling, so that kind is unsuitable.
+- Training time is reported by `scripts/training_time_report.py` (reports/training_time): the
+  generator's reinforcement learning so far is only 96 league games; nearly all of what it knows
+  comes from imitating the library.
+
