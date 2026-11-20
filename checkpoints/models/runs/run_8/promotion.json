@@ -1,0 +1,2003 @@
+{
+  "run": 8,
+  "dir": "/home/user/SoccerSim/plays/generated_and_promoted/run_8",
+  "elites": 34,
+  "promoted": 4,
+  "kept_from_earlier_runs": [
+    {
+      "id": "gen_67c4d0530b",
+      "cell": "final_third|near_wing|fast|3|create_chance",
+      "from_run": 1
+    },
+    {
+      "id": "gen_dcd5c3003a",
+      "cell": "mid_own|near_wing|fast|2|create_chance",
+      "from_run": 1
+    },
+    {
+      "id": "gen_336193263d",
+      "cell": "final_third|near_halfspace|fast|0|score",
+      "from_run": 4
+    },
+    {
+      "id": "gen_9e38cedbac",
+      "cell": "mid_own|near_halfspace|fast|2|create_chance",
+      "from_run": 4
+    },
+    {
+      "id": "gen_ba9a71b7cc",
+      "cell": "final_third|near_wing|fast|1|create_chance",
+      "from_run": 4
+    },
+    {
+      "id": "gen_144698e3af",
+      "cell": "mid_opp|center|fast|3|score",
+      "from_run": 5
+    },
+    {
+      "id": "gen_1463260af9",
+      "cell": "own_third|center|slow|2|retain_possession",
+      "from_run": 5
+    },
+    {
+      "id": "gen_2eda758517",
+      "cell": "mid_opp|center|fast|3|create_chance",
+      "from_run": 5
+    },
+    {
+      "id": "gen_406e8b1162",
+      "cell": "own_third|center|medium|2|create_chance",
+      "from_run": 5
+    },
+    {
+      "id": "gen_47836bc016",
+      "cell": "own_third|near_halfspace|slow|3|retain_possession",
+      "from_run": 5
+    },
+    {
+      "id": "gen_48c8a0c081",
+      "cell": "mid_own|center|fast|3|progress_ball",
+      "from_run": 5
+    },
+    {
+      "id": "gen_5f7fcf6c88",
+      "cell": "final_third|near_wing|fast|0|score",
+      "from_run": 5
+    },
+    {
+      "id": "gen_67a6d6dba5",
+      "cell": "final_third|near_wing|medium|0|progress_ball",
+      "from_run": 5
+    },
+    {
+      "id": "gen_6bc321d77a",
+      "cell": "mid_opp|center|medium|3|score",
+      "from_run": 5
+    },
+    {
+      "id": "gen_6d7f6eb619",
+      "cell": "own_third|center|fast|0|create_chance",
+      "from_run": 5
+    },
+    {
+      "id": "gen_78e898d85b",
+      "cell": "mid_opp|center|fast|1|score",
+      "from_run": 5
+    },
+    {
+      "id": "gen_8706264fbc",
+      "cell": "final_third|near_wing|slow|0|retain_possession",
+      "from_run": 5
+    },
+    {
+      "id": "gen_9658e4d097",
+      "cell": "mid_own|center|slow|3|retain_possession",
+      "from_run": 5
+    },
+    {
+      "id": "gen_a25c0f8dcc",
+      "cell": "own_third|near_wing|medium|1|progress_ball",
+      "from_run": 5
+    },
+    {
+      "id": "gen_a28bac86d5",
+      "cell": "own_third|center|fast|1|progress_ball",
+      "from_run": 5
+    },
+    {
+      "id": "gen_a2cdac110e",
+      "cell": "mid_own|near_wing|fast|0|create_chance",
+      "from_run": 5
+    },
+    {
+      "id": "gen_a5d97d5581",
+      "cell": "mid_own|near_wing|fast|3|progress_ball",
+      "from_run": 5
+    },
+    {
+      "id": "gen_b36cd7036d",
+      "cell": "mid_opp|near_halfspace|slow|0|retain_possession",
+      "from_run": 5
+    },
+    {
+      "id": "gen_b664e8ad38",
+      "cell": "own_third|center|slow|3|retain_possession",
+      "from_run": 5
+    },
+    {
+      "id": "gen_c83e0dbb29",
+      "cell": "mid_opp|center|fast|1|create_chance",
+      "from_run": 5
+    },
+    {
+      "id": "gen_f7ccc6d622",
+      "cell": "final_third|near_wing|medium|1|create_chance",
+      "from_run": 5
+    },
+    {
+      "id": "gen_29fb8bf72a",
+      "cell": "own_third|center|slow|1|retain_possession",
+      "from_run": 6
+    },
+    {
+      "id": "gen_325e03f467",
+      "cell": "final_third|near_wing|fast|2|create_chance",
+      "from_run": 6
+    },
+    {
+      "id": "gen_4e442422ff",
+      "cell": "mid_own|near_wing|fast|3|create_chance",
+      "from_run": 6
+    },
+    {
+      "id": "gen_60f4d78034",
+      "cell": "own_third|center|fast|2|progress_ball",
+      "from_run": 6
+    },
+    {
+      "id": "gen_8c5861156f",
+      "cell": "own_third|near_wing|fast|3|create_chance",
+      "from_run": 6
+    },
+    {
+      "id": "gen_8d0ad4b17b",
+      "cell": "mid_opp|near_halfspace|fast|0|score",
+      "from_run": 6
+    },
+    {
+      "id": "gen_b436e18217",
+      "cell": "mid_opp|near_halfspace|fast|3|create_chance",
+      "from_run": 6
+    },
+    {
+      "id": "gen_d727d4f0c0",
+      "cell": "own_third|center|medium|3|score",
+      "from_run": 6
+    }
+  ],
+  "heldout_medians_from": "/home/user/SoccerSim/data/heldout_reference_pool_v9",
+  "candidates": [
+    {
+      "id": "gen_402065b976",
+      "cell": "mid_own|center|fast|2|create_chance",
+      "promoted": true,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.02108435324570069,
+          "n": 2,
+          "library_median": -1.849999989644857e-05,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": 0.017383255558362554,
+          "n": 3,
+          "library_median": -3.5000000480067683e-06,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": 0.006021001705625069,
+          "n": 2,
+          "library_median": 1.849999989644857e-05,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": 0.0,
+          "n": 2,
+          "library_median": -6.000000212225132e-06,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": 0.0023783422564879215,
+          "n": 4,
+          "library_median": 5.149999924469739e-05,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 0.00516004761126763,
+          "n": 4,
+          "library_median": -7.200000254670158e-05,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 0.012920960101492462,
+          "n": 2,
+          "library_median": -5.199999941396527e-05,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 19,
+        "mean": 0.00854505032903928
+      },
+      "closest_earlier_promoted": null,
+      "path": "/home/user/SoccerSim/plays/generated_and_promoted/run_8/gen_402065b976.yaml"
+    },
+    {
+      "id": "gen_920ef21d3d",
+      "cell": "mid_opp|near_halfspace|medium|2|create_chance",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.02824067065655632,
+          "n": 3,
+          "library_median": 2.7000000955013093e-05,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": 0.05045567442131191,
+          "n": 3,
+          "library_median": 4.600000102072954e-05,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": -0.005057817396932968,
+          "n": 3,
+          "library_median": -0.00011999999696854502,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": 0.030083250568150508,
+          "n": 4,
+          "library_median": 0.0007489999989047647,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": 0.02071513539201166,
+          "n": 3,
+          "library_median": -4.3000000005122274e-05,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 0.030083250568150508,
+          "n": 4,
+          "library_median": -0.000849499978357926,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 0.002737943244192112,
+          "n": 3,
+          "library_median": -5.8000001445179805e-05,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": 0.022305325979025886
+      }
+    },
+    {
+      "id": "gen_d4d9bf93ff",
+      "cell": "own_third|center|medium|2|progress_ball",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": -0.000705323333288489,
+          "n": 3,
+          "library_median": -0.0006760000251233578,
+          "beats": false
+        },
+        "mid_block": {
+          "mean_reward": -0.01109773776070418,
+          "n": 4,
+          "library_median": -0.0006510000093840063,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": -0.0006540128851987314,
+          "n": 4,
+          "library_median": -0.00068450000253506,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": -0.010003749703147638,
+          "n": 4,
+          "library_median": -0.0008950000046752393,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": -0.004421872373508791,
+          "n": 4,
+          "library_median": -0.000645000021904707,
+          "beats": false
+        },
+        "wing_play": {
+          "mean_reward": -0.010003749703147638,
+          "n": 4,
+          "library_median": -0.0007389999809674919,
+          "beats": false
+        },
+        "chaotic": {
+          "mean_reward": -0.0012179208830021776,
+          "n": 4,
+          "library_median": -0.0006459999713115394,
+          "beats": false
+        }
+      },
+      "overall": {
+        "n": 36,
+        "mean": -0.004170198423186169
+      }
+    },
+    {
+      "id": "gen_ab547cff10",
+      "cell": "own_third|near_halfspace|fast|3|progress_ball",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.0012057265263975437,
+          "n": 3,
+          "library_median": -0.0006100000173319131,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": 0.0006699076648235676,
+          "n": 4,
+          "library_median": -0.0005300000193528831,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": -0.0020248127860373758,
+          "n": 4,
+          "library_median": -0.0006775000074412674,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": -0.00724963923058131,
+          "n": 4,
+          "library_median": -0.0006780000112485141,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": 0.0012292556789681019,
+          "n": 3,
+          "library_median": -0.0005619999719783664,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": -0.00724963923058131,
+          "n": 4,
+          "library_median": -0.0007265000022016466,
+          "beats": false
+        },
+        "chaotic": {
+          "mean_reward": -0.0005243118772507629,
+          "n": 3,
+          "library_median": -0.0005670000100508332,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 26,
+        "mean": -0.0020622585901985025
+      }
+    },
+    {
+      "id": "gen_73a7bd3462",
+      "cell": "own_third|near_halfspace|medium|0|score",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.002922798944770379,
+          "n": 4,
+          "library_median": -0.0006100000173319131,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": 0.002922798944770379,
+          "n": 4,
+          "library_median": -0.0005300000193528831,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": -0.040048,
+          "n": 1,
+          "library_median": -0.0006775000074412674,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": 0.002922798944770379,
+          "n": 4,
+          "library_median": -0.0006780000112485141,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": 0.002922798944770379,
+          "n": 4,
+          "library_median": -0.0005619999719783664,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 0.002922798944770379,
+          "n": 4,
+          "library_median": -0.0007265000022016466,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 1.032869,
+          "n": 1,
+          "library_median": -0.0005670000100508332,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 29,
+        "mean": 0.037620378582600277
+      }
+    },
+    {
+      "id": "gen_a05b691027",
+      "cell": "own_third|center|slow|2|progress_ball",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.0064354926364401455,
+          "n": 4,
+          "library_median": -0.0006760000251233578,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": -0.0015730000000000002,
+          "n": 2,
+          "library_median": -0.0006510000093840063,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": -0.003114,
+          "n": 1,
+          "library_median": -0.00068450000253506,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": 0.0064354926364401455,
+          "n": 4,
+          "library_median": -0.0008950000046752393,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": 0.0064354926364401455,
+          "n": 4,
+          "library_median": -0.000645000021904707,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 0.0064354926364401455,
+          "n": 4,
+          "library_median": -0.0007389999809674919,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": -0.0015050000000000003,
+          "n": 4,
+          "library_median": -0.0006459999713115394,
+          "beats": false
+        }
+      },
+      "overall": {
+        "n": 47,
+        "mean": -0.00580955569823314
+      }
+    },
+    {
+      "id": "gen_81eaa89b15",
+      "cell": "mid_opp|center|medium|0|create_chance",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": -0.00023491429783737498,
+          "n": 3,
+          "library_median": 0.0,
+          "beats": false
+        },
+        "mid_block": {
+          "mean_reward": -0.00035893118088244834,
+          "n": 3,
+          "library_median": 0.0,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": -0.016729094449573056,
+          "n": 4,
+          "library_median": 0.0,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": -0.0011120500104857042,
+          "n": 4,
+          "library_median": -0.0003569999971659854,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": 0.00011277618376489933,
+          "n": 3,
+          "library_median": 0.0,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": -0.0011120500104857042,
+          "n": 4,
+          "library_median": -0.00016649999452056363,
+          "beats": false
+        },
+        "chaotic": {
+          "mean_reward": -8.8e-05,
+          "n": 5,
+          "library_median": 0.0,
+          "beats": false
+        }
+      },
+      "overall": {
+        "n": 31,
+        "mean": -0.0025063221215175045
+      }
+    },
+    {
+      "id": "gen_94f04338a8",
+      "cell": "mid_opp|center|fast|2|create_chance",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.000588,
+          "n": 1,
+          "library_median": 0.0,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": 0.001387,
+          "n": 1,
+          "library_median": 0.0,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": -0.02961,
+          "n": 1,
+          "library_median": 0.0,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": 0.006281165067310301,
+          "n": 4,
+          "library_median": -0.0003569999971659854,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": 0.006281165067310301,
+          "n": 4,
+          "library_median": 0.0,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 0.006281165067310301,
+          "n": 4,
+          "library_median": -0.00016649999452056363,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 0.001769,
+          "n": 1,
+          "library_median": 0.0,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 18,
+        "mean": 0.0031232211559846443
+      }
+    },
+    {
+      "id": "gen_dbff92e629",
+      "cell": "own_third|center|slow|1|progress_ball",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": null,
+          "n": 0,
+          "library_median": -0.0006760000251233578,
+          "beats": false
+        },
+        "mid_block": {
+          "mean_reward": null,
+          "n": 0,
+          "library_median": -0.0006510000093840063,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": null,
+          "n": 0,
+          "library_median": -0.00068450000253506,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": null,
+          "n": 0,
+          "library_median": -0.0008950000046752393,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": 3.657888872073481e-05,
+          "n": 1,
+          "library_median": -0.000645000021904707,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": null,
+          "n": 0,
+          "library_median": -0.0007389999809674919,
+          "beats": false
+        },
+        "chaotic": {
+          "mean_reward": null,
+          "n": 0,
+          "library_median": -0.0006459999713115394,
+          "beats": false
+        }
+      },
+      "overall": {
+        "n": 3,
+        "mean": 0.00039052629624024493
+      }
+    },
+    {
+      "id": "gen_f7a9bb1d7c",
+      "cell": "mid_opp|near_wing|medium|2|create_chance",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.004454203932320562,
+          "n": 4,
+          "library_median": -0.0007334999972954392,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": -0.012399581227801035,
+          "n": 3,
+          "library_median": -0.0011649999651126564,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": 0.0025366527350134008,
+          "n": 3,
+          "library_median": -0.0010504999663680792,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": 0.03326709283519445,
+          "n": 4,
+          "library_median": -0.000769499980378896,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": -0.00023477148114479235,
+          "n": 3,
+          "library_median": -0.0012019999558106065,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 0.03326709283519445,
+          "n": 4,
+          "library_median": -0.0016469999682158232,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": -0.01835346241295172,
+          "n": 3,
+          "library_median": -0.0011990000493824482,
+          "beats": false
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": 0.008275002968757727
+      }
+    },
+    {
+      "id": "gen_546cc32478",
+      "cell": "mid_opp|near_wing|fast|2|score",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.15146298774783526,
+          "n": 3,
+          "library_median": -0.0007334999972954392,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": -0.026920507930155785,
+          "n": 3,
+          "library_median": -0.0011649999651126564,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": 0.0024023392405512502,
+          "n": 3,
+          "library_median": -0.0010504999663680792,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": -0.004506511138576118,
+          "n": 4,
+          "library_median": -0.000769499980378896,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": -0.017282492758060344,
+          "n": 4,
+          "library_median": -0.0012019999558106065,
+          "beats": false
+        },
+        "wing_play": {
+          "mean_reward": -0.004506511138576118,
+          "n": 4,
+          "library_median": -0.0016469999682158232,
+          "beats": false
+        },
+        "chaotic": {
+          "mean_reward": 0.035024594207281066,
+          "n": 3,
+          "library_median": -0.0011990000493824482,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 25,
+        "mean": 0.015265207186227401
+      }
+    },
+    {
+      "id": "gen_a59310d114",
+      "cell": "mid_own|near_wing|medium|1|progress_ball",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": -0.0011319147357378833,
+          "n": 4,
+          "library_median": -0.00027799999224953353,
+          "beats": false
+        },
+        "mid_block": {
+          "mean_reward": -0.0011319147357378833,
+          "n": 4,
+          "library_median": -0.00029600001289509237,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": -0.0011319147357378833,
+          "n": 4,
+          "library_median": -0.00033400001120753586,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": -0.0011319147357378833,
+          "n": 4,
+          "library_median": -0.00031599999056197703,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": -0.001284,
+          "n": 1,
+          "library_median": -0.0003220000071451068,
+          "beats": false
+        },
+        "wing_play": {
+          "mean_reward": -0.0011319147357378833,
+          "n": 4,
+          "library_median": -0.0002699999895412475,
+          "beats": false
+        },
+        "chaotic": {
+          "mean_reward": -0.0011319147357378833,
+          "n": 4,
+          "library_median": -0.00029299999005161226,
+          "beats": false
+        }
+      },
+      "overall": {
+        "n": 29,
+        "mean": 0.0009689671152514068
+      }
+    },
+    {
+      "id": "gen_93c2ef10ab",
+      "cell": "mid_opp|near_halfspace|fast|1|create_chance",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.349516982294305,
+          "n": 3,
+          "library_median": 2.7000000955013093e-05,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": 0.0010433935636693856,
+          "n": 1,
+          "library_median": 4.600000102072954e-05,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": 0.03781139436426564,
+          "n": 1,
+          "library_median": -0.00011999999696854502,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": null,
+          "n": 0,
+          "library_median": 0.0007489999989047647,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": 0.01271725678388053,
+          "n": 2,
+          "library_median": -4.3000000005122274e-05,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 0.0010433935636693856,
+          "n": 1,
+          "library_median": -0.000849499978357926,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 0.0010433935636693856,
+          "n": 1,
+          "library_median": -5.8000001445179805e-05,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 10,
+        "mean": 0.11191130355059498
+      }
+    },
+    {
+      "id": "gen_aaed078c77",
+      "cell": "final_third|near_wing|fast|2|score",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": -0.04247436920708394,
+          "n": 3,
+          "library_median": -0.00023999999393709004,
+          "beats": false
+        },
+        "mid_block": {
+          "mean_reward": -0.002930142331421772,
+          "n": 4,
+          "library_median": -0.0004670000053010881,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": -0.0026591186290762826,
+          "n": 3,
+          "library_median": -0.0006539999740198255,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": -0.0016273690194894726,
+          "n": 4,
+          "library_median": 0.0016740000573918223,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": -0.01417785441131258,
+          "n": 3,
+          "library_median": -0.00040550000267103314,
+          "beats": false
+        },
+        "wing_play": {
+          "mean_reward": -0.0016273690194894726,
+          "n": 4,
+          "library_median": 0.00197350000962615,
+          "beats": false
+        },
+        "chaotic": {
+          "mean_reward": -0.03249167777909947,
+          "n": 3,
+          "library_median": 0.0004290000069886446,
+          "beats": false
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": -0.012506190898388317
+      }
+    },
+    {
+      "id": "gen_6e65b356f4",
+      "cell": "mid_opp|near_wing|fast|1|create_chance",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.1116888632562926,
+          "n": 2,
+          "library_median": -0.0007334999972954392,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": 0.2121545129074568,
+          "n": 1,
+          "library_median": -0.0011649999651126564,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": 0.0043452608213102595,
+          "n": 2,
+          "library_median": -0.0010504999663680792,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": null,
+          "n": 0,
+          "library_median": -0.000769499980378896,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": null,
+          "n": 0,
+          "library_median": -0.0012019999558106065,
+          "beats": false
+        },
+        "wing_play": {
+          "mean_reward": 0.0008075035272294903,
+          "n": 1,
+          "library_median": -0.0016469999682158232,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 0.21901959049130174,
+          "n": 1,
+          "library_median": -0.0011990000493824482,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 9,
+        "mean": 0.07365598389791041
+      }
+    },
+    {
+      "id": "gen_63079e1b8f",
+      "cell": "mid_opp|center|slow|0|retain_possession",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": -0.006725181589894796,
+          "n": 3,
+          "library_median": 0.0,
+          "beats": false
+        },
+        "mid_block": {
+          "mean_reward": -0.0019074718143153736,
+          "n": 3,
+          "library_median": 0.0,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": -0.0036741490016458205,
+          "n": 3,
+          "library_median": 0.0,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": -0.0021840080705390146,
+          "n": 4,
+          "library_median": -0.0003569999971659854,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": -0.001808861283675899,
+          "n": 3,
+          "library_median": 0.0,
+          "beats": false
+        },
+        "wing_play": {
+          "mean_reward": -0.0021840080705390146,
+          "n": 4,
+          "library_median": -0.00016649999452056363,
+          "beats": false
+        },
+        "chaotic": {
+          "mean_reward": -0.0012901949926965913,
+          "n": 3,
+          "library_median": 0.0,
+          "beats": false
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": -0.002503693358791565
+      }
+    },
+    {
+      "id": "gen_0a352d72d3",
+      "cell": "mid_opp|near_wing|fast|1|score",
+      "promoted": true,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.031780652998701774,
+          "n": 4,
+          "library_median": -0.0007334999972954392,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": 0.06492784596931923,
+          "n": 4,
+          "library_median": -0.0011649999651126564,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": 0.025562244211489404,
+          "n": 3,
+          "library_median": -0.0010504999663680792,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": 0.01003969401817418,
+          "n": 4,
+          "library_median": -0.000769499980378896,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": 0.020738738608326993,
+          "n": 3,
+          "library_median": -0.0012019999558106065,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 0.01003969401817418,
+          "n": 4,
+          "library_median": -0.0016469999682158232,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 0.028889589233458055,
+          "n": 3,
+          "library_median": -0.0011990000493824482,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 27,
+        "mean": 0.024664528302862993
+      },
+      "closest_earlier_promoted": {
+        "run": 7,
+        "id": "gen_e9b1723f45",
+        "similarity": 1.0
+      },
+      "path": "/home/user/SoccerSim/plays/generated_and_promoted/run_8/gen_0a352d72d3.yaml"
+    },
+    {
+      "id": "gen_d0cee3c696",
+      "cell": "own_third|center|medium|1|progress_ball",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.0003196409464762175,
+          "n": 3,
+          "library_median": -0.0006760000251233578,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": -0.00029411905375209313,
+          "n": 3,
+          "library_median": -0.0006510000093840063,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": -0.0008222672439853583,
+          "n": 3,
+          "library_median": -0.00068450000253506,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": -0.00031867749145488835,
+          "n": 4,
+          "library_median": -0.0008950000046752393,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": 7.0405101811379005e-06,
+          "n": 3,
+          "library_median": -0.000645000021904707,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": -0.00031867749145488835,
+          "n": 4,
+          "library_median": -0.0007389999809674919,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": -0.0008852209810673398,
+          "n": 3,
+          "library_median": -0.0006459999713115394,
+          "beats": false
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": -0.0003067998915867256
+      }
+    },
+    {
+      "id": "gen_a101bf69a4",
+      "cell": "mid_own|center|medium|3|create_chance",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": -0.0003746169662362248,
+          "n": 3,
+          "library_median": -1.849999989644857e-05,
+          "beats": false
+        },
+        "mid_block": {
+          "mean_reward": -0.00034268444504515633,
+          "n": 3,
+          "library_median": -3.5000000480067683e-06,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": -0.000423778057552899,
+          "n": 3,
+          "library_median": 1.849999989644857e-05,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": -0.013079520961411531,
+          "n": 4,
+          "library_median": -6.000000212225132e-06,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": -0.00531585569982231,
+          "n": 3,
+          "library_median": 5.149999924469739e-05,
+          "beats": false
+        },
+        "wing_play": {
+          "mean_reward": -0.013079520961411531,
+          "n": 4,
+          "library_median": -7.200000254670158e-05,
+          "beats": false
+        },
+        "chaotic": {
+          "mean_reward": -0.0017632610339338277,
+          "n": 3,
+          "library_median": -5.199999941396527e-05,
+          "beats": false
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": -0.005387364845794313
+      }
+    },
+    {
+      "id": "gen_c3e1038d24",
+      "cell": "own_third|near_wing|slow|0|retain_possession",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": -0.0009075699665843772,
+          "n": 4,
+          "library_median": -0.000686999992467463,
+          "beats": false
+        },
+        "mid_block": {
+          "mean_reward": -0.0009075699665843772,
+          "n": 4,
+          "library_median": -0.0006114999996498227,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": -0.0009075699665843772,
+          "n": 4,
+          "library_median": -0.0006754999922122806,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": -0.0009075699665843772,
+          "n": 4,
+          "library_median": -0.0006769999745301902,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": -0.0009075699665843772,
+          "n": 4,
+          "library_median": -0.0006179999909363687,
+          "beats": false
+        },
+        "wing_play": {
+          "mean_reward": -0.0009075699665843772,
+          "n": 4,
+          "library_median": -0.0006760000251233578,
+          "beats": false
+        },
+        "chaotic": {
+          "mean_reward": -0.000812,
+          "n": 1,
+          "library_median": -0.0005789999850094318,
+          "beats": false
+        }
+      },
+      "overall": {
+        "n": 29,
+        "mean": -0.0021467475585525875
+      }
+    },
+    {
+      "id": "gen_02ac9846b3",
+      "cell": "final_third|near_wing|fast|1|score",
+      "promoted": true,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.027972197807031283,
+          "n": 3,
+          "library_median": -0.00023999999393709004,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": 0.01830233912526291,
+          "n": 3,
+          "library_median": -0.0004670000053010881,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": 0.014942867996946614,
+          "n": 3,
+          "library_median": -0.0006539999740198255,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": 0.04484137669039934,
+          "n": 4,
+          "library_median": 0.0016740000573918223,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": 0.008084074659618067,
+          "n": 3,
+          "library_median": -0.00040550000267103314,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 0.04484137669039934,
+          "n": 4,
+          "library_median": 0.00197350000962615,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 0.04386444663022704,
+          "n": 3,
+          "library_median": 0.0004290000069886446,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": 0.03229253300751885
+      },
+      "closest_earlier_promoted": {
+        "run": 7,
+        "id": "gen_e9b1723f45",
+        "similarity": 0.977
+      },
+      "path": "/home/user/SoccerSim/plays/generated_and_promoted/run_8/gen_02ac9846b3.yaml"
+    },
+    {
+      "id": "gen_bbca974138",
+      "cell": "mid_opp|center|medium|1|create_chance",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.0,
+          "n": 2,
+          "library_median": 0.0,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": 0.0,
+          "n": 1,
+          "library_median": 0.0,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": 0.0,
+          "n": 2,
+          "library_median": 0.0,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": null,
+          "n": 0,
+          "library_median": -0.0003569999971659854,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": 0.0,
+          "n": 1,
+          "library_median": 0.0,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 0.0,
+          "n": 1,
+          "library_median": -0.00016649999452056363,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 0.0,
+          "n": 1,
+          "library_median": 0.0,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 8,
+        "mean": 0.0
+      }
+    },
+    {
+      "id": "gen_e2f3c88f31",
+      "cell": "own_third|near_halfspace|slow|2|progress_ball",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": -0.0007098772076003367,
+          "n": 4,
+          "library_median": -0.0006100000173319131,
+          "beats": false
+        },
+        "mid_block": {
+          "mean_reward": -0.001148669765774805,
+          "n": 3,
+          "library_median": -0.0005300000193528831,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": -0.0006257894964321863,
+          "n": 3,
+          "library_median": -0.0006775000074412674,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": -0.0011004487853004219,
+          "n": 4,
+          "library_median": -0.0006780000112485141,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": -0.015617073944712692,
+          "n": 3,
+          "library_median": -0.0005619999719783664,
+          "beats": false
+        },
+        "wing_play": {
+          "mean_reward": -0.0011004487853004219,
+          "n": 4,
+          "library_median": -0.0007265000022016466,
+          "beats": false
+        },
+        "chaotic": {
+          "mean_reward": -0.014612030134795286,
+          "n": 3,
+          "library_median": -0.0005670000100508332,
+          "beats": false
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": -0.004485574547414568
+      }
+    },
+    {
+      "id": "gen_551be79d33",
+      "cell": "mid_own|near_wing|medium|2|progress_ball",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": -0.0001034795687878479,
+          "n": 3,
+          "library_median": -0.00027799999224953353,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": -0.0011710905871214414,
+          "n": 4,
+          "library_median": -0.00029600001289509237,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": -0.0008501589202986846,
+          "n": 3,
+          "library_median": -0.00033400001120753586,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": -0.0093949379221046,
+          "n": 4,
+          "library_median": -0.00031599999056197703,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": -0.0008219055004284326,
+          "n": 3,
+          "library_median": -0.0003220000071451068,
+          "beats": false
+        },
+        "wing_play": {
+          "mean_reward": -0.0093949379221046,
+          "n": 4,
+          "library_median": -0.0002699999895412475,
+          "beats": false
+        },
+        "chaotic": {
+          "mean_reward": -0.012655883372011179,
+          "n": 3,
+          "library_median": -0.00029299999005161226,
+          "beats": false
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": -0.005130756158745875
+      }
+    },
+    {
+      "id": "gen_b370f63e02",
+      "cell": "mid_own|center|medium|1|create_chance",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.00558944166524707,
+          "n": 1,
+          "library_median": -1.849999989644857e-05,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": -3.978547307559484e-05,
+          "n": 1,
+          "library_median": -3.5000000480067683e-06,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": 0.0010286683831901176,
+          "n": 2,
+          "library_median": 1.849999989644857e-05,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": 0.074682508895662,
+          "n": 1,
+          "library_median": -6.000000212225132e-06,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": 0.0670331323261861,
+          "n": 1,
+          "library_median": 5.149999924469739e-05,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 0.03232884834843495,
+          "n": 3,
+          "library_median": -7.200000254670158e-05,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 0.04116205283911069,
+          "n": 2,
+          "library_median": -5.199999941396527e-05,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 12,
+        "mean": 0.027374607075327167
+      }
+    },
+    {
+      "id": "gen_15a4ccc289",
+      "cell": "mid_opp|near_halfspace|medium|0|create_chance",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": -0.0005387719963982941,
+          "n": 3,
+          "library_median": 2.7000000955013093e-05,
+          "beats": false
+        },
+        "mid_block": {
+          "mean_reward": -0.0015893276626785524,
+          "n": 3,
+          "library_median": 4.600000102072954e-05,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": 0.0003992283292668745,
+          "n": 3,
+          "library_median": -0.00011999999696854502,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": -0.0011120500104857042,
+          "n": 4,
+          "library_median": 0.0007489999989047647,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": -0.0004855145046722455,
+          "n": 3,
+          "library_median": -4.3000000005122274e-05,
+          "beats": false
+        },
+        "wing_play": {
+          "mean_reward": -0.0011120500104857042,
+          "n": 4,
+          "library_median": -0.000849499978357926,
+          "beats": false
+        },
+        "chaotic": {
+          "mean_reward": 0.0005485533325969629,
+          "n": 3,
+          "library_median": -5.8000001445179805e-05,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": -0.0005789123995642249
+      }
+    },
+    {
+      "id": "gen_cc169c123a",
+      "cell": "final_third|center|fast|0|score",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.010829522996495559,
+          "n": 3,
+          "library_median": 0.010928000323474407,
+          "beats": false
+        },
+        "mid_block": {
+          "mean_reward": -0.002209899782877816,
+          "n": 3,
+          "library_median": 0.004206999903544784,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": 0.010805179326281023,
+          "n": 3,
+          "library_median": 0.007362000178545713,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": 0.036921132916359435,
+          "n": 4,
+          "library_median": 0.027476999908685684,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": 0.011669938039538646,
+          "n": 3,
+          "library_median": 0.009356999769806862,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 0.036921132916359435,
+          "n": 4,
+          "library_median": 0.009008999913930893,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 0.035526214051167834,
+          "n": 3,
+          "library_median": 0.004267000127583742,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": 0.020828496967612135
+      }
+    },
+    {
+      "id": "gen_d06f8c2759",
+      "cell": "mid_own|center|slow|0|retain_possession",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.0,
+          "n": 3,
+          "library_median": -1.849999989644857e-05,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": 0.0,
+          "n": 3,
+          "library_median": -3.5000000480067683e-06,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": 0.0,
+          "n": 3,
+          "library_median": 1.849999989644857e-05,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": 0.0,
+          "n": 4,
+          "library_median": -6.000000212225132e-06,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": 0.0,
+          "n": 3,
+          "library_median": 5.149999924469739e-05,
+          "beats": false
+        },
+        "wing_play": {
+          "mean_reward": 0.0,
+          "n": 4,
+          "library_median": -7.200000254670158e-05,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 0.0,
+          "n": 3,
+          "library_median": -5.199999941396527e-05,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": 0.0
+      }
+    },
+    {
+      "id": "gen_674e48e127",
+      "cell": "mid_opp|near_halfspace|fast|2|create_chance",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.0005382134641765118,
+          "n": 3,
+          "library_median": 2.7000000955013093e-05,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": -0.0011228686972114502,
+          "n": 3,
+          "library_median": 4.600000102072954e-05,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": 0.0024462436122891476,
+          "n": 3,
+          "library_median": -0.00011999999696854502,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": 0.006281165067310301,
+          "n": 4,
+          "library_median": 0.0007489999989047647,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": 0.01782346776555437,
+          "n": 3,
+          "library_median": -4.3000000005122274e-05,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 0.006281165067310301,
+          "n": 4,
+          "library_median": -0.000849499978357926,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 0.02270072119238848,
+          "n": 4,
+          "library_median": -5.8000001445179805e-05,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": 0.008337807239269251
+      }
+    },
+    {
+      "id": "gen_99ffa4b017",
+      "cell": "final_third|near_halfspace|medium|2|create_chance",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.009736449101627978,
+          "n": 3,
+          "library_median": 0.019051000475883484,
+          "beats": false
+        },
+        "mid_block": {
+          "mean_reward": 0.027895431018819212,
+          "n": 3,
+          "library_median": 0.01287699956446886,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": 0.03522083475444945,
+          "n": 3,
+          "library_median": 0.014275999739766121,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": 0.0364032391864937,
+          "n": 4,
+          "library_median": 0.020844999700784683,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": 0.03139379495797156,
+          "n": 3,
+          "library_median": 0.013150500133633614,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 0.0364032391864937,
+          "n": 4,
+          "library_median": 0.021601999178528786,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 0.04447503486902154,
+          "n": 4,
+          "library_median": 0.016087999567389488,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": 0.03257773260277668
+      }
+    },
+    {
+      "id": "gen_9cb1e3d88b",
+      "cell": "own_third|near_halfspace|medium|1|progress_ball",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": -0.0004244114684084944,
+          "n": 3,
+          "library_median": -0.0006100000173319131,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": 0.0002447742889842951,
+          "n": 3,
+          "library_median": -0.0005300000193528831,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": -0.0009675229346061785,
+          "n": 3,
+          "library_median": -0.0006775000074412674,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": -0.0012857052094819082,
+          "n": 4,
+          "library_median": -0.0006780000112485141,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": -0.00015122846066430046,
+          "n": 3,
+          "library_median": -0.0005619999719783664,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": -0.0012857052094819082,
+          "n": 4,
+          "library_median": -0.0007265000022016466,
+          "beats": false
+        },
+        "chaotic": {
+          "mean_reward": -0.0028410754652840793,
+          "n": 3,
+          "library_median": -0.0005670000100508332,
+          "beats": false
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": -0.0009460014081579807
+      }
+    },
+    {
+      "id": "gen_efc49f4d00",
+      "cell": "mid_opp|near_wing|medium|0|progress_ball",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": -0.0003659389819745818,
+          "n": 3,
+          "library_median": -0.0007334999972954392,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": -0.0006573045672499516,
+          "n": 3,
+          "library_median": -0.0011649999651126564,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": -0.005050378082845687,
+          "n": 3,
+          "library_median": -0.0010504999663680792,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": -0.0018282240073185852,
+          "n": 4,
+          "library_median": -0.000769499980378896,
+          "beats": false
+        },
+        "direct": {
+          "mean_reward": -0.0009688579135372563,
+          "n": 3,
+          "library_median": -0.0012019999558106065,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": -0.0018282240073185852,
+          "n": 4,
+          "library_median": -0.0016469999682158232,
+          "beats": false
+        },
+        "chaotic": {
+          "mean_reward": -0.008030773132748832,
+          "n": 3,
+          "library_median": -0.0011990000493824482,
+          "beats": false
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": -0.002491231253900734
+      }
+    },
+    {
+      "id": "gen_020a655220",
+      "cell": "mid_own|center|medium|2|progress_ball",
+      "promoted": true,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": 0.004132345696390337,
+          "n": 3,
+          "library_median": -1.849999989644857e-05,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": 0.008054966877672626,
+          "n": 3,
+          "library_median": -3.5000000480067683e-06,
+          "beats": true
+        },
+        "low_block_counter": {
+          "mean_reward": 0.006082739731187045,
+          "n": 3,
+          "library_median": 1.849999989644857e-05,
+          "beats": true
+        },
+        "possession": {
+          "mean_reward": 0.0064354926364401455,
+          "n": 4,
+          "library_median": -6.000000212225132e-06,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": 0.0015864058672622836,
+          "n": 3,
+          "library_median": 5.149999924469739e-05,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 0.0064354926364401455,
+          "n": 4,
+          "library_median": -7.200000254670158e-05,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 0.003807515409441208,
+          "n": 3,
+          "library_median": -5.199999941396527e-05,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": 0.005316952576557569
+      },
+      "closest_earlier_promoted": {
+        "run": 7,
+        "id": "gen_a05b691027",
+        "similarity": 0.957
+      },
+      "path": "/home/user/SoccerSim/plays/generated_and_promoted/run_8/gen_020a655220.yaml"
+    },
+    {
+      "id": "gen_5841da1532",
+      "cell": "mid_own|near_wing|slow|0|retain_possession",
+      "promoted": false,
+      "per_opponent": {
+        "high_press": {
+          "mean_reward": -0.00023220185209133862,
+          "n": 3,
+          "library_median": -0.00027799999224953353,
+          "beats": true
+        },
+        "mid_block": {
+          "mean_reward": -0.003448977777657257,
+          "n": 3,
+          "library_median": -0.00029600001289509237,
+          "beats": false
+        },
+        "low_block_counter": {
+          "mean_reward": -0.0046603821290552945,
+          "n": 3,
+          "library_median": -0.00033400001120753586,
+          "beats": false
+        },
+        "possession": {
+          "mean_reward": 1.7666594054214623e-05,
+          "n": 4,
+          "library_median": -0.00031599999056197703,
+          "beats": true
+        },
+        "direct": {
+          "mean_reward": -5.5811355850899615e-05,
+          "n": 3,
+          "library_median": -0.0003220000071451068,
+          "beats": true
+        },
+        "wing_play": {
+          "mean_reward": 1.7666594054214623e-05,
+          "n": 4,
+          "library_median": -0.0002699999895412475,
+          "beats": true
+        },
+        "chaotic": {
+          "mean_reward": 0.002429144661480668,
+          "n": 3,
+          "library_median": -0.00029299999005161226,
+          "beats": true
+        }
+      },
+      "overall": {
+        "n": 24,
+        "mean": -0.0007298480252953603
+      }
+    }
+  ]
+}
