@@ -1,0 +1,291 @@
+{
+ "baseline": "library",
+ "rows": [
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert0@objective",
+   "opp": "chaotic",
+   "n": 50,
+   "rate": 0.64,
+   "lo": 0.5014076201030195,
+   "hi": 0.7586143703281711
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert0@objective",
+   "opp": "direct",
+   "n": 50,
+   "rate": 0.5,
+   "lo": 0.36644286412332855,
+   "hi": 0.6335571358766714
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert0@objective",
+   "opp": "high_press",
+   "n": 50,
+   "rate": 0.58,
+   "lo": 0.4423319668777783,
+   "hi": 0.7062520276543307
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert0@objective",
+   "opp": "low_block_counter",
+   "n": 50,
+   "rate": 0.56,
+   "lo": 0.4230578680014353,
+   "hi": 0.6883801278976466
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert0@objective",
+   "opp": "mid_block",
+   "n": 50,
+   "rate": 0.52,
+   "lo": 0.3851151225880844,
+   "hi": 0.6520308760449429
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert0@objective",
+   "opp": "possession",
+   "n": 50,
+   "rate": 0.5,
+   "lo": 0.36644286412332855,
+   "hi": 0.6335571358766714
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert0@objective",
+   "opp": "wing_play",
+   "n": 50,
+   "rate": 0.58,
+   "lo": 0.4423319668777783,
+   "hi": 0.7062520276543307
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert@objective",
+   "opp": "chaotic",
+   "n": 50,
+   "rate": 0.54,
+   "lo": 0.40398634328388083,
+   "hi": 0.6703056539821737
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert@objective",
+   "opp": "direct",
+   "n": 50,
+   "rate": 0.64,
+   "lo": 0.5014076201030195,
+   "hi": 0.7586143703281711
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert@objective",
+   "opp": "high_press",
+   "n": 50,
+   "rate": 0.48,
+   "lo": 0.3479691239550571,
+   "hi": 0.6148848774119157
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert@objective",
+   "opp": "low_block_counter",
+   "n": 50,
+   "rate": 0.54,
+   "lo": 0.40398634328388083,
+   "hi": 0.6703056539821737
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert@objective",
+   "opp": "mid_block",
+   "n": 50,
+   "rate": 0.68,
+   "lo": 0.5418944286372394,
+   "hi": 0.792419559060006
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert@objective",
+   "opp": "possession",
+   "n": 50,
+   "rate": 0.56,
+   "lo": 0.4230578680014353,
+   "hi": 0.6883801278976466
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert@objective",
+   "opp": "wing_play",
+   "n": 50,
+   "rate": 0.56,
+   "lo": 0.4230578680014353,
+   "hi": 0.6883801278976466
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "chaotic",
+   "n": 50,
+   "rate": 0.4,
+   "lo": 0.2760818978624575,
+   "hi": 0.5381881089724063
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "direct",
+   "n": 50,
+   "rate": 0.34,
+   "lo": 0.2243676963506106,
+   "hi": 0.47846431458517147
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "high_press",
+   "n": 50,
+   "rate": 0.26,
+   "lo": 0.15871379651367384,
+   "hi": 0.3955342198899992
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "low_block_counter",
+   "n": 50,
+   "rate": 0.4,
+   "lo": 0.2760818978624575,
+   "hi": 0.5381881089724063
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "mid_block",
+   "n": 50,
+   "rate": 0.46,
+   "lo": 0.3296943460178263,
+   "hi": 0.5960136567161192
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "possession",
+   "n": 50,
+   "rate": 0.6,
+   "lo": 0.4618118910275937,
+   "hi": 0.7239181021375425
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "library",
+   "opp": "wing_play",
+   "n": 50,
+   "rate": 0.42,
+   "lo": 0.2937479723456693,
+   "hi": 0.5576680331222217
+  }
+ ],
+ "headline": [
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert0@objective",
+   "overall": [
+    0.5542857142857143,
+    0.501902890230493,
+    0.6054897962145152
+   ],
+   "weakest": {
+    "opp": "direct",
+    "rate": 0.5,
+    "lo": 0.36644286412332855,
+    "hi": 0.6335571358766714
+   },
+   "beats_baseline_everywhere": false
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "expert@objective",
+   "overall": [
+    0.5714285714285714,
+    0.5190835358894706,
+    0.6222226304855399
+   ],
+   "weakest": {
+    "opp": "high_press",
+    "rate": 0.48,
+    "lo": 0.3479691239550571,
+    "hi": 0.6148848774119157
+   },
+   "beats_baseline_everywhere": false
+  },
+  {
+   "objective": "chance_180",
+   "condition": "fresh",
+   "team": "library",
+   "overall": [
+    0.4114285714285714,
+    0.3611070142788981,
+    0.4636733394160885
+   ],
+   "weakest": {
+    "opp": "high_press",
+    "rate": 0.26,
+    "lo": 0.15871379651367384,
+    "hi": 0.3955342198899992
+   },
+   "beats_baseline_everywhere": null
+  }
+ ],
+ "args": {
+  "teams": [
+   "library",
+   "expert0@objective",
+   "expert@objective"
+  ],
+  "opponents": [
+   "styles"
+  ],
+  "objectives": [
+   "chance_180"
+  ],
+  "conditions": [
+   "fresh"
+  ],
+  "scenarios": 50,
+  "baseline": "library",
+  "workers": 4,
+  "seed": 7,
+  "models": "/home/user/SoccerSim/data/models",
+  "out": "reports/objectives/expert_pool_v9_long",
+  "force": false
+ }
+}
