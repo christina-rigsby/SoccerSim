@@ -1,7 +1,7 @@
 {
   "profile": "quick",
-  "critic_trained": "2026-11-20 01:59",
-  "data_root": "[PosixPath('/home/user/SoccerSim/data/selfplay_pool_v9/run=phase_a'), PosixPath('/home/user/SoccerSim/data/selfplay_pool_v9/run=selector_i01')]",
+  "critic_trained": "2026-11-20 02:21",
+  "data_root": "[PosixPath('/home/user/SoccerSim/data/selfplay_pool_v9/run=phase_a'), PosixPath('/home/user/SoccerSim/data/selfplay_pool_v9/run=selector_i01'), PosixPath('/home/user/SoccerSim/data/selfplay_pool_v9/run=selector_i02')]",
   "critic_pool_fingerprint": "38a04fce1636",
   "critic_pool_version": 9
 }
