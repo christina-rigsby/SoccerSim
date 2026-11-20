@@ -1,24 +1,24 @@
 {
- "update": 2,
+ "update": 4,
  "snapshots": [],
  "elo": {
-  "main": 1037.986114219458,
-  "low_block_counter": 976.7739973768996,
-  "main_exploiter": 996.8240054685599,
-  "chaotic": 1000.5989400437398,
-  "league_exploiter": 1011.5832833932761,
-  "mid_block": 1000.0585226649837,
-  "high_press": 988.1127847353005,
-  "direct": 988.0623520977823
+  "main": 925.0464431214397,
+  "low_block_counter": 989.858148842371,
+  "main_exploiter": 1045.4068551788655,
+  "chaotic": 1013.5207250021359,
+  "league_exploiter": 1070.3497180518818,
+  "mid_block": 999.9857689236082,
+  "high_press": 965.7615781608755,
+  "direct": 990.0707627188218
  },
  "payoff": {
   "low_block_counter": {
    "main": {
-    "w": 1,
-    "d": 0,
+    "w": 2,
+    "d": 1,
     "l": 2,
-    "n": 3,
-    "reward": -0.07153600000000002
+    "n": 5,
+    "reward": -0.04807500000000002
    },
    "league_exploiter": {
     "w": 0,
@@ -31,98 +31,105 @@
   "main": {
    "low_block_counter": {
     "w": 2,
-    "d": 0,
-    "l": 1,
-    "n": 3,
-    "reward": 0.07153600000000002
+    "d": 1,
+    "l": 2,
+    "n": 5,
+    "reward": 0.04807500000000002
    },
    "main_exploiter": {
-    "w": 5,
+    "w": 8,
     "d": 1,
-    "l": 5,
-    "n": 11,
-    "reward": 0.20058800000000002
+    "l": 13,
+    "n": 22,
+    "reward": -2.398139
    },
    "league_exploiter": {
     "w": 2,
     "d": 0,
-    "l": 1,
-    "n": 3,
-    "reward": -0.16637799999999997
+    "l": 5,
+    "n": 7,
+    "reward": -0.413731
    },
    "high_press": {
-    "w": 1,
+    "w": 2,
     "d": 0,
     "l": 1,
-    "n": 2,
-    "reward": 2.194653
+    "n": 3,
+    "reward": 2.2353690000000004
    },
    "mid_block": {
     "w": 1,
-    "d": 0,
-    "l": 1,
-    "n": 2,
-    "reward": 0.04097200000000001
+    "d": 1,
+    "l": 2,
+    "n": 4,
+    "reward": 0.006721999999999999
    },
    "chaotic": {
     "w": 1,
-    "d": 0,
+    "d": 1,
     "l": 1,
-    "n": 2,
-    "reward": 0.06187899999999999
+    "n": 3,
+    "reward": 0.06099799999999998
    },
    "direct": {
     "w": 1,
     "d": 0,
-    "l": 0,
-    "n": 1,
-    "reward": 0.105948
+    "l": 1,
+    "n": 2,
+    "reward": 0.06751399999999999
    },
    "main": {
-    "w": 2,
+    "w": 6,
     "d": 0,
-    "l": 2,
-    "n": 4,
+    "l": 6,
+    "n": 12,
     "reward": 0.0
    }
   },
   "main_exploiter": {
    "main": {
-    "w": 5,
+    "w": 13,
     "d": 1,
-    "l": 5,
-    "n": 11,
-    "reward": -0.20058800000000002
+    "l": 8,
+    "n": 22,
+    "reward": 2.398139
+   },
+   "league_exploiter": {
+    "w": 1,
+    "d": 0,
+    "l": 1,
+    "n": 2,
+    "reward": -0.376555
    }
   },
   "league_exploiter": {
    "chaotic": {
     "w": 1,
     "d": 0,
-    "l": 1,
-    "n": 2,
-    "reward": 0.01434400000000001
-   },
-   "mid_block": {
-    "w": 1,
-    "d": 0,
-    "l": 1,
-    "n": 2,
-    "reward": -0.04480400000000001
-   },
-   "main": {
-    "w": 1,
-    "d": 0,
     "l": 2,
     "n": 3,
-    "reward": 0.16637799999999997
+    "reward": -0.15449000000000002
+   },
+   "mid_block": {
+    "w": 2,
+    "d": 0,
+    "l": 1,
+    "n": 3,
+    "reward": -0.032548
+   },
+   "main": {
+    "w": 5,
+    "d": 0,
+    "l": 2,
+    "n": 7,
+    "reward": 0.413731
    },
    "high_press": {
-    "w": 1,
+    "w": 2,
     "d": 0,
     "l": 0,
-    "n": 1,
-    "reward": 0.165462
+    "n": 2,
+    "reward": 0.287033
    },
    "low_block_counter": {
     "w": 1,
@@ -130,63 +137,84 @@
     "l": 0,
     "n": 1,
     "reward": 0.0070310000000000025
+   },
+   "main_exploiter": {
+    "w": 1,
+    "d": 0,
+    "l": 1,
+    "n": 2,
+    "reward": 0.376555
+   },
+   "direct": {
+    "w": 1,
+    "d": 0,
+    "l": 0,
+    "n": 1,
+    "reward": 0.048250999999999995
    }
   },
   "chaotic": {
    "league_exploiter": {
-    "w": 1,
+    "w": 2,
     "d": 0,
     "l": 1,
-    "n": 2,
-    "reward": -0.01434400000000001
+    "n": 3,
+    "reward": 0.15449000000000002
    },
    "main": {
     "w": 1,
-    "d": 0,
+    "d": 1,
     "l": 1,
-    "n": 2,
-    "reward": -0.06187899999999999
+    "n": 3,
+    "reward": -0.06099799999999998
    }
   },
   "mid_block": {
    "league_exploiter": {
     "w": 1,
     "d": 0,
-    "l": 1,
-    "n": 2,
-    "reward": 0.04480400000000001
+    "l": 2,
+    "n": 3,
+    "reward": 0.032548
    },
    "main": {
-    "w": 1,
-    "d": 0,
+    "w": 2,
+    "d": 1,
     "l": 1,
-    "n": 2,
-    "reward": -0.04097200000000001
+    "n": 4,
+    "reward": -0.006721999999999999
    }
   },
   "high_press": {
    "main": {
     "w": 1,
     "d": 0,
+    "l": 2,
+    "n": 3,
+    "reward": -2.2353690000000004
+   },
+   "league_exploiter": {
+    "w": 0,
+    "d": 0,
+    "l": 2,
+    "n": 2,
+    "reward": -0.287033
+   }
+  },
+  "direct": {
+   "main": {
+    "w": 1,
+    "d": 0,
     "l": 1,
     "n": 2,
-    "reward": -2.194653
+    "reward": -0.06751399999999999
    },
    "league_exploiter": {
     "w": 0,
     "d": 0,
     "l": 1,
     "n": 1,
-    "reward": -0.165462
-   }
-  },
-  "direct": {
-   "main": {
-    "w": 0,
-    "d": 0,
-    "l": 1,
-    "n": 1,
-    "reward": -0.105948
+    "reward": -0.048250999999999995
    }
   }
  },
@@ -321,6 +349,140 @@
     "cells": 55,
     "elite_cells": 47,
     "plays": 61
+   },
+   "refined": 30
+  },
+  {
+   "update": 3,
+   "episodes": 16,
+   "decisions": 140,
+   "wall_s": 61.3,
+   "ppo": {
+    "main": {
+     "loss": 0.07040397077798843,
+     "kl_ref": 0.005570580794786413,
+     "clipfrac": 0.00967842647517952,
+     "ratio": 1.01668115456899,
+     "n": 28,
+     "mean_reward": 0.0019484998192638159,
+     "mean_adv_raw": -0.007526864763349295,
+     "mean_play_reward": -0.0009918214285714283
+    },
+    "main_exploiter": {
+     "loss": -0.03013637165228526,
+     "kl_ref": 0.024796562890211742,
+     "clipfrac": 0.023980815347721823,
+     "ratio": 0.987951934337616,
+     "n": 4,
+     "mean_reward": -0.007926000282168388,
+     "mean_adv_raw": -0.01781877502799034,
+     "mean_play_reward": -0.007777
+    },
+    "league_exploiter": {
+     "loss": 0.10423525422811508,
+     "kl_ref": -0.041866812855005264,
+     "clipfrac": 0.10530896431679722,
+     "ratio": 0.9297464291254679,
+     "n": 3,
+     "mean_reward": -0.030596667900681496,
+     "mean_adv_raw": -0.04004647955298424,
+     "mean_play_reward": -0.030836333333333337
+    }
+   },
+   "main_generated_share": 0.32558139534883723,
+   "validity": 1.0,
+   "sampled": 236,
+   "elo": {
+    "main": 974.5,
+    "low_block_counter": 989.9,
+    "main_exploiter": 1038.5,
+    "chaotic": 1013.5,
+    "league_exploiter": 1018.8,
+    "mid_block": 989.2,
+    "high_press": 975.6,
+    "direct": 1000.0
+   },
+   "pfsp": {
+    "main": 0.157,
+    "main_exploiter": 0.157,
+    "league_exploiter": 0.088,
+    "high_press": 0.157,
+    "mid_block": 0.157,
+    "low_block_counter": 0.088,
+    "direct": 0.04,
+    "chaotic": 0.157
+   },
+   "archive": {
+    "cells": 63,
+    "elite_cells": 50,
+    "plays": 72
+   },
+   "refined": 30
+  },
+  {
+   "update": 4,
+   "episodes": 16,
+   "decisions": 146,
+   "wall_s": 65.4,
+   "ppo": {
+    "main": {
+     "loss": 0.038722204665342964,
+     "kl_ref": 0.012992073160906633,
+     "clipfrac": 0.019487179487179488,
+     "ratio": 0.9920896093050638,
+     "n": 13,
+     "mean_reward": 0.000774153508245945,
+     "mean_adv_raw": -0.009195716120302677,
+     "mean_play_reward": -0.007320153846153846
+    },
+    "main_exploiter": {
+     "loss": -0.060731008648872375,
+     "kl_ref": 0.018908471800386906,
+     "clipfrac": 0.011179429849077696,
+     "ratio": 1.0104903380076091,
+     "n": 18,
+     "mean_reward": 0.0016748332418501377,
+     "mean_adv_raw": -0.008247281424701214,
+     "mean_play_reward": -0.0034688333333333324
+    },
+    "league_exploiter": {
+     "loss": -0.16710727413495383,
+     "kl_ref": 0.04015999225278696,
+     "clipfrac": 0.04052684903748733,
+     "ratio": 0.9757923682530721,
+     "n": 5,
+     "mean_reward": 0.020464200526475906,
+     "mean_adv_raw": 0.010442866012454033,
+     "mean_play_reward": 0.0014219999999999994
+    }
+   },
+   "main_generated_share": 0.21666666666666667,
+   "validity": 1.0,
+   "sampled": 188,
+   "elo": {
+    "main": 925.0,
+    "low_block_counter": 989.9,
+    "main_exploiter": 1045.4,
+    "chaotic": 1013.5,
+    "league_exploiter": 1070.3,
+    "mid_block": 1000.0,
+    "high_press": 965.8,
+    "direct": 990.1
+   },
+   "pfsp": {
+    "main": 0.122,
+    "main_exploiter": 0.154,
+    "league_exploiter": 0.166,
+    "high_press": 0.069,
+    "mid_block": 0.122,
+    "low_block_counter": 0.122,
+    "direct": 0.122,
+    "chaotic": 0.122
+   },
+   "archive": {
+    "cells": 68,
+    "elite_cells": 55,
+    "plays": 82
    },
    "refined": 30
   }
