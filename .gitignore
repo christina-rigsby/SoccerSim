@@ -48,3 +48,4 @@ data/expert_pool_v9/
 data/v9_queue.log
 data/pipeline_v9.log
 data/v9_objectives_queue.log
+checkpoints.tmp/
