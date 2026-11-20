@@ -20,12 +20,12 @@ python scripts/objectives.py --teams library selector_latest main_latest --scena
   --out reports/objectives/adaptivity_pool_v9 || exit 1
 echo "== expert iteration: start $(date +%T)"
 python scripts/expert.py --objective shot_60 keep_15 win_back_20 --games 300 --iterations 2 || exit 1
-python scripts/expert.py --objective protect_300 chance_180 --games 100 --iterations 2 || exit 1
+python scripts/expert.py --objective chance_180 --games 100 --iterations 2 || exit 1
 echo "== expert evaluation: start $(date +%T)"
 python scripts/objectives.py --teams library expert0@objective expert@objective --scenarios 100 \
   --objectives shot_60 keep_15 win_back_20 --out reports/objectives/expert_pool_v9_short || exit 1
 python scripts/objectives.py --teams library expert0@objective expert@objective --scenarios 50 \
-  --objectives protect_300 chance_180 --out reports/objectives/expert_pool_v9_long || exit 1
+  --objectives chance_180 --out reports/objectives/expert_pool_v9_long || exit 1
 python scripts/objectives.py --teams library expert@objective --scenarios 100 --objectives shot_60 keep_15 \
   --conditions our_forwards_slow their_defence_tiring --out reports/objectives/expert_adaptivity_pool_v9 || exit 1
 echo V9_OBJECTIVES_DONE
