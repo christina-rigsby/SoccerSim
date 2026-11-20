@@ -1,18 +1,12 @@
 {
-  "saved": "2026-11-19 06:07 UTC",
+  "saved": "2026-11-20 01:13 UTC",
   "files": [
     "models/critic.pt",
     "models/response.pt",
-    "models/generator.pt",
-    "models/generator_ref.pt",
     "models/meta.json",
     "models/critic_metrics.json",
-    "models/generator_metrics.json",
-    "models/mutation_filter_cache.pkl",
-    "models/selector/",
-    "models/runs/run_7/",
     "pipeline_state/"
   ],
-  "pool_fingerprint": "c6c4186ce7c2",
-  "latest_run": "run_7"
+  "pool_fingerprint": "38a04fce1636",
+  "latest_run": null
 }
