@@ -1452,3 +1452,27 @@ the pool v9 retraining, baselines (library, selector, generator, objective-drive
 adaptivity, then expert iteration (step 4) per objective and its evaluation; the long objectives
 use 50 situations and 200 search games because the look-ahead's 5-minute games are expensive.
 
+
+## D-064 · Step 4 results: expert iteration (pool v9)
+
+Expert iteration (`soccersim/selfplay/expert.py`) ran 2 iterations per objective: 300 search games
+for shot_60, keep_15 and win_back_20, 100 for chance_180. It was evaluated on unseen situations
+(reports/objectives/expert_pool_v9_short, expert_pool_v9_long, expert_adaptivity_pool_v9).
+Rates are against the weakest style; targets as in D-063.
+
+| Objective | Library | Selector | Generator | Look-ahead | Expert iter 0 | Expert iter 1 | Target |
+|---|---|---|---|---|---|---|---|
+| shot_60 | 63% | 80% | 77% | 79% | 73% | 64% | 90% |
+| keep_15 | 26% | 34% | 32% | 72% | **79%** | **77%** | 75% (met) |
+| win_back_20 | 68% | 60% | 68% | 73% | 69% | 69% | 75% |
+| chance_180 | 26% | 34% | 40% | 65% (20 sit.) | 50% | 48% | 60% |
+
+- keep_15 is the first agreed target met by a fast team. The expert matches or beats the slow
+  look-ahead at about selector speed, and beats the library against every style, in both
+  conditions.
+- The second iteration did not help: equal on keep_15, win_back_20 and chance_180, and worse on
+  shot_60. In each iteration-1 search, the previous network already agreed with the search's best
+  choice about as often as the new network did, so the second round had little to learn.
+- Finding: the scripted styles differ only by small score bonuses (0.02–0.06) on a few plays. For
+  keep_15, 97 of 100 situations end the same way against all 7 styles. "Against every style" is
+  therefore a weak test, above all when the opponent is defending.
